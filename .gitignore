@@ -1,0 +1,17 @@
+build/
+dist/
+nbproject/private/
+nbproject/Makefile-*.mk
+nbproject/Package*.bash
+nbproject/configurations.xml
+
+*.a
+*.lib
+*.obj
+*.tmp
+*.log
+
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
