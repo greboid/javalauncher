@@ -29,6 +29,12 @@ std::string JVMLauncher::getDLLFromRegistry() {
     return result;
 }
 
+std::string JVMLauncher::getJavaHomeFromRegistry() {
+    std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+    std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
+    return result;
+}
+
 std::string JVMLauncher::getRegistryValue(std::string key, std::string subkey) {
     HKEY regKey;
     if (RegOpenKey(HKEY_LOCAL_MACHINE, (char*) key.c_str(), &regKey) != ERROR_SUCCESS) {
@@ -56,7 +62,8 @@ void JVMLauncher::disableFolderVirtualisation() {
 }
 
 void JVMLauncher::LaunchJVM() {
-    getDLLFromRegistry();
+    jvmDll = getDLLFromRegistry();
+    javaHome = getJavaHomeFromRegistry();
     disableFolderVirtualisation();
     //Build library path
     std::string strJavaLibraryPath = "-Djava.library.path=";
