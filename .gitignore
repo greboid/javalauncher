@@ -4,6 +4,7 @@ dist/
 *_private.rc
 *_private.res
 Makefile.win
+launcher.ini
 
 *.exe
 *.o
