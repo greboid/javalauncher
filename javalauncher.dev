@@ -43,7 +43,7 @@ BuildCmd=
 Major=0
 Minor=1
 Release=1
-Build=235
+Build=1
 LanguageID=1033
 CharsetID=1252
 CompanyName=
@@ -55,7 +55,7 @@ LegalTrademarks=
 OriginalFilename=
 ProductName=DMDirc
 ProductVersion=
-AutoIncBuildNr=1
+AutoIncBuildNr=0
 
 [Unit2]
 FileName=jvmlauncher\JVMLauncher.cpp

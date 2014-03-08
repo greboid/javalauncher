@@ -5,6 +5,7 @@ dist/
 *_private.res
 Makefile.win
 launcher.ini
+javalauncher.layout
 
 *.exe
 *.o
