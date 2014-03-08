@@ -1,6 +1,7 @@
 #include "SingleInstance.h"
 
 #define SINGLEINSTANCE FALSE
+#define SETTING "launcher.singleinstance"
 
 using namespace std;
 
@@ -15,9 +16,8 @@ SingleInstance::~SingleInstance() {
 }
 
 bool SingleInstance::getCanStart() {
-    if (SINGLEINSTANCE) {
-    //if (config->getBoolValue("launcher.singleInstance", SINGLEINSTANCE)) {
-        instanceMutex = CreateMutex(NULL, true, "DMDirc");
+	if (config->getBoolValue(SETTING, SINGLEINSTANCE)) {
+        instanceMutex = CreateMutex(NULL, true, TEXT("DMDirc"));
         if (instanceMutex && GetLastError() == ERROR_ALREADY_EXISTS) {
             CloseHandle(instanceMutex);
             return false;
@@ -29,3 +29,4 @@ bool SingleInstance::getCanStart() {
 void SingleInstance::stopped() {
     ReleaseMutex(instanceMutex);
 }
+

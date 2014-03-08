@@ -1,5 +1,7 @@
-#include "JVMLauncher.h"
-#include "SingleInstance.h"
+#include "jvmlauncher/JVMLauncher.h"
+#include "singleinstance/SingleInstance.h"
+#include "config/ConfigReader.h"
+#include "updater/Updater.h"
 #include <windows.h>
 
 using namespace std;
@@ -11,7 +13,7 @@ int main(int argc, char** argv) {
         cout << "Another instance already running." << endl;
         return EXIT_FAILURE;
     }
-    JVMLauncher* launcher = new JVMLauncher("C:\\", "com/dmdirc/Main", config);
+    JVMLauncher* launcher = new JVMLauncher("C:\\Program Files\\DMDirc\\", "com/dmdirc/Main", config);
     try {
         HANDLE handle = launcher->forkAndLaunch();
         WaitForSingleObject(handle, INFINITE);

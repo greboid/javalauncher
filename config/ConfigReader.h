@@ -7,11 +7,12 @@
 class ConfigReader {
 public:
     ConfigReader();
+    ConfigReader(std::string);
     virtual ~ConfigReader();
     std::string getStringValue(std::string, std::string);
-    bool getBoolValue(std::string, bool);
+	bool getBoolValue(std::string, bool);
 private:
-
+    std::string name;
 };
 
 #endif	/* CONFIGREADER_H */

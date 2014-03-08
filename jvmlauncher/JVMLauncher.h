@@ -1,6 +1,8 @@
 #ifndef JVMLAUNCHER_H
 #define	JVMLAUNCHER_H
 
+#define _WIN32_WINNT 0x0501
+
 #include <stdexcept>
 #include <windows.h>
 #include <tchar.h>
@@ -11,8 +13,9 @@
 #include <iostream>
 #include <ostream>
 #include <process.h>
+#include <windows.h>
 #include "JVMLauncherException.cpp"
-#include "ConfigReader.h"
+#include "../config/ConfigReader.h"
 
 class JVMLauncher {
 public:
@@ -36,6 +39,9 @@ private:
     JNIEnv *jvmEnv;
     JavaVM *jvm;
     void checkForException();
+    std::string getDLLFromRegistry();
+    std::string getRegistryValue(std::string, std::string);
+    void disableFolderVirtualisation();
 protected:
 };
 

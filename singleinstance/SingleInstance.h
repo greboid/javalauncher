@@ -5,7 +5,7 @@
 #include <iostream>
 #include <windows.h>
 #include <string>
-#include "ConfigReader.h"
+#include "../config/ConfigReader.h"
 
 class SingleInstance {
 public:

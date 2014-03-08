@@ -1,10 +1,12 @@
 build/
 dist/
-nbproject/private/
-nbproject/Makefile-*.mk
-nbproject/Package*.bash
-nbproject/configurations.xml
+*_private.h
+*_private.rc
+*_private.res
+Makefile.win
 
+*.exe
+*.o
 *.a
 *.lib
 *.obj

@@ -1,12 +1,7 @@
 #include "JVMLauncher.h"
 
 JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, ConfigReader* config) {
-    //Get JVM.dll via JAVA_HOME
-    javaHome = getenv("JAVA_HOME");
-    if (javaHome.empty()) {
-        throw JVMLauncherException("JAVA_HOME not defined");
-    }
-    jvmDll = javaHome + "\\jre\\bin\\server\\jvm.dll";
+    jvmDll = getDLLFromRegistry();
     //Do something better here..
     appHome.append(path);
     jars.push_back("DMDirc.jar");
@@ -25,15 +20,50 @@ UINT WINAPI JVMLauncher::threadEntry(LPVOID param) {
     JVMLauncher* obj = (JVMLauncher*) param;
     //Call jvm launch
     obj->LaunchJVM();
+	return 0;
+}
+
+std::string JVMLauncher::getDLLFromRegistry() {
+    std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+    std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
+    return result;
+}
+
+std::string JVMLauncher::getRegistryValue(std::string key, std::string subkey) {
+    HKEY regKey;
+    if (RegOpenKey(HKEY_LOCAL_MACHINE, (char*) key.c_str(), &regKey) != ERROR_SUCCESS) {
+        throw JVMLauncherException("Cannot find registry key");
+    }
+    DWORD dwType = REG_SZ;
+    char value[1024];
+    DWORD value_length = 1024;
+    if (RegQueryValueEx(regKey, (char*) subkey.c_str(), NULL, &dwType, (LPBYTE)&value, &value_length) != ERROR_SUCCESS) {
+        throw new JVMLauncherException("Cannot find key value");
+    }
+    RegCloseKey(regKey);
+    return value;
+}
+
+void JVMLauncher::disableFolderVirtualisation() {
+    HANDLE hToken;
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)) {
+        DWORD tokenInfoVal = 0;
+        if (GetLastError() != ERROR_INVALID_PARAMETER) {
+            return;
+        }
+        CloseHandle(hToken);
+    }
 }
 
 void JVMLauncher::LaunchJVM() {
+    getDLLFromRegistry();
+    disableFolderVirtualisation();
     //Build library path
     std::string strJavaLibraryPath = "-Djava.library.path=";
     strJavaLibraryPath += javaHome + "\\lib" + "," + javaHome + "\\jre\\lib";
     //Add jars to classpath
     std::string strJavaClassPath = "-Djava.class.path=";
-    for (int i = 0; i < jars.size() - 1; i++) {
+    for (unsigned int i = 0; i < jars.size() - 1; i++) {
         strJavaClassPath += appHome + jars[i] + ";";
     }
     strJavaClassPath += appHome + jars[jars.size() - 1];
