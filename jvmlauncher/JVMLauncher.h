@@ -14,12 +14,13 @@
 #include <ostream>
 #include <process.h>
 #include <windows.h>
+#include <dirent.h>
 #include "JVMLauncherException.cpp"
 #include "../config/ConfigReader.h"
 
 class JVMLauncher {
 public:
-    JVMLauncher(std::string, std::string, ConfigReader*);
+    JVMLauncher(std::string, std::string, std::string, std::string, ConfigReader*);
     void LaunchJVM();
     HANDLE forkAndLaunch();
 private:
@@ -43,6 +44,7 @@ private:
     std::string getRegistryValue(std::string, std::string);
     std::string getJavaHomeFromRegistry();
     void disableFolderVirtualisation();
+    void addAllJarsFromPath(std::string);
 protected:
 };
 

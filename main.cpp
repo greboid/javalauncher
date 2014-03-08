@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     JVMLauncher* launcher = new JVMLauncher(config->getStringValue("application.path", "C:\\Program Files\\DMDirc\\"),
-        config->getStringValue("application.main", "com/dmdirc/Main"), config);
+        config->getStringValue("application.main", "com/dmdirc/Main"), "", "", config);
     try {
         HANDLE handle = launcher->forkAndLaunch();
         WaitForSingleObject(handle, INFINITE);

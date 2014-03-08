@@ -1,12 +1,27 @@
 #include "JVMLauncher.h"
 
-JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, ConfigReader* config) {
-    jvmDll = getDLLFromRegistry();
-    //Do something better here..
+JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::string jvmargs, std::string appargs, ConfigReader* config) {
+    //set application home
     appHome.append(path);
-    jars.push_back("DMDirc.jar");
+    //add all jars from path
+    addAllJarsFromPath(path);
     this->mainClassName = mainClassName;
     this->config = config;
+}
+
+void JVMLauncher::addAllJarsFromPath(std::string path) {
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir((char*) path.c_str())) != NULL) {
+        while ((ent = readdir (dir)) != NULL) {
+            std::string suffix = ".jar";
+            std::string filename = std::string(ent->d_name);
+            if (filename.size() >= suffix.size() && filename.compare(filename.size() - suffix.size(), suffix.size(), suffix) == 0) {
+                jars.push_back(filename);
+            }
+        }
+        closedir (dir);
+    }
 }
 
 HANDLE JVMLauncher::forkAndLaunch() {
@@ -70,10 +85,12 @@ void JVMLauncher::LaunchJVM() {
     strJavaLibraryPath += javaHome + "\\lib" + "," + javaHome + "\\jre\\lib";
     //Add jars to classpath
     std::string strJavaClassPath = "-Djava.class.path=";
-    for (unsigned int i = 0; i < jars.size() - 1; i++) {
-        strJavaClassPath += appHome + jars[i] + ";";
+    if (jars.size() > 0) {
+        for (unsigned int i = 0; i < jars.size() - 1; i++) {
+            strJavaClassPath += appHome + jars[i] + ";";
+        }
+        strJavaClassPath += appHome + jars[jars.size() - 1];
     }
-    strJavaClassPath += appHome + jars[jars.size() - 1];
     //Configure JVM Options
     JavaVMOption options[3];
     options[0].optionString = (char*) (strJavaClassPath.c_str());
