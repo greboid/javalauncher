@@ -1,8 +1,6 @@
 #ifndef JVMLAUNCHER_H
 #define	JVMLAUNCHER_H
 
-#define _WIN32_WINNT 0x0501
-
 #include <stdexcept>
 #include <windows.h>
 #include <tchar.h>
@@ -29,6 +27,8 @@ private:
     typedef jint(JNICALL *CreateJavaVM)(JavaVM**, void**, void*);
     ConfigReader* config;
     HINSTANCE jvmDllInstance;
+    std::string jvmargs;
+    std::string appargs;
     std::string mainClassName;
     std::string javaHome;
     std::string appHome;

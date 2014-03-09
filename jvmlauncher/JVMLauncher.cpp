@@ -7,6 +7,8 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::strin
     addAllJarsFromPath(path);
     this->mainClassName = mainClassName;
     this->config = config;
+    this->jvmargs = jvmargs;
+    this->appargs = appargs;
 }
 
 void JVMLauncher::addAllJarsFromPath(std::string path) {
@@ -99,7 +101,7 @@ void JVMLauncher::LaunchJVM() {
     options[2].extraInfo = (void*) *JVMLauncher::exit;
     //Configure VM args
     JavaVMInitArgs vm_args;
-    vm_args.version = JNI_VERSION_1_6; //JNI Version 1.4 and above
+    vm_args.version = JNI_VERSION_1_6;
     vm_args.options = options;
     vm_args.nOptions = 3;
     vm_args.ignoreUnrecognized = JNI_FALSE;

@@ -2,6 +2,7 @@
 #include "singleinstance/SingleInstance.h"
 #include "config/ConfigReader.h"
 #include "updater/Updater.h"
+#include "utils/utils.h"
 #include <windows.h>
 #include <conio.h>
 
@@ -14,7 +15,9 @@ int main(int argc, char** argv) {
         cout << "Another instance already running." << endl;
         return EXIT_FAILURE;
     }
-    JVMLauncher* launcher = new JVMLauncher(config->getStringValue("application.path", "C:\\Program Files\\DMDirc\\"),
+    std::vector<std::string> cliArgs = Utils::arrayToVector(argc, argv);
+    cliArgs.erase(cliArgs.begin());
+    JVMLauncher* launcher = new JVMLauncher(config->getStringValue("application.path", "."),
         config->getStringValue("application.main", "com/dmdirc/Main"), "", "", config);
     try {
         HANDLE handle = launcher->forkAndLaunch();
