@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     cliArgs.erase(cliArgs.begin());
     cliArgs.push_back("-l");
     cliArgs.push_back("bob-1");
-    JVMLauncher* launcher = new JVMLauncher(config->getStringValue("application.path", "."),
+    JVMLauncher* launcher = new JVMLauncher(config->getStringValue("application.path", ".\\"),
         config->getStringValue("application.main", "com/dmdirc/Main"),
         config->getVectorValue("jvm.args", std::vector<std::string>(0)), Utils::mergeVectors(
         config->getVectorValue("application.args", std::vector<std::string>(0)),
