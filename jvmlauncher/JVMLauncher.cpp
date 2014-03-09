@@ -99,14 +99,14 @@ void JVMLauncher::LaunchJVM() {
     options[1].optionString = (char*) (strJavaLibraryPath.c_str());
     options[2].optionString = (char*) "exit";
     options[2].extraInfo = (void*) *JVMLauncher::exit;
-    for (int i = 3; i < jvmargs.size(); i++) {
-        options[i].optionString = (char*) appargs[i].c_str();
+    for (int i = 3; i < jvmargs.size() + 3; i++) {
+        options[i].optionString = (char*) jvmargs[(i-3)].c_str();
     }
     //Configure VM args
     JavaVMInitArgs vm_args;
     vm_args.version = JNI_VERSION_1_6;
     vm_args.options = options;
-    vm_args.nOptions = 3;
+    vm_args.nOptions = jvmargs.size() + 3;
     vm_args.ignoreUnrecognized = JNI_FALSE;
     //Load JVM.dll
     jvmDllInstance = LoadLibraryA(jvmDll.c_str());
