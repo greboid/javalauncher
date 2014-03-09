@@ -24,3 +24,17 @@ std::vector<std::string> Utils::arrayToVector(int size, char** array) {
     }
     return result;
 }
+
+std::vector<std::string> Utils::splitString(std::string input, std::string delimiter) {
+      unsigned start = 0;
+      unsigned end;
+      std::vector<std::string> result;
+
+      while( (end = input.find(delimiter, start)) != std::string::npos )
+      {
+            result.push_back(input.substr(start, end-start));
+            start = end + delimiter.length();
+      }
+      result.push_back(input.substr(start));
+      return result;
+}

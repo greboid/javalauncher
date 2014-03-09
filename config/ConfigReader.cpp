@@ -56,9 +56,7 @@ std::vector<std::string> ConfigReader::getVectorValue(string key, std::vector<st
     if (search == settings.end() ) {
     	return defaultValue;
     }
-    std::string value = search->second;
-    std::vector<std::string> result;
-    return defaultValue;
+    return Utils::splitString(search->second, ",");
 }
 
 bool ConfigReader::parseBoolean(const std::string *str) {

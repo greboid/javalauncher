@@ -7,6 +7,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include "../utils/utils.h"
 
 class ConfigReader {
 public:
