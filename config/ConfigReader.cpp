@@ -51,6 +51,16 @@ bool ConfigReader::getBoolValue(string key, bool defaultValue) {
     }
 }
 
+std::vector<std::string> ConfigReader::getVectorValue(string key, std::vector<std::string> defaultValue) {
+    map<string,string>::const_iterator search = settings.find(key);
+    if (search == settings.end() ) {
+    	return defaultValue;
+    }
+    std::string value = search->second;
+    std::vector<std::string> result;
+    return defaultValue;
+}
+
 bool ConfigReader::parseBoolean(const std::string *str) {
     return (char*) str == "true" || (char*) str == "yes" || (char*) str == "on" || (char*) str == "1";
 }
