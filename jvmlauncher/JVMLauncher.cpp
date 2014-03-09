@@ -1,6 +1,6 @@
 #include "JVMLauncher.h"
 
-JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::string jvmargs, std::string appargs, ConfigReader* config) {
+JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vector<std::string> jvmargs, std::vector<std::string> appargs, ConfigReader* config) {
     //set application home
     appHome.append(path);
     //add all jars from path
@@ -94,11 +94,14 @@ void JVMLauncher::LaunchJVM() {
         strJavaClassPath += appHome + jars[jars.size() - 1];
     }
     //Configure JVM Options
-    JavaVMOption options[3];
+    JavaVMOption options[jvmargs.size() + 3];
     options[0].optionString = (char*) (strJavaClassPath.c_str());
     options[1].optionString = (char*) (strJavaLibraryPath.c_str());
     options[2].optionString = (char*) "exit";
     options[2].extraInfo = (void*) *JVMLauncher::exit;
+    for (int i = 3; i < jvmargs.size(); i++) {
+        options[i].optionString = (char*) appargs[i].c_str();
+    }
     //Configure VM args
     JavaVMInitArgs vm_args;
     vm_args.version = JNI_VERSION_1_6;
@@ -130,9 +133,10 @@ void JVMLauncher::LaunchJVM() {
     jvm->AttachCurrentThread((LPVOID*) & jvmEnv, NULL);
     //Get main method args
     jclass StringClass = jvmEnv->FindClass("java/lang/String");
-    jobjectArray jargs = jvmEnv->NewObjectArray(2, StringClass, jvmEnv->NewStringUTF(""));
-    jvmEnv->SetObjectArrayElement(jargs, 0, jvmEnv->NewStringUTF("-d"));
-    jvmEnv->SetObjectArrayElement(jargs, 1, jvmEnv->NewStringUTF("c:\\dmdirc-test\\"));
+    jobjectArray jargs = jvmEnv->NewObjectArray(appargs.size(), StringClass, jvmEnv->NewStringUTF(""));
+    for (int i = 0; i < appargs.size(); i++) {
+        jvmEnv->SetObjectArrayElement(jargs, i, jvmEnv->NewStringUTF((char*) appargs[i].c_str()));
+    }
     //Call main method
     jvmEnv->CallStaticVoidMethod(mainClass, mainMethod, jargs);
     jvm->DetachCurrentThread();

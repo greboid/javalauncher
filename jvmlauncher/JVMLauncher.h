@@ -18,7 +18,7 @@
 
 class JVMLauncher {
 public:
-    JVMLauncher(std::string, std::string, std::string, std::string, ConfigReader*);
+    JVMLauncher(std::string, std::string, std::vector<std::string>, std::vector<std::string>, ConfigReader*);
     void LaunchJVM();
     HANDLE forkAndLaunch();
 private:
@@ -27,8 +27,8 @@ private:
     typedef jint(JNICALL *CreateJavaVM)(JavaVM**, void**, void*);
     ConfigReader* config;
     HINSTANCE jvmDllInstance;
-    std::string jvmargs;
-    std::string appargs;
+    std::vector<std::string> jvmargs;
+    std::vector<std::string> appargs;
     std::string mainClassName;
     std::string javaHome;
     std::string appHome;
