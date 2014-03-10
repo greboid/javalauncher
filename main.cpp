@@ -8,7 +8,30 @@
 
 using namespace std;
 
+vector<string> getCliArgs(int argc, char** argv, ConfigReader& config, Updater& updater) {
+    vector<string> cliArgs = Utils::arrayToVector(argc, argv);
+    cliArgs.erase(cliArgs.begin());
+    cliArgs.push_back("-l");
+    std::string launcherParam;
+    if (updater.isUpdateWaiting()) {
+        launcherParam = "bob-1 " + updater.getNewVersion();
+    } else {
+        launcherParam = "bob-1";
+    }
+    cliArgs.push_back(launcherParam);
+    cliArgs = Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)),cliArgs);
+    return cliArgs;
+}
+
+vector<string> getJvmArgs(ConfigReader config) {
+    vector<string> jvmArgs;
+    jvmArgs.push_back("-Dfile.encoding=utf-8");
+    jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", vector<string>(0)), jvmArgs);
+    return jvmArgs;
+}
+
 int main(int argc, char** argv) {
+    Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);
     if (!singleInstance.getCanStart()) {
@@ -16,18 +39,11 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     Updater updater (config);
-    std::vector<std::string> cliArgs = Utils::arrayToVector(argc, argv);
-    cliArgs.erase(cliArgs.begin());
-    cliArgs.push_back("-l");
-    cliArgs.push_back("bob-1");
-    cliArgs = Utils::mergeVectors(config.getVectorValue("application.args", std::vector<std::string>(0)),cliArgs);
-    std::vector<std::string> jvmArgs;
-    jvmArgs.push_back("-Dfile.encoding=utf-8");
-    jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", std::vector<std::string>(0)), jvmArgs);
+    updater.doUpdate();
     JVMLauncher* launcher = new JVMLauncher(
         config.getStringValue("application.path", ".\\"),
         config.getStringValue("application.main", "com/dmdirc/Main"),
-        jvmArgs, cliArgs, config);
+        getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
     try {
         HANDLE handle = launcher->forkAndLaunch();
         WaitForSingleObject(handle, INFINITE);

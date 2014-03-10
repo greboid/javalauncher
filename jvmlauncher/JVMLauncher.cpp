@@ -67,21 +67,9 @@ std::string JVMLauncher::getRegistryValue(std::string key, std::string subkey) {
     return value;
 }
 
-void JVMLauncher::disableFolderVirtualisation() {
-    HANDLE hToken;
-    if (OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)) {
-        DWORD tokenInfoVal = 0;
-        if (GetLastError() != ERROR_INVALID_PARAMETER) {
-            return;
-        }
-        CloseHandle(hToken);
-    }
-}
-
 void JVMLauncher::LaunchJVM() {
     jvmDll = getDLLFromRegistry();
     javaHome = getJavaHomeFromRegistry();
-    disableFolderVirtualisation();
     //Build library path
     std::string strJavaLibraryPath = "-Djava.library.path=";
     strJavaLibraryPath += javaHome + "\\lib" + "," + javaHome + "\\jre\\lib";
