@@ -9,13 +9,13 @@
 
 class SingleInstance {
 public:
-    SingleInstance(ConfigReader*);
+    SingleInstance(ConfigReader&);
     virtual ~SingleInstance();
     bool getCanStart();
     void stopped();
 private:
     HANDLE instanceMutex;
-    ConfigReader* config;
+    ConfigReader config;
 };
 
 #endif	/* SINGLEINSTANCE_H */

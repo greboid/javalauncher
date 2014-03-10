@@ -3,11 +3,13 @@
 
 #include <cstdlib>
 #include <windows.h>
+#include "../config/ConfigReader.h"
 
 class Updater {
 public:
-    Updater();
+    Updater(ConfigReader&);
 private:
+    ConfigReader config;
     void MoveRunningExecutable();
 
 };

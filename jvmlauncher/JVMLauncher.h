@@ -18,14 +18,14 @@
 
 class JVMLauncher {
 public:
-    JVMLauncher(std::string, std::string, std::vector<std::string>, std::vector<std::string>, ConfigReader*);
+    JVMLauncher(std::string, std::string, std::vector<std::string>, std::vector<std::string>, ConfigReader&);
     void LaunchJVM();
     HANDLE forkAndLaunch();
 private:
     static UINT WINAPI threadEntry(LPVOID);
     static void exit(jint);
     typedef jint(JNICALL *CreateJavaVM)(JavaVM**, void**, void*);
-    ConfigReader* config;
+    ConfigReader config;
     HINSTANCE jvmDllInstance;
     std::vector<std::string> jvmargs;
     std::vector<std::string> appargs;

@@ -1,5 +1,9 @@
 #include "Updater.h"
 
+Updater::Updater(ConfigReader& config) {
+    this->config = config;
+}
+
 void Updater::MoveRunningExecutable() {
     TCHAR buffer[MAX_PATH] = {0};
     DWORD bufSize = sizeof (buffer) / sizeof (*buffer);

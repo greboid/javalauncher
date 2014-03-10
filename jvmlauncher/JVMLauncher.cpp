@@ -1,6 +1,6 @@
 #include "JVMLauncher.h"
 
-JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vector<std::string> jvmargs, std::vector<std::string> appargs, ConfigReader* config) {
+JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vector<std::string> jvmargs, std::vector<std::string> appargs, ConfigReader& config) {
     //set application home
     appHome.append(path);
     //add all jars from path

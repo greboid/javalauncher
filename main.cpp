@@ -9,23 +9,24 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    ConfigReader* config = new ConfigReader();
-    SingleInstance* singleInstance = new SingleInstance(config);
-    if (!singleInstance->getCanStart()) {
+    ConfigReader config;
+    SingleInstance singleInstance(config);
+    if (!singleInstance.getCanStart()) {
         cout << "Another instance already running." << endl;
         return EXIT_FAILURE;
     }
+    Updater updater (config);
     std::vector<std::string> cliArgs = Utils::arrayToVector(argc, argv);
     cliArgs.erase(cliArgs.begin());
     cliArgs.push_back("-l");
     cliArgs.push_back("bob-1");
-    cliArgs = Utils::mergeVectors(config->getVectorValue("application.args", std::vector<std::string>(0)),cliArgs);
+    cliArgs = Utils::mergeVectors(config.getVectorValue("application.args", std::vector<std::string>(0)),cliArgs);
     std::vector<std::string> jvmArgs;
     jvmArgs.push_back("-Dfile.encoding=utf-8");
-    jvmArgs = Utils::mergeVectors(config->getVectorValue("jvm.args", std::vector<std::string>(0)), jvmArgs);
+    jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", std::vector<std::string>(0)), jvmArgs);
     JVMLauncher* launcher = new JVMLauncher(
-        config->getStringValue("application.path", ".\\"),
-        config->getStringValue("application.main", "com/dmdirc/Main"),
+        config.getStringValue("application.path", ".\\"),
+        config.getStringValue("application.main", "com/dmdirc/Main"),
         jvmArgs, cliArgs, config);
     try {
         HANDLE handle = launcher->forkAndLaunch();
@@ -36,6 +37,6 @@ int main(int argc, char** argv) {
         cout << "Press any key to exit" << endl;
         getch();
     }
-    singleInstance->stopped();
+    singleInstance.stopped();
     return EXIT_SUCCESS;
 }
