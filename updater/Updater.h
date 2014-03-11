@@ -15,10 +15,16 @@ public:
     bool isUpdateWaiting();
     std::string getNewVersion();
 private:
+    HANDLE updateMutex;
     std::string newVersion;
     ConfigReader config;
     void deleteOldLauncher();
     void backupExistingLauncher();
+    void createUpdateMutex();
+    void waitForUpdaterMutex();
+    void releaseUpdateMutex();
+    void relaunch();
+    void moveNewLauncher();
 };
 
 #endif	/* UPDATER_H */

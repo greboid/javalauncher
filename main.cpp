@@ -12,13 +12,7 @@ vector<string> getCliArgs(int argc, char** argv, ConfigReader& config, Updater& 
     vector<string> cliArgs = Utils::arrayToVector(argc, argv);
     cliArgs.erase(cliArgs.begin());
     cliArgs.push_back("-l");
-    std::string launcherParam;
-    if (updater.isUpdateWaiting()) {
-        launcherParam = "bob-1 " + updater.getNewVersion();
-    } else {
-        launcherParam = "bob-1";
-    }
-    cliArgs.push_back(launcherParam);
+    cliArgs.push_back("bob-1");
     cliArgs = Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)),cliArgs);
     return cliArgs;
 }
@@ -31,6 +25,7 @@ vector<string> getJvmArgs(ConfigReader config) {
 }
 
 int main(int argc, char** argv) {
+    cout << "Launched!" << endl;
     Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);

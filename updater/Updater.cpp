@@ -1,15 +1,54 @@
 #include "Updater.h"
 
+using namespace std;
+
 Updater::Updater(ConfigReader& config) {
     this->config = config;
     this->newVersion = "";
 }
 
+void Updater::createUpdateMutex() {
+    updateMutex = CreateMutex(NULL, true, TEXT("DMDirc-Update"));
+}
+
+void Updater::waitForUpdaterMutex() {
+    WaitForSingleObject(updateMutex, INFINITE);
+}
+
+void Updater::releaseUpdateMutex() {
+    ReleaseMutex(updateMutex);
+}
+
 void Updater::doUpdate() {
+    Updater::createUpdateMutex();
+    Updater::waitForUpdaterMutex();
     Updater::deleteOldLauncher();
-    if (Updater::isUpdateWaiting()) {
+    std::ifstream file ("javalauncher.new");
+    if (file.good()) {
+        file.close();
         Updater::backupExistingLauncher();
+        Updater::moveNewLauncher();
+        Updater::relaunch();
     }
+}
+
+void Updater::moveNewLauncher() {
+    if (rename((char*) "javalauncher.new", (char*) "javalauncher.exe") != 0) {
+        perror("Unable to move new launcher");
+    }
+}
+
+void Updater::relaunch() {
+    Updater::createUpdateMutex();
+    STARTUPINFO         sInfo;
+    PROCESS_INFORMATION pInfo;
+    ZeroMemory(&sInfo, sizeof(sInfo));
+    sInfo.cb = sizeof(sInfo);
+    ZeroMemory(&pInfo, sizeof(pInfo));
+    CreateProcess((char*) Utils::getExePathAndName().c_str(),
+        NULL, NULL, NULL, false, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pInfo);
+    Updater::releaseUpdateMutex();
+    ExitProcess(0);
 }
 
 void Updater::deleteOldLauncher() {
