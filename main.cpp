@@ -25,7 +25,6 @@ vector<string> getJvmArgs(ConfigReader config) {
 }
 
 int main(int argc, char** argv) {
-    cout << "Launched!" << endl;
     Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);
