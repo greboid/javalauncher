@@ -125,6 +125,14 @@ void JVMLauncher::LaunchJVM() {
     for (int i = 0; i < appargs.size(); i++) {
         jvmEnv->SetObjectArrayElement(jargs, i, jvmEnv->NewStringUTF((char*) appargs[i].c_str()));
     }
+    JVMLauncher::callLauncherUtils(jargs);
+    //Call main method
+    jvmEnv->CallStaticVoidMethod(mainClass, mainMethod, jargs);
+    jvm->DetachCurrentThread();
+    jvm->DestroyJavaVM();
+}
+
+void JVMLauncher::callLauncherUtils(jobjectArray jargs) {
     //Get native methods
     const JNINativeMethod methods[] = {
         { "setDirectory", "(Ljava/lang/String;)V", (void*)&JVMLauncher::setDirectory }
@@ -132,21 +140,19 @@ void JVMLauncher::LaunchJVM() {
     const int methods_size = sizeof(methods) / sizeof(methods[0]);
     //Get Other entry point
     jclass otherClass = jvmEnv->FindClass("com/dmdirc/LauncherUtils");
-    jmethodID otherMethod = jvmEnv->GetStaticMethodID(otherClass, "main", "([Ljava/lang/String;)V");
+    jmethodID otherMethod = jvmEnv->GetStaticMethodID(otherClass, "getDirectory", "([Ljava/lang/String;)V");
     //Register natives
     jvmEnv->RegisterNatives(otherClass, methods, methods_size);
     //run launcher utils
-    jvmEnv->CallStaticVoidMethod(otherClass, otherMethod, NULL);
-    //Call main method
-    jvmEnv->CallStaticVoidMethod(mainClass, mainMethod, jargs);
-    jvm->DetachCurrentThread();
-    jvm->DestroyJavaVM();
+    jvmEnv->CallStaticVoidMethod(otherClass, otherMethod, jargs);
 }
+
+
 
 void JVMLauncher::setDirectory(JNIEnv* env, jclass clazz, jstring string) {
     jboolean isCopy;
     std::string message = env->GetStringUTFChars(string, &isCopy);
-    cout << "Native string:" << message << endl;
+    cout << "Config directory:" << message << endl;
 }
 
 void JVMLauncher::exit(jint status) {

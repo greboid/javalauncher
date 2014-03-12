@@ -44,6 +44,7 @@ private:
     std::string getRegistryValue(std::string, std::string);
     std::string getJavaHomeFromRegistry();
     void addAllJarsFromPath(std::string);
+    void callLauncherUtils(jobjectArray);
     static void setDirectory(JNIEnv*, jclass, jstring);
 protected:
 };
