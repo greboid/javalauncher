@@ -19,27 +19,24 @@ void Updater::releaseUpdateMutex() {
     ReleaseMutex(updateMutex);
 }
 
-bool Updater::selfUpdate() {
+bool Updater::doUpdate(std::string directory) {
     Updater::createUpdateMutex();
     Updater::waitForUpdaterMutex();
     Updater::deleteOldLauncher();
-    std::ifstream file ("javalauncher.new");
+    std::ifstream file ((char*) (directory + "/" + Utils::getExeName()).c_str());
     if (file.good()) {
         file.close();
         Updater::backupExistingLauncher();
-        Updater::moveNewLauncher();
+        Updater::moveNewLauncher(directory + "/" + Utils::getExeName(), Utils::getExePathAndName());
         return true;
     }
     return false;
 }
 
-void Updater::appUpdate(std::string directory) {
-    cout << "Updating from: " << directory << endl;
-}
-
-void Updater::moveNewLauncher() {
-    if (rename((char*) "javalauncher.new", (char*) "javalauncher.exe") != 0) {
+void Updater::moveNewLauncher(std::string oldName, std::string newName) {
+    if (MoveFileEx((char*) oldName.c_str(), (char*) newName.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
         perror("Unable to move new launcher");
+        getch();
     }
 }
 

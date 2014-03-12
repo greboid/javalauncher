@@ -40,11 +40,10 @@ int main(int argc, char** argv) {
     try {
         launcher->LaunchJVM();
         launcher->callLauncherUtils();
-        if (updater.selfUpdate()) {
+        if (updater.doUpdate(JVMLauncher::getDirectory())) {
             launcher->destroyJVM();
             updater.relaunch();
         }
-        updater.appUpdate(JVMLauncher::getDirectory());
         launcher->callMainMethod();
         launcher->destroyJVM();
     } catch (JVMLauncherException& ex) {

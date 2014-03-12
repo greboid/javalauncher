@@ -6,13 +6,13 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include <conio.h>
 #include "../config/ConfigReader.h"
 
 class Updater {
 public:
     Updater(ConfigReader&);
-    bool selfUpdate();
-    void appUpdate(std::string);
+    bool doUpdate(std::string);
     bool isUpdateWaiting();
     std::string getNewVersion();
     void relaunch();
@@ -25,7 +25,7 @@ private:
     void createUpdateMutex();
     void waitForUpdaterMutex();
     void releaseUpdateMutex();
-    void moveNewLauncher();
+    void moveNewLauncher(std::string, std::string);
 };
 
 #endif	/* UPDATER_H */
