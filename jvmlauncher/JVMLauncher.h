@@ -13,8 +13,8 @@
 #include <process.h>
 #include <windows.h>
 #include <dirent.h>
-#include "JVMLauncherException.cpp"
 #include "../config/ConfigReader.h"
+#include "JVMLauncherUtils.h"
 
 class JVMLauncher {
 public:
@@ -24,7 +24,7 @@ public:
 private:
     static UINT WINAPI threadEntry(LPVOID);
     static void exit(jint);
-    typedef jint(JNICALL *CreateJavaVM)(JavaVM**, void**, void*);
+    typedef jint(JNICALL* CreateJavaVM)(JavaVM**, void**, void*);
     ConfigReader config;
     HINSTANCE jvmDllInstance;
     std::vector<std::string> jvmargs;
@@ -37,14 +37,14 @@ private:
     CreateJavaVM jvmInstance;
     jclass mainClass;
     jmethodID mainMethod;
-    JNIEnv *jvmEnv;
-    JavaVM *jvm;
-    void checkForException();
+    JNIEnv* jvmEnv;
+    JavaVM* jvm;
     std::string getDLLFromRegistry();
     std::string getRegistryValue(std::string, std::string);
     std::string getJavaHomeFromRegistry();
     void addAllJarsFromPath(std::string);
-    void callLauncherUtils(jobjectArray);
+    void callMainMethod(JNIEnv*, jobjectArray);
+    void callLauncherUtils(JNIEnv*, jobjectArray);
     static void setDirectory(JNIEnv*, jclass, jstring);
 protected:
 };
