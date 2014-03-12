@@ -11,10 +11,11 @@
 class Updater {
 public:
     Updater(ConfigReader&);
-    void selfUpdate();
+    bool selfUpdate();
     void appUpdate(std::string);
     bool isUpdateWaiting();
     std::string getNewVersion();
+    void relaunch();
 private:
     HANDLE updateMutex;
     std::string newVersion;
@@ -24,7 +25,6 @@ private:
     void createUpdateMutex();
     void waitForUpdaterMutex();
     void releaseUpdateMutex();
-    void relaunch();
     void moveNewLauncher();
 };
 

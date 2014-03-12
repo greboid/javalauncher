@@ -19,7 +19,7 @@ void Updater::releaseUpdateMutex() {
     ReleaseMutex(updateMutex);
 }
 
-void Updater::selfUpdate() {
+bool Updater::selfUpdate() {
     Updater::createUpdateMutex();
     Updater::waitForUpdaterMutex();
     Updater::deleteOldLauncher();
@@ -28,8 +28,9 @@ void Updater::selfUpdate() {
         file.close();
         Updater::backupExistingLauncher();
         Updater::moveNewLauncher();
-        Updater::relaunch();
+        return true;
     }
+    return false;
 }
 
 void Updater::appUpdate(std::string directory) {

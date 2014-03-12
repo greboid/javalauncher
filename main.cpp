@@ -33,7 +33,6 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     Updater updater (config);
-    updater.selfUpdate();
     JVMLauncher* launcher = new JVMLauncher(
         config.getStringValue("application.path", ".\\"),
         config.getStringValue("application.main", "com/dmdirc/Main"),
@@ -41,6 +40,10 @@ int main(int argc, char** argv) {
     try {
         launcher->LaunchJVM();
         launcher->callLauncherUtils();
+        if (updater.selfUpdate()) {
+            launcher->destroyJVM();
+            updater.relaunch();
+        }
         updater.appUpdate(JVMLauncher::getDirectory());
         launcher->callMainMethod();
         launcher->destroyJVM();
