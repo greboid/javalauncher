@@ -33,14 +33,17 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     Updater updater (config);
-    updater.doUpdate();
+    updater.selfUpdate();
     JVMLauncher* launcher = new JVMLauncher(
         config.getStringValue("application.path", ".\\"),
         config.getStringValue("application.main", "com/dmdirc/Main"),
         getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
     try {
-        HANDLE handle = launcher->forkAndLaunch();
-        WaitForSingleObject(handle, INFINITE);
+        launcher->LaunchJVM();
+        launcher->callLauncherUtils();
+        updater.appUpdate(JVMLauncher::getDirectory());
+        launcher->callMainMethod();
+        launcher->destroyJVM();
     } catch (JVMLauncherException& ex) {
         cout << "Launching the JVM failed" << endl;
         cout << ex.what() << endl;

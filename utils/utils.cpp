@@ -61,7 +61,6 @@ std::vector<std::string> Utils::splitString(std::string input, std::string delim
 void Utils::disableFolderVirtualisation() {
     HANDLE hToken;
     if (OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)) {
-        DWORD tokenInfoVal = 0;
         if (GetLastError() != ERROR_INVALID_PARAMETER) {
             return;
         }

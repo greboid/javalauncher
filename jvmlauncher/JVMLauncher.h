@@ -20,7 +20,11 @@ class JVMLauncher {
 public:
     JVMLauncher(std::string, std::string, std::vector<std::string>, std::vector<std::string>, ConfigReader&);
     void LaunchJVM();
+    void destroyJVM();
+    void callLauncherUtils();
+    void callMainMethod();
     HANDLE forkAndLaunch();
+    static std::string getDirectory();
 private:
     static UINT WINAPI threadEntry(LPVOID);
     static void exit(jint);
@@ -43,8 +47,6 @@ private:
     std::string getRegistryValue(std::string, std::string);
     std::string getJavaHomeFromRegistry();
     void addAllJarsFromPath(std::string);
-    void callMainMethod(JNIEnv*, jobjectArray);
-    void callLauncherUtils(JNIEnv*, jobjectArray);
     static void setDirectory(JNIEnv*, jclass, jstring);
 protected:
 };

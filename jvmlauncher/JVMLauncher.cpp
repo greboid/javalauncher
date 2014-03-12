@@ -1,5 +1,7 @@
 #include "JVMLauncher.h"
 
+static std::string directory;
+
 JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vector<std::string> jvmargs, std::vector<std::string> appargs, ConfigReader& config) {
     //set application home
     appHome.append(path);
@@ -113,28 +115,33 @@ void JVMLauncher::LaunchJVM() {
     }
     //Attach to main thread
     jvm->AttachCurrentThread((LPVOID*) & jvmEnv, NULL);
-    jobjectArray jargs = JVMLauncherUtils::convertCLIArgs(jvmEnv, appargs);
-    JVMLauncher::callLauncherUtils(jvmEnv, jargs);
-    JVMLauncher::callMainMethod(jvmEnv, jargs);
+}
+
+void JVMLauncher::destroyJVM() {
     jvm->DetachCurrentThread();
     jvm->DestroyJavaVM();
 }
 
-void JVMLauncher::callMainMethod(JNIEnv* env, jobjectArray jargs) {
+void JVMLauncher::callMainMethod() {
+    jobjectArray jargs = JVMLauncherUtils::convertCLIArgs(jvmEnv, appargs);
     JVMLauncherUtils::callStaticVoidMethod(jvmEnv, mainClassName, std::string("main"), std::string("([Ljava/lang/String;)V"), jargs);
 }
 
-void JVMLauncher::callLauncherUtils(JNIEnv* env, jobjectArray jargs) {
+void JVMLauncher::callLauncherUtils() {
+    jobjectArray jargs = JVMLauncherUtils::convertCLIArgs(jvmEnv, appargs);
     std::string clazzName("com/dmdirc/LauncherUtils");
-    jclass clazz = JVMLauncherUtils::getClass(env, clazzName);
-    JVMLauncherUtils::registerNativeMethod(env, clazz, std::string("setDirectory"), std::string("(Ljava/lang/String;)V"), (void*)&JVMLauncher::setDirectory);
-    JVMLauncherUtils::callStaticVoidMethod(env, clazzName, "getDirectory", "([Ljava/lang/String;)V", jargs);
+    jclass clazz = JVMLauncherUtils::getClass(jvmEnv, clazzName);
+    JVMLauncherUtils::registerNativeMethod(jvmEnv, clazz, std::string("setDirectory"), std::string("(Ljava/lang/String;)V"), (void*)&JVMLauncher::setDirectory);
+    JVMLauncherUtils::callStaticVoidMethod(jvmEnv, clazzName, "getDirectory", "([Ljava/lang/String;)V", jargs);
 }
 
 void JVMLauncher::setDirectory(JNIEnv* env, jclass clazz, jstring string) {
     jboolean isCopy;
-    std::string message = env->GetStringUTFChars(string, &isCopy);
-    cout << "Config directory: " << message << endl;
+    directory = env->GetStringUTFChars(string, &isCopy);
+}
+
+std::string JVMLauncher::getDirectory() {
+    return directory;
 }
 
 void JVMLauncher::exit(jint status) {

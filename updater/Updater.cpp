@@ -19,7 +19,7 @@ void Updater::releaseUpdateMutex() {
     ReleaseMutex(updateMutex);
 }
 
-void Updater::doUpdate() {
+void Updater::selfUpdate() {
     Updater::createUpdateMutex();
     Updater::waitForUpdaterMutex();
     Updater::deleteOldLauncher();
@@ -30,6 +30,10 @@ void Updater::doUpdate() {
         Updater::moveNewLauncher();
         Updater::relaunch();
     }
+}
+
+void Updater::appUpdate(std::string directory) {
+    cout << "Updating from: " << directory << endl;
 }
 
 void Updater::moveNewLauncher() {

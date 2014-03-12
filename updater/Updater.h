@@ -11,7 +11,8 @@
 class Updater {
 public:
     Updater(ConfigReader&);
-    void doUpdate();
+    void selfUpdate();
+    void appUpdate(std::string);
     bool isUpdateWaiting();
     std::string getNewVersion();
 private:
