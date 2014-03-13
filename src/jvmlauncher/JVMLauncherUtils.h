@@ -12,7 +12,7 @@
 #include <ostream>
 #include <process.h>
 #include <windows.h>
-#include <dirent.h>
+#include "../dirent/dirent.h"
 #include "JVMLauncherException.cpp"
 #include "../config/ConfigReader.h"
 
