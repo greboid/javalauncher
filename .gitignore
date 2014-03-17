@@ -25,6 +25,7 @@ Debug/**
 *.log
 *.vcxproj
 *.vcxproj.filters
+*.vcxproj.user
 *.sdf
 *.sln
 *.suo

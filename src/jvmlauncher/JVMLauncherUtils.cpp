@@ -1,14 +1,16 @@
 #include "JVMLauncherUtils.h"
 
 void JVMLauncherUtils::checkForException(JNIEnv* env) {
-    jthrowable ex = env->ExceptionOccurred();
-    if (ex != NULL) {
-        env->ExceptionClear();
-        jstring estring = (jstring) env->CallObjectMethod(ex, getMethod(env, getClass(env, "java/lang/Object"), "toString", "()Ljava/lang/String;"));
-        jboolean isCopy;
-        std::string message = env->GetStringUTFChars(estring, &isCopy);
-        throw JVMLauncherException(message);
-    }
+	if (env->ExceptionCheck()) {
+		jthrowable ex = env->ExceptionOccurred();
+		if (ex != NULL) {
+			env->ExceptionClear();
+			jstring estring = (jstring)env->CallObjectMethod(ex, env->GetStaticMethodID(env->FindClass("java/lang/Object"), "toString", "()Ljava/lang/String;"));
+			jboolean isCopy;
+			std::string message = env->GetStringUTFChars(estring, &isCopy);
+			throw JVMLauncherException(message);
+		}
+	}
 }
 
 void JVMLauncherUtils::registerNativeMethod(JNIEnv* env, jclass clazz, std::string methodName, std::string methodSignature, void* pointer) {
@@ -21,14 +23,29 @@ void JVMLauncherUtils::registerNativeMethod(JNIEnv* env, jclass clazz, std::stri
 }
 
 jclass JVMLauncherUtils::getClass(JNIEnv* env, std::string className) {
+	if (className.empty()) {
+		throw JVMLauncherException("Class cannot be undefined.");
+	}
     jclass clazz = env->FindClass((char*) className.c_str());
     checkForException(env);
+	if (clazz == NULL) {
+		throw JVMLauncherException("Unable to find class: " + className);
+	}
     return clazz;
 }
 
 jmethodID JVMLauncherUtils::getMethod(JNIEnv* env, jclass clazz, std::string methodName, std::string methodSignature) {
+	if (methodName.empty()) {
+		throw JVMLauncherException("Method name cannot be undefined.");
+	}
+	if (methodSignature.empty()) {
+		throw JVMLauncherException("Method signature cannot be undefined.");
+	}
     jmethodID method = env->GetStaticMethodID(clazz, (char*) methodName.c_str(), (char*) methodSignature.c_str());
     checkForException(env);
+	if (method == NULL) {
+		throw JVMLauncherException("Unable to find method in class: " + methodName);
+	}
     return method;
 }
 
@@ -39,7 +56,7 @@ void JVMLauncherUtils::callStaticVoidMethod(JNIEnv* env, std::string className, 
 void JVMLauncherUtils::callStaticVoidMethod(JNIEnv* env, jclass clazz, std::string methodName, std::string methodSignature, jobjectArray jargs) {
     jmethodID method = JVMLauncherUtils::getMethod(env, clazz, (char*) methodName.c_str(), methodSignature);
     env->CallStaticVoidMethod(clazz, method, jargs);
-    checkForException(env);
+	checkForException(env);
 }
 
 
