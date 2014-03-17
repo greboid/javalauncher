@@ -14,7 +14,7 @@ ConfigReader::ConfigReader(string name) {
 
 void ConfigReader::init() {
     string line;
-    ifstream configFile ((char*) name.c_str(), ios::in);
+    ifstream configFile ((char*) (Utils::getExePath() +"//" + name).c_str(), ios::in);
     if (configFile.is_open()) {
         string key;
         string value;
