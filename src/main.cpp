@@ -25,19 +25,23 @@ vector<string> getJvmArgs(ConfigReader config) {
 }
 
 int main(int argc, char** argv) {
+    cout << "Disabling folder virtualisation" << endl;
     Utils::disableFolderVirtualisation();
+    cout << "Creating config" << endl;
     ConfigReader config;
+    cout << "Creating single instance" << endl;
     SingleInstance singleInstance(config);
     if (!singleInstance.getCanStart()) {
         cout << "Another instance already running." << endl;
         return EXIT_FAILURE;
     }
     Updater updater (config);
-    JVMLauncher* launcher = new JVMLauncher(
-        config.getStringValue("application.path", ".\\"),
-        config.getStringValue("application.main", "com/dmdirc/Main"),
-        getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
-    try {
+    cout << "Creating JVM" << endl;
+	try {
+	    JVMLauncher* launcher = new JVMLauncher(
+		    config.getStringValue("application.path", ".//"),
+			config.getStringValue("application.main", "com/dmdirc/Main"),
+	        getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
         launcher->LaunchJVM();
         launcher->callLauncherUtils();
         if (updater.doUpdate(JVMLauncher::getDirectory())) {
@@ -50,7 +54,7 @@ int main(int argc, char** argv) {
         cout << "Launching the JVM failed" << endl;
         cout << ex.what() << endl;
         cout << "Press any key to exit" << endl;
-        getch();
+        _getch();
     }
     singleInstance.stopped();
     return EXIT_SUCCESS;

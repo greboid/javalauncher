@@ -36,7 +36,6 @@ bool Updater::doUpdate(std::string directory) {
 void Updater::moveNewLauncher(std::string oldName, std::string newName) {
     if (MoveFileEx((char*) oldName.c_str(), (char*) newName.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
         perror("Unable to move new launcher");
-        getch();
     }
 }
 

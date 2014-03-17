@@ -1,7 +1,7 @@
 [Project]
 FileName=javalauncher.dev
 Name=javalauncher
-UnitCount=15
+UnitCount=14
 Type=1
 Ver=1
 ObjFiles=
@@ -177,17 +177,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit14]
-FileName=src\dirent\dirent.h
+[Unit15]
+FileName=src\main.cpp
 CompileCpp=1
-Folder=dirent
+Folder=javalauncher
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit15]
+[Unit14]
 FileName=src\main.cpp
 CompileCpp=1
 Folder=javalauncher

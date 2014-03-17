@@ -7,6 +7,9 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vecto
     appHome.append(path);
     //add all jars from path
     addAllJarsFromPath(path);
+	if (jars.size() == 0) {
+		throw JVMLauncherException("No jar files found.");
+	}
     this->mainClassName = mainClassName;
     this->config = config;
     this->jvmargs = jvmargs;
@@ -14,18 +17,18 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vecto
 }
 
 void JVMLauncher::addAllJarsFromPath(std::string path) {
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir((char*) path.c_str())) != NULL) {
-        while ((ent = readdir (dir)) != NULL) {
-            std::string suffix = ".jar";
-            std::string filename = std::string(ent->d_name);
-            if (filename.size() >= suffix.size() && filename.compare(filename.size() - suffix.size(), suffix.size(), suffix) == 0) {
-                jars.push_back(filename);
-            }
-        }
-        closedir (dir);
-    }
+    WIN32_FIND_DATA data;
+    HANDLE hFile = FindFirstFile((path + "*.*").c_str(), &data);
+	do {
+		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+			std::string suffix = ".jar";
+			std::string filename = std::string(data.cFileName);
+			if (filename.size() >= suffix.size() && filename.compare(filename.size() - suffix.size(), suffix.size(), suffix) == 0) {
+				jars.push_back(filename);
+			}
+		}
+	} while (FindNextFile(hFile, &data) != 0);
+	FindClose(hFile);
 }
 
 HANDLE JVMLauncher::forkAndLaunch() {
@@ -84,12 +87,12 @@ void JVMLauncher::LaunchJVM() {
         strJavaClassPath += appHome + jars[jars.size() - 1];
     }
     //Configure JVM Options
-    JavaVMOption options[jvmargs.size() + 3];
+	JavaVMOption options[100];
     options[0].optionString = (char*) (strJavaClassPath.c_str());
     options[1].optionString = (char*) (strJavaLibraryPath.c_str());
     options[2].optionString = (char*) "exit";
     options[2].extraInfo = (void*) *JVMLauncher::exit;
-    for (int i = 3; i < jvmargs.size() + 3; i++) {
+	for (unsigned int i = 3; i < jvmargs.size() + 3; i++) {
         options[i].optionString = (char*) jvmargs[(i-3)].c_str();
     }
     //Configure VM args

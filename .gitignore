@@ -6,7 +6,15 @@ dist/
 Makefile.win
 launcher.ini
 javalauncher.layout
+CMakeCache.txt
+**/CMakeFiles/*
+Win32/*
+**/*.dir/*
+nbproject/*
+Debug/**
 
+*.opensdf
+*.cmake
 *.jar
 *.exe
 *.o
@@ -15,6 +23,11 @@ javalauncher.layout
 *.obj
 *.tmp
 *.log
+*.vcxproj
+*.vcxproj.filters
+*.sdf
+*.sln
+*.suo
 
 Thumbs.db
 Desktop.ini
