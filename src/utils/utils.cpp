@@ -70,9 +70,18 @@ void Utils::disableFolderVirtualisation() {
 
 std::string Utils::ws2s(std::wstring s) {
 	int len;
-	int slength = (int)s.length() + 1;
+	int slength = (int)s.length();
 	len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0);
 	std::string r(len, '\0');
 	WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0);
 	return r;
+}
+
+std::string Utils::GetAppDataDirectory() {
+	PWSTR wChar;
+	SHGetKnownFolderPath(FOLDERID_UserProgramFiles, 0, NULL, &wChar);
+	std::wstring wpath(wChar);
+	std::string path = Utils::ws2s(wpath);
+	CoTaskMemFree(static_cast<LPVOID>(wChar));
+	return path + "\\" + APPLICATION_NAME + "\\";
 }

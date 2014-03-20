@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <vector>
 #include <windows.h>
+#include <Shlobj.h>
+#include "../config/ConfigDefaults.h"
 #include "../config/ConfigReader.h"
 
 class Utils {
@@ -17,6 +19,7 @@ class Utils {
         static std::string getExeName();
         static void disableFolderVirtualisation();
         static std::string ws2s(std::wstring s);
+		static std::string GetAppDataDirectory();
     private:
         Utils();
     protected:
