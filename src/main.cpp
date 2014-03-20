@@ -4,6 +4,7 @@
 #include "config/ConfigDefaults.h"
 #include "updater/Updater.h"
 #include "utils/utils.h"
+#include "version.h"
 #include <sstream>
 #include <Shlobj.h>
 #include <windows.h>
@@ -15,7 +16,7 @@ vector<string> getCliArgs(int argc, char** argv, ConfigReader& config, Updater& 
     vector<string> cliArgs = Utils::arrayToVector(argc, argv);
     cliArgs.erase(cliArgs.begin());
     cliArgs.push_back("-l");
-    cliArgs.push_back("bob-1");
+    cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
     cliArgs = Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)),cliArgs);
     return cliArgs;
 }
@@ -28,11 +29,6 @@ vector<string> getJvmArgs(ConfigReader config) {
 }
 
 int main(int argc, char** argv) {
-	PWSTR wChar;
-	SHGetKnownFolderPath(FOLDERID_UserProgramFiles, 0, NULL, &wChar);
-	std::wstring wpath(wChar);
-	std::string path = Utils::ws2s(wpath);
-	CoTaskMemFree(static_cast<LPVOID>(wChar));
     Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);
