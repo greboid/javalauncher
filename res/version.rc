@@ -1,0 +1,27 @@
+#include <windows.h>
+1 VERSIONINFO
+FILEVERSION 0,1,1,1
+PRODUCTVERSION 0,1,1,1
+FILETYPE VFT_APP
+{
+  BLOCK "StringFileInfo"
+	 {
+		 BLOCK "080904E4"
+		 {
+			 VALUE "CompanyName", "DMDirc"
+			 VALUE "FileVersion", ""
+			 VALUE "FileDescription", ""
+			 VALUE "InternalName", ""
+			 VALUE "LegalCopyright", ""
+			 VALUE "LegalTrademarks", ""
+			 VALUE "OriginalFilename", ""
+			 VALUE "ProductName", "DMDirc"
+			 VALUE "ProductVersion", ""
+		 }
+	 }
+  BLOCK "VarFileInfo"
+	 {
+		 VALUE "Translation", 0x809, 65001
+	 }
+}
+

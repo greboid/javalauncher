@@ -16,6 +16,7 @@ class Utils {
         static std::string getExePath();
         static std::string getExeName();
         static void disableFolderVirtualisation();
+        static std::string ws2s(std::wstring s);
     private:
         Utils();
     protected:

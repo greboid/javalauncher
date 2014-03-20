@@ -62,7 +62,7 @@ void JVMLauncherUtils::callStaticVoidMethod(JNIEnv* env, jclass clazz, std::stri
 
 jobjectArray JVMLauncherUtils::convertCLIArgs(JNIEnv* env, std::vector<std::string> args) {
     jobjectArray jargs = env->NewObjectArray(args.size(), getClass(env, "java/lang/String"), env->NewStringUTF(""));
-    for (int i = 0; i < args.size(); i++) {
+    for (unsigned int i = 0; i < args.size(); i++) {
         env->SetObjectArrayElement(jargs, i, env->NewStringUTF((char*) args[i].c_str()));
     }
     return jargs;

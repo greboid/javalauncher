@@ -1,8 +1,11 @@
 #include "jvmlauncher/JVMLauncher.h"
 #include "singleinstance/SingleInstance.h"
 #include "config/ConfigReader.h"
+#include "config/ConfigDefaults.h"
 #include "updater/Updater.h"
 #include "utils/utils.h"
+#include <sstream>
+#include <Shlobj.h>
 #include <windows.h>
 #include <conio.h>
 
@@ -25,6 +28,11 @@ vector<string> getJvmArgs(ConfigReader config) {
 }
 
 int main(int argc, char** argv) {
+	PWSTR wChar;
+	SHGetKnownFolderPath(FOLDERID_UserProgramFiles, 0, NULL, &wChar);
+	std::wstring wpath(wChar);
+	std::string path = Utils::ws2s(wpath);
+	CoTaskMemFree(static_cast<LPVOID>(wChar));
     Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);
@@ -35,8 +43,8 @@ int main(int argc, char** argv) {
     Updater updater (config);
 	try {
 	    JVMLauncher* launcher = new JVMLauncher(
-		    config.getStringValue("application.path", "C:\\Program Files\\DMDirc\\"),
-			config.getStringValue("application.main", "com/dmdirc/Main"),
+			config.getStringValue("application.path", APPLICATION_PATH),
+			config.getStringValue("application.main", APPLICATION_MAIN),
 	        getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
         launcher->LaunchJVM();
         launcher->callLauncherUtils();
