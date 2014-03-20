@@ -12,6 +12,8 @@ Win32/*
 **/*.dir/*
 nbproject/*
 Debug/**
+src/config/ConfigDefaults.h
+src/version.h
 
 *.opensdf
 *.cmake
