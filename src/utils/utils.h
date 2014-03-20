@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <windows.h>
-#include <Shlobj.h>
+#include <shlobj.h>
 #include "../config/ConfigDefaults.h"
 #include "../config/ConfigReader.h"
 

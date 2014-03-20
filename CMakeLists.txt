@@ -22,16 +22,11 @@ configure_file (
   "${PROJECT_BINARY_DIR}/src/config/ConfigDefaults.h"
 )
 
-find_package(Java REQUIRED)
-find_package(JNI REQUIRED)
-include(UseJava)
-
-set(JAVA_INCLUDE_PATH ${JNI_H})
-set(JAVA_INCLUDE_PATH2 ${JNI_MD_H})
 include_directories(
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}"
+        "$ENV{JAVA_HOME}"
+	"$ENV{JAVA_HOME}include"
 )
+
 set(RES_FILES "res/version.rc" "res/icon.rc")
 
 add_subdirectory(src/config)

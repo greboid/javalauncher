@@ -1,12 +1,6 @@
-find_package(Java REQUIRED)
-find_package(JNI REQUIRED)
-include(UseJava)
-
-set(JAVA_INCLUDE_PATH ${JNI_H})
-set(JAVA_INCLUDE_PATH2 ${JNI_MD_H})
 include_directories(
-	"${JAVA_INCLUDE_PATH}"
-	"${JAVA_INCLUDE_PATH2}"
+        "$ENV{JAVA_HOME}"
+        "$ENV{JAVA_HOME}include"
 )
 
 add_library(JVMLauncher JVMLauncher.cpp)
