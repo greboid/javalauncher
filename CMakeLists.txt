@@ -27,7 +27,7 @@ include_directories(
 	"$ENV{JAVA_HOME}include"
 )
 
-set(RES_FILES "res/version.rc" "res/icon.rc")
+set(RES_FILES "${PROJECT_SOURCE_DIR}/res/version.rc" "${PROJECT_SOURCE_DIR}/res/icon.rc")
 
 add_subdirectory(src/config)
 add_subdirectory(src/jvmlauncher)
