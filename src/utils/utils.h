@@ -20,6 +20,8 @@ class Utils {
         static void disableFolderVirtualisation();
         static std::string ws2s(std::wstring s);
 		static std::string GetAppDataDirectory();
+		static void addMatchingFilesToExistingVector(std::vector<std::string>, std::string, std::string);
+		static std::vector<std::string> addMatchingFilesToVector(std::string, std::string);
     private:
         Utils();
     protected:

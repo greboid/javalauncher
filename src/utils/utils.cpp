@@ -85,3 +85,24 @@ std::string Utils::GetAppDataDirectory() {
 	CoTaskMemFree(static_cast<LPVOID>(wChar));
 	return path + "\\" + APPLICATION_NAME + "\\";
 }
+
+void Utils::addMatchingFilesToExistingVector(std::vector<std::string> files, std::string path, std::string suffix) {
+	std::vector<std::string> newFiles = addMatchingFilesToVector(path, suffix);
+	Utils::mergeVectors(files, newFiles);
+}
+
+std::vector<std::string> Utils::addMatchingFilesToVector(std::string path, std::string suffix) {
+	WIN32_FIND_DATA data;
+	HANDLE hFile = FindFirstFile((path + "*.*").c_str(), &data);
+	std::vector<std::string> matchingFiles;
+	do {
+		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+			std::string filename = std::string(data.cFileName);
+			if (filename.size() >= suffix.size() && filename.compare(filename.size() - suffix.size(), suffix.size(), suffix) == 0) {
+				matchingFiles.push_back(filename);
+			}
+		}
+	} while (FindNextFile(hFile, &data) != 0);
+	FindClose(hFile);
+	return matchingFiles;
+}

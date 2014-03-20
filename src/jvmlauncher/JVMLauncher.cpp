@@ -6,7 +6,7 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vecto
     //set application home
     appHome.append(path);
     //add all jars from path
-    addAllJarsFromPath(path);
+	Utils::addMatchingFilesToExistingVector(jars, path, ".jar");
 	if (jars.size() == 0) {
 		throw JVMLauncherException("No jar files found.");
 	}
@@ -14,21 +14,6 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vecto
     this->config = config;
     this->jvmargs = jvmargs;
     this->appargs = appargs;
-}
-
-void JVMLauncher::addAllJarsFromPath(std::string path) {
-    WIN32_FIND_DATA data;
-    HANDLE hFile = FindFirstFile((path + "*.*").c_str(), &data);
-	do {
-		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-			std::string suffix = ".jar";
-			std::string filename = std::string(data.cFileName);
-			if (filename.size() >= suffix.size() && filename.compare(filename.size() - suffix.size(), suffix.size(), suffix) == 0) {
-				jars.push_back(filename);
-			}
-		}
-	} while (FindNextFile(hFile, &data) != 0);
-	FindClose(hFile);
 }
 
 HANDLE JVMLauncher::forkAndLaunch() {
