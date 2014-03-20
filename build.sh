@@ -7,4 +7,5 @@ if [ -d build ]
 then
     rm -r build
 fi
-mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=./Toolchain-cross-mingw32-linux.cmake .. && make && cd ..
+mkdir build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=./Toolchain-cross-mingw32-linux.cmake .. && make
+cd ..
