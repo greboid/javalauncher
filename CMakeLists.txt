@@ -40,7 +40,7 @@ add_subdirectory(src/singleinstance)
 add_subdirectory(src/updater)
 add_subdirectory(src/utils)
 
-add_executable(javalauncher src/Main.cpp ${RES_FILES})
+add_executable(javalauncher src/main.cpp ${RES_FILES})
 target_link_libraries (javalauncher Utils) 
 target_link_libraries (javalauncher ConfigReader) 
 target_link_libraries (javalauncher JVMLauncherUtils) 
