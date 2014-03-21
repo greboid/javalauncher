@@ -22,6 +22,9 @@ configure_file (
   "${PROJECT_BINARY_DIR}/src/config/ConfigDefaults.h"
 )
 
+FIND_PACKAGE(JNI REQUIRED)
+INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
+
 set(RES_FILES "${PROJECT_SOURCE_DIR}/res/version.rc" "${PROJECT_SOURCE_DIR}/res/icon.rc")
 
 add_subdirectory(src/config)
