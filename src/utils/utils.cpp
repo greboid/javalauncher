@@ -1,5 +1,7 @@
 #include "utils.h"
 
+using namespace std;
+
 Utils::Utils() {
 }
 
@@ -86,9 +88,9 @@ std::string Utils::GetAppDataDirectory() {
 	return path + "\\" + APPLICATION_NAME + "\\";
 }
 
-void Utils::addMatchingFilesToExistingVector(std::vector<std::string> files, std::string path, std::string suffix) {
+void Utils::addMatchingFilesToExistingVector(std::vector<std::string>& files, std::string path, std::string suffix) {
 	std::vector<std::string> newFiles = addMatchingFilesToVector(path, suffix);
-	Utils::mergeVectors(files, newFiles);
+	files = Utils::mergeVectors(files, newFiles);
 }
 
 std::vector<std::string> Utils::addMatchingFilesToVector(std::string path, std::string suffix) {

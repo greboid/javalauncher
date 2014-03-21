@@ -13,9 +13,9 @@ ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h)
 
 set(APPLICATION_NAME DMDirc)
-set(APPLICATION_PATH c:\\\\Program Files\\\\DMDirc\\\\)
-set(APPLICATION_MAIN com\\\\dmdirc\\\\Main)
-set(APPLICATION_SETUP com\\\\dmdric\\\\LauncherUtils)
+set(APPLICATION_PATH "c:\\\\Program Files\\\\DMDirc\\\\")
+set(APPLICATION_MAIN "com/dmdirc/Main")
+set(APPLICATION_SETUP "com/dmdric/LauncherUtils")
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/config/ConfigDefaults.h.in"

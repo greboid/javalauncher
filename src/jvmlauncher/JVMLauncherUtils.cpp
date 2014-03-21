@@ -5,9 +5,8 @@ void JVMLauncherUtils::checkForException(JNIEnv* env) {
 		jthrowable ex = env->ExceptionOccurred();
 		if (ex != NULL) {
 			env->ExceptionClear();
-			jstring estring = (jstring)env->CallObjectMethod(ex, env->GetStaticMethodID(env->FindClass("java/lang/Object"), "toString", "()Ljava/lang/String;"));
 			jboolean isCopy;
-			std::string message = env->GetStringUTFChars(estring, &isCopy);
+			std::string message = env->GetStringUTFChars((jstring)env->CallObjectMethod(ex, env->GetMethodID(env->FindClass("java/lang/Object"), "toString", "()Ljava/lang/String;")), &isCopy);
 			throw JVMLauncherException(message);
 		}
 	}
