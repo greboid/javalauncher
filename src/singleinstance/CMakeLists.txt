@@ -1,1 +1,1 @@
-add_library(SingleInstance SingleInstance.cpp)
+add_library(SingleInstance SingleInstance.cpp SingleInstance.h)

@@ -1,1 +1,1 @@
-add_library(ConfigReader ConfigReader.cpp)
+add_library(ConfigReader ConfigReader.cpp ConfigReader.h)

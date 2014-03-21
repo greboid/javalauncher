@@ -1,1 +1,1 @@
-add_library(Updater Updater.cpp)
+add_library(Updater Updater.cpp Updater.h)
