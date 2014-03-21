@@ -1,6 +1,4 @@
-include_directories(
-        "$ENV{JAVA_HOME}"
-        "$ENV{JAVA_HOME}include"
-)
+FIND_PACKAGE(JNI REQUIRED)
+INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 
 add_library(JVMLauncher JVMLauncher.cpp JVMLauncher.h JVMLauncherUtils.cpp JVMLauncherUtils.h)
