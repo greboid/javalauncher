@@ -17,8 +17,7 @@ vector<string> getCliArgs(int argc, char** argv, ConfigReader& config, Updater& 
     cliArgs.erase(cliArgs.begin());
     cliArgs.push_back("-l");
     cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
-    cliArgs = Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)),cliArgs);
-    return cliArgs;
+	return Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)), cliArgs);
 }
 
 vector<string> getJvmArgs(ConfigReader config) {

@@ -3,7 +3,7 @@
 using namespace std;
 
 ConfigReader::ConfigReader() {
-	this->name = "launcher.ini";
+	this->name = (Utils::getExeName() + std::string(".ini"));
 	init();
 }
 
