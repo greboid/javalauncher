@@ -32,7 +32,8 @@ int main(int argc, char** argv) {
 		cout << LAUNCHER_VERSION << endl;
 		exit(0);
 	}
-    Utils::disableFolderVirtualisation();
+	std::string version = Utils::launchAppReturnOutput(Utils::getExePathAndName());
+	Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);
     if (!singleInstance.getCanStart()) {
@@ -46,8 +47,9 @@ int main(int argc, char** argv) {
 			config.getStringValue("application.main", APPLICATION_MAIN),
 	        getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
         launcher->LaunchJVM();
-        launcher->callLauncherUtils();
-        if (updater.doUpdate(JVMLauncher::getDirectory())) {
+		std::string directory = launcher->callGetDirectory();
+		int compareValue = launcher->callIsNewer(LAUNCHER_VERSION, LAUNCHER_VERSION);
+		if (updater.doUpdate(directory)) {
             launcher->destroyJVM();
             updater.relaunch();
         }

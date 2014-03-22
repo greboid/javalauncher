@@ -58,7 +58,6 @@ void JVMLauncherUtils::callStaticVoidMethod(JNIEnv* env, jclass clazz, std::stri
 	checkForException(env);
 }
 
-
 jobjectArray JVMLauncherUtils::convertCLIArgs(JNIEnv* env, std::vector<std::string> args) {
     jobjectArray jargs = env->NewObjectArray(args.size(), getClass(env, "java/lang/String"), env->NewStringUTF(""));
     for (unsigned int i = 0; i < args.size(); i++) {
