@@ -28,6 +28,10 @@ vector<string> getJvmArgs(ConfigReader config) {
 }
 
 int main(int argc, char** argv) {
+	if (argc >= 2 && argv[1] == std::string("--LAUNCHER_VERSION")) {
+		cout << LAUNCHER_VERSION << endl;
+		exit(0);
+	}
     Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);
