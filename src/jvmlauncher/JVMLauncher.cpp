@@ -4,7 +4,7 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vecto
 	//set application home
 	appHome.append(path);
 	//add all jars from path
-	Utils::addMatchingFilesToExistingVector(jars, path, ".jar");
+	Utils::addMatchingFilesToExistingVector(jars, path, std::regex(".*\\.jar"));
 	if (jars.size() == 0) {
 		throw JVMLauncherException("No jar files found.");
 	}

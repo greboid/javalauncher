@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 	        getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
         launcher->LaunchJVM();
 		std::string directory = launcher->callGetDirectory();
-		int compareValue = launcher->callIsNewer(LAUNCHER_VERSION, LAUNCHER_VERSION);
+		int compareValue = launcher->callIsNewer(LAUNCHER_VERSION, version);
 		if (updater.doUpdate(directory)) {
             launcher->destroyJVM();
             updater.relaunch();
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
         launcher->callMainMethod();
         launcher->destroyJVM();
     } catch (JVMLauncherException& ex) {
-        cout << "Launching the JVM failed" << endl;
+        cout << "Launching the JVM failed: ";
         cout << ex.what() << endl;
         cout << "Press any key to exit" << endl;
         _getch();

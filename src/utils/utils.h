@@ -6,6 +6,8 @@
 #include <vector>
 #include <windows.h>
 #include <shlobj.h>
+#include <regex>
+#include <iostream>
 #include "../config/ConfigDefaults.h"
 #include "../config/ConfigReader.h"
 
@@ -22,8 +24,8 @@ public:
 	static void disableFolderVirtualisation();
 	static std::string ws2s(std::wstring);
 	static std::string GetAppDataDirectory();
-	static void addMatchingFilesToExistingVector(std::vector<std::string>&, std::string, std::string);
-	static std::vector<std::string> addMatchingFilesToVector(std::string, std::string);
+	static void addMatchingFilesToExistingVector(std::vector<std::string>&, std::string, std::regex);
+	static std::vector<std::string> addMatchingFilesToVector(std::string, std::regex);
 	static std::string launchAppReturnOutput(std::string);
 private:
 	Utils();
