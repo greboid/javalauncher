@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 		cout << LAUNCHER_VERSION << endl;
 		exit(0);
 	}
-	std::string version = Utils::launchAppReturnOutput(Utils::getExePathAndName());
+	std::string version = Utils::launchAppReturnOutput(Utils::GetAppDataDirectory() + Utils::getExeName());
 	Utils::disableFolderVirtualisation();
     ConfigReader config;
     SingleInstance singleInstance(config);
