@@ -117,10 +117,10 @@ std::string Utils::launchAppReturnOutput(std::string executable) {
 	saAttr.bInheritHandle = TRUE;
 	saAttr.lpSecurityDescriptor = NULL;
 	if (!CreatePipe(&g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &saAttr, 0)) {
-		return "0";
+		return "-1";
 	}
 	if (!SetHandleInformation(g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0)) {
-		return "0";
+		return "-1";
 	}
 	PROCESS_INFORMATION piProcInfo;
 	STARTUPINFO siStartInfo;
@@ -141,15 +141,20 @@ std::string Utils::launchAppReturnOutput(std::string executable) {
 	CHAR chBuf[BUFSIZE];
 	bSuccess = FALSE;
 	HANDLE hParentStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	bSuccess = ReadFile(g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL);
-	if (!bSuccess || dwRead == 0){
-		return "0";
-	}
 	std::string output;
-	for (unsigned int i = 0; i <= dwRead; i++) {
-		if (chBuf[i] == '\r' || chBuf[i] == '\n' || chBuf[i] == '\0') {
-			output = std::string(chBuf, i);
-			break;
+	if (WaitForSingleObject(piProcInfo.hProcess, 1000) == WAIT_TIMEOUT) {
+		TerminateProcess(piProcInfo.hProcess, 1);
+	}
+	else {
+		bSuccess = ReadFile(g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL);
+		if (!bSuccess || dwRead == 0){
+			return "0";
+		}
+		for (unsigned int i = 0; i <= dwRead; i++) {
+			if (chBuf[i] == '\r' || chBuf[i] == '\n' || chBuf[i] == '\0') {
+				output = std::string(chBuf, i);
+				break;
+			}
 		}
 	}
 	CloseHandle(piProcInfo.hProcess);
