@@ -29,7 +29,6 @@ vector<string> getJvmArgs(ConfigReader config) {
 
 int main(int argc, char** argv) {
 	if (argc >= 2 && argv[1] == std::string("--LAUNCHER_VERSION")) {
-		cout << LAUNCHER_VERSION << endl;
 		exit(0);
 	}
 	std::ifstream file((char*)(Utils::GetAppDataDirectory() + Utils::getExeName()).c_str());
@@ -73,6 +72,7 @@ int main(int argc, char** argv) {
 		cout << "Press any key to exit" << endl;
 		_getch();
 	}
+	cout << "Tidying up and exiting." << endl;
 	singleInstance.stopped();
 	return EXIT_SUCCESS;
 }
