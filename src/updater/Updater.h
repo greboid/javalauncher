@@ -25,7 +25,9 @@ private:
     void createUpdateMutex();
     void waitForUpdaterMutex();
     void releaseUpdateMutex();
-    void moveNewLauncher(std::string, std::string);
+    bool moveNewLauncher(std::string, std::string);
+	int updateLauncher(std::string, std::string);
+	int updateApplication(std::string, std::string);
 };
 
 #endif	/* UPDATER_H */

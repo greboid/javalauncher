@@ -1,6 +1,6 @@
 #include "JVMLauncher.h"
 
-JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vector<std::string> jvmargs, std::vector<std::string> appargs, ConfigReader& config) {
+JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::string utilsClassName, ::vector<std::string> jvmargs, std::vector<std::string> appargs, ConfigReader& config) {
 	//set application home
 	appHome.append(path);
 	//add all jars from path
@@ -9,6 +9,7 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::vecto
 		throw JVMLauncherException("No jar files found.");
 	}
 	this->mainClassName = mainClassName;
+	this->utilsClassName = utilsClassName;
 	this->config = config;
 	this->jvmargs = jvmargs;
 	this->appargs = appargs;
@@ -115,7 +116,7 @@ void JVMLauncher::callMainMethod() {
 
 std::string JVMLauncher::callGetDirectory() {
 	jobjectArray jargs = JVMLauncherUtils::convertCLIArgs(jvmEnv, appargs);
-	std::string clazzName("com/dmdirc/LauncherUtils");
+	std::string clazzName(utilsClassName);
 	jclass clazz = JVMLauncherUtils::getClass(jvmEnv, clazzName);
 	jmethodID method = JVMLauncherUtils::getMethod(jvmEnv, clazz, "getDirectory", "([Ljava/lang/String;)Ljava/lang/String;");
 	jstring moo = (jstring) jvmEnv->CallStaticObjectMethod(clazz, method, jargs);
@@ -126,7 +127,7 @@ std::string JVMLauncher::callGetDirectory() {
 }
 
 int JVMLauncher::callIsNewer(std::string version1, std::string version2) {
-	std::string clazzName("com/dmdirc/LauncherUtils");
+	std::string clazzName(utilsClassName);
 	jclass clazz = JVMLauncherUtils::getClass(jvmEnv, clazzName);
 	jmethodID method = JVMLauncherUtils::getMethod(jvmEnv, clazz, "getIsNewer", "(Ljava/lang/String;Ljava/lang/String;)I");
 	jint moo = jvmEnv->CallStaticIntMethod(clazz, method, jvmEnv->NewStringUTF((char*)version1.c_str()), jvmEnv->NewStringUTF((char*)version2.c_str()));

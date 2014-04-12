@@ -20,34 +20,57 @@ void Updater::releaseUpdateMutex() {
 }
 
 bool Updater::doUpdate(std::string directory) {
-	Updater::createUpdateMutex();
-	Updater::waitForUpdaterMutex();
-	Updater::deleteOldLauncher();
+	createUpdateMutex();
+	waitForUpdaterMutex();
+	deleteOldLauncher();
 	bool relaunchNeeded = FALSE;
 	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
-		std::ifstream file((char*)(directory + "/" + Utils::getExeName()).c_str());
-		if (file.good()) {
-			file.close();
-			Updater::backupExistingLauncher();
-			Updater::moveNewLauncher(directory + "/" + Utils::getExeName(), Utils::getExePathAndName());
+		int success = updateLauncher(directory, Utils::getExePath());
+		if (success == -1) {
+			success = updateLauncher(directory, Utils::GetAppDataDirectory());
+		}
+		if (success == 1) {
 			relaunchNeeded = TRUE;
 		}
-		relaunchNeeded = FALSE;
 	}
 	if (config.getBoolValue("application.autoupdate", APPLICATION_AUTOUPDATE)) {
-		vector<string> files = Utils::addMatchingFilesToVector(directory, std::regex("\\..*"));
-		for (unsigned int i = 0; i < files.size(); i++) {
-			std::string updateSource = files[i];
-			std::string updateTarget = files[i].substr(1);
-			Updater::moveNewLauncher(directory + updateSource, Utils::getExePath() + updateTarget);
+		int success = updateApplication(directory, Utils::getExePath());
+		if (success == -1) {
+			success = updateLauncher(directory, Utils::GetAppDataDirectory());
 		}
 	}
 	return relaunchNeeded;
 }
 
-void Updater::moveNewLauncher(std::string oldName, std::string newName) {
+int Updater::updateLauncher(std::string from, std::string to) {
+	std::ifstream file((char*)(from + "/" + Utils::getExeName()).c_str());
+	if (file.good()) {
+		file.close();
+		Updater::backupExistingLauncher();
+		if (!Updater::moveNewLauncher(from + "/" + Utils::getExeName(), to + Utils::getExePath())) {
+			return -1;
+		}
+		return 1;
+	}
+	return 0;
+}
+
+int Updater::updateApplication(std::string from, std::string to) {
+	vector<string> files = Utils::addMatchingFilesToVector(from, std::regex("\\..*"));
+	for (unsigned int i = 0; i < files.size(); i++) {
+		std::string updateSource = files[i];
+		std::string updateTarget = files[i].substr(1);
+		if (!Updater::moveNewLauncher(from + updateSource, to + updateTarget)) {
+			return -1;
+		}
+	}
+	return 1;
+}
+
+bool Updater::moveNewLauncher(std::string oldName, std::string newName) {
 	if (MoveFileEx((char*)oldName.c_str(), (char*)newName.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
 		perror("Unable to move file");
+		return FALSE;
 	}
 }
 

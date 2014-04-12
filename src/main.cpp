@@ -49,6 +49,7 @@ int main(int argc, char** argv) {
 		JVMLauncher* launcher = new JVMLauncher(
 			config.getStringValue("application.path", APPLICATION_PATH),
 			config.getStringValue("application.main", APPLICATION_MAIN),
+			config.getStringValue("launcherutils.main", LAUNCHERUTILS_MAIN),
 			getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
 		launcher->LaunchJVM();
 		std::string directory = launcher->callGetDirectory();
