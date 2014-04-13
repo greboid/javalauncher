@@ -37,7 +37,6 @@ int main(int argc, char** argv) {
 		launcher->LaunchJVM();
 		std::string directory = launcher->callGetDirectory();
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
-		cout << compareValue << endl;
 		if (compareValue > 0) {
 			std::string commandLine = Utils::getExeName() + " ";
 			ShellExecute(NULL, LPSTR("open"), LPSTR((Utils::GetAppDataDirectory() + Utils::getExeName()).c_str()), LPSTR(argv), NULL, SW_SHOWNORMAL);
