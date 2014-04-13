@@ -1,6 +1,22 @@
 #include "JVMLauncher.h"
 
-JVMLauncher::JVMLauncher(vector<std::string> jvmargs, vector<std::string> appargs, ConfigReader& config) {
+using namespace std;
+
+vector<string> JVMLauncher::getCliArgs(vector<std::string> cliArgs, ConfigReader& config) {
+	cliArgs.erase(cliArgs.begin());
+	cliArgs.push_back("-l");
+	cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
+	return Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)), cliArgs);
+}
+
+vector<string> JVMLauncher::getJvmArgs(ConfigReader config) {
+	vector<string> jvmArgs;
+	jvmArgs.push_back("-Dfile.encoding=utf-8");
+	jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", vector<string>(0)), jvmArgs);
+	return jvmArgs;
+}
+
+JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 	std::string path = config.getStringValue("application.path", APPLICATION_PATH);
 	//set application home
 	appHome.append(path);
@@ -12,8 +28,8 @@ JVMLauncher::JVMLauncher(vector<std::string> jvmargs, vector<std::string> apparg
 	this->mainClassName = config.getStringValue("application.main", APPLICATION_MAIN);
 	this->utilsClassName = config.getStringValue("launcherutils.main", LAUNCHERUTILS_MAIN);
 	this->config = config;
-	this->jvmargs = jvmargs;
-	this->appargs = appargs;
+	this->jvmargs = getJvmArgs(config);
+	this->appargs = getCliArgs(appargs, config);
 }
 
 HANDLE JVMLauncher::forkAndLaunch() {

@@ -12,23 +12,9 @@
 
 using namespace std;
 
-vector<string> getCliArgs(int argc, char** argv, ConfigReader& config, Updater& updater) {
-	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
-	cliArgs.erase(cliArgs.begin());
-	cliArgs.push_back("-l");
-	cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
-	return Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)), cliArgs);
-}
-
-vector<string> getJvmArgs(ConfigReader config) {
-	vector<string> jvmArgs;
-	jvmArgs.push_back("-Dfile.encoding=utf-8");
-	jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", vector<string>(0)), jvmArgs);
-	return jvmArgs;
-}
-
 int main(int argc, char** argv) {
 	if (argc >= 2 && argv[1] == std::string("--LAUNCHER_VERSION")) {
+		cout << LAUNCHER_VERSION << endl;
 		exit(0);
 	}
 	std::ifstream file((char*)(Utils::GetAppDataDirectory() + Utils::getExeName()).c_str());
@@ -46,7 +32,8 @@ int main(int argc, char** argv) {
 	}
 	Updater updater(config);
 	try {
-		JVMLauncher* launcher = new JVMLauncher(getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
+		
+		JVMLauncher* launcher = new JVMLauncher(Utils::arrayToVector(argc, argv), config);
 		launcher->LaunchJVM();
 		std::string directory = launcher->callGetDirectory();
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);

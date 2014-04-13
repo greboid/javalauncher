@@ -12,12 +12,15 @@
 #include <ostream>
 #include <process.h>
 #include <windows.h>
+#include "../version.h"
+#include "../config/ConfigDefaults.h"
 #include "../config/ConfigReader.h"
+#include "../updater/Updater.h"
 #include "JVMLauncherUtils.h"
 
 class JVMLauncher {
 public:
-    JVMLauncher(std::vector<std::string>, std::vector<std::string>, ConfigReader&);
+    JVMLauncher(std::vector<std::string>, ConfigReader&);
     void LaunchJVM();
     void destroyJVM();
 	std::string callGetDirectory();
@@ -43,6 +46,8 @@ private:
     jmethodID mainMethod;
     JNIEnv* jvmEnv;
     JavaVM* jvm;
+	vector<string> getCliArgs(vector<string>, ConfigReader& config);
+	vector<string> getJvmArgs(ConfigReader config);
     std::string getDLLFromRegistry();
     std::string getRegistryValue(std::string, std::string);
     std::string getJavaHomeFromRegistry();

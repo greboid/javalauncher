@@ -72,6 +72,7 @@ bool Updater::moveNewLauncher(std::string oldName, std::string newName) {
 		perror("Unable to move file");
 		return FALSE;
 	}
+	return TRUE;
 }
 
 void Updater::relaunch() {
