@@ -1,6 +1,7 @@
 #include "JVMLauncher.h"
 
-JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::string utilsClassName, ::vector<std::string> jvmargs, std::vector<std::string> appargs, ConfigReader& config) {
+JVMLauncher::JVMLauncher(vector<std::string> jvmargs, vector<std::string> appargs, ConfigReader& config) {
+	std::string path = config.getStringValue("application.path", APPLICATION_PATH);
 	//set application home
 	appHome.append(path);
 	//add all jars from path
@@ -8,8 +9,8 @@ JVMLauncher::JVMLauncher(std::string path, std::string mainClassName, std::strin
 	if (jars.size() == 0) {
 		throw JVMLauncherException("No jar files found.");
 	}
-	this->mainClassName = mainClassName;
-	this->utilsClassName = utilsClassName;
+	this->mainClassName = config.getStringValue("application.main", APPLICATION_MAIN);
+	this->utilsClassName = config.getStringValue("launcherutils.main", LAUNCHERUTILS_MAIN);
 	this->config = config;
 	this->jvmargs = jvmargs;
 	this->appargs = appargs;

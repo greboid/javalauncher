@@ -17,7 +17,7 @@
 
 class JVMLauncher {
 public:
-    JVMLauncher(std::string, std::string, std::string, std::vector<std::string>, std::vector<std::string>, ConfigReader&);
+    JVMLauncher(std::vector<std::string>, std::vector<std::string>, ConfigReader&);
     void LaunchJVM();
     void destroyJVM();
 	std::string callGetDirectory();

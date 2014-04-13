@@ -46,11 +46,7 @@ int main(int argc, char** argv) {
 	}
 	Updater updater(config);
 	try {
-		JVMLauncher* launcher = new JVMLauncher(
-			config.getStringValue("application.path", APPLICATION_PATH),
-			config.getStringValue("application.main", APPLICATION_MAIN),
-			config.getStringValue("launcherutils.main", LAUNCHERUTILS_MAIN),
-			getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
+		JVMLauncher* launcher = new JVMLauncher(getJvmArgs(config), getCliArgs(argc, argv, config, updater), config);
 		launcher->LaunchJVM();
 		std::string directory = launcher->callGetDirectory();
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
