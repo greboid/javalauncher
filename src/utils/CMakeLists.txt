@@ -1,1 +1,1 @@
-add_library(Utils utils.cpp Utils.h)
+add_library(Utils utils.cpp utils.h)
