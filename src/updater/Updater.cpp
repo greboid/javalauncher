@@ -1,3 +1,4 @@
+#include "../log4z/log4z.h"
 #include "Updater.h"
 
 using namespace std;
@@ -20,11 +21,16 @@ void Updater::releaseUpdateMutex() {
 }
 
 bool Updater::doUpdate(std::string directory) {
+	LOGD("Creating mutex.");
 	createUpdateMutex();
+	LOGD("Waiting for mutex.");
 	waitForUpdaterMutex();
+	LOGD("Deleting old launcher.");
 	deleteOldLauncher();
 	bool relaunchNeeded = FALSE;
+	LOGD("Checking launcher auto update");
 	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
+		LOGD("Updating launcher.");
 		int success = updateLauncher(directory, Utils::getExePath());
 		if (success == -1) {
 			success = updateLauncher(directory, Utils::GetAppDataDirectory());
@@ -33,12 +39,17 @@ bool Updater::doUpdate(std::string directory) {
 			relaunchNeeded = TRUE;
 		}
 	}
+	LOGD("Checking application update.");
 	if (config.getBoolValue("application.autoupdate", APPLICATION_AUTOUPDATE)) {
+		LOGD("Updating application.");
 		int success = updateApplication(directory, Utils::getExePath());
 		if (success == -1) {
 			success = updateLauncher(directory, Utils::GetAppDataDirectory());
 		}
 	}
+	LOGD("Releasing mutex.");
+	releaseUpdateMutex();
+	LOGD("Returning value.");
 	return relaunchNeeded;
 }
 

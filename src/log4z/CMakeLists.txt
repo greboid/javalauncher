@@ -1,0 +1,1 @@
+add_library(log4z log4z.cpp log4z.h)
