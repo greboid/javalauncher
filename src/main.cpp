@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
 		zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
 	}
 	zsummer::log4z::ILog4zManager::GetInstance()->Start();
+	LOGD("Starting launcher.");
 	LOGD("Checking update file.");
 	std::ifstream file((char*)(Utils::GetAppDataDirectory() + Utils::getExeName()).c_str());
 	std::string version = "-1";
@@ -39,7 +40,7 @@ int main(int argc, char** argv) {
 	LOGD("Creating single instance.");
 	SingleInstance singleInstance(config);
 	if (!singleInstance.getCanStart()) {
-		cout << "Another instance already running." << endl;
+		LOGE("Another instance already running.");
 		return EXIT_FAILURE;
 	}
 	LOGD("Creating updater.");
@@ -70,12 +71,13 @@ int main(int argc, char** argv) {
 		launcher->destroyJVM();
 	}
 	catch (JVMLauncherException& ex) {
-		cout << "Launching the JVM failed: ";
-		cout << ex.what() << endl;
-		cout << "Press any key to exit" << endl;
+		LOGE("Launching the JVM failed: ");
+		LOGE(ex.what());
+		LOGE("Press any key to exit");
 		_getch();
 	}
-	cout << "Tidying up and exiting." << endl;
+	LOGD("Stopping single instance.");
 	singleInstance.stopped();
+	LOGD("Exiting.");
 	return EXIT_SUCCESS;
 }

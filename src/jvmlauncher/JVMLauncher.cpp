@@ -1,3 +1,4 @@
+#include "../log4z/log4z.h"
 #include "JVMLauncher.h"
 
 using namespace std;
@@ -153,5 +154,5 @@ int JVMLauncher::callIsNewer(std::string version1, std::string version2) {
 }
 
 void JVMLauncher::exit(jint status) {
-	cout << "JVM quitting: " << status << endl;
+	LOGD("JVM quitting: " << status);
 }
