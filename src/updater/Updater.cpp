@@ -28,7 +28,7 @@ bool Updater::doUpdate(std::string directory) {
 	LOGD("Deleting old launcher.");
 	deleteOldLauncher();
 	bool relaunchNeeded = FALSE;
-	LOGD("Checking launcher auto update");
+	LOGD("Checking launcher auto update = " << LAUNCHER_AUTOUPDATE);
 	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
 		LOGD("Updating launcher.");
 		int success = updateLauncher(directory, Utils::getExePath());
@@ -39,7 +39,7 @@ bool Updater::doUpdate(std::string directory) {
 			relaunchNeeded = TRUE;
 		}
 	}
-	LOGD("Checking application update.");
+	LOGD("Checking application update = " << APPLICATION_AUTOUPDATE);
 	if (config.getBoolValue("application.autoupdate", APPLICATION_AUTOUPDATE)) {
 		LOGD("Updating application.");
 		int success = updateApplication(directory, Utils::getExePath());

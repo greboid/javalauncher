@@ -192,7 +192,7 @@ typedef int LoggerId;
 //! default logger output file.
 #define LOG4Z_DEFAULT_PATH "./log/"
 //! default log filter level
-#define LOG4Z_DEFAULT_LEVEL LOG_LEVEL_DEBUG
+#define LOG4Z_DEFAULT_LEVEL LOG_LEVEL_ERROR
 //! default logger display
 #define LOG4Z_DEFAULT_DISPLAY true
 //! default logger month dir used status

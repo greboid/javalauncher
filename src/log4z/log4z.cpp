@@ -1358,7 +1358,7 @@ void CLogerManager::Run()
 {
 	m_bRuning = true;
 	m_loggers[LOG4Z_MAIN_LOGGER_ID]._enable = true;
-	PushLog(0, LOG_LEVEL_ALARM, "-----------------  log4z thread started!   ----------------------------");
+	PushLog(0, LOG_LEVEL_DEBUG, "-----------------  log4z thread started!   ----------------------------");
 	for (int i=0; i<LOG4Z_LOGGER_MAX; i++)
 	{
 		if (m_loggers[i]._enable)
@@ -1369,7 +1369,7 @@ void CLogerManager::Run()
 				<<" name=" <<m_loggers[i]._name
 				<<" level=" << m_loggers[i]._level
 				<<" display=" << m_loggers[i]._display;
-			PushLog(0, LOG_LEVEL_ALARM, ss.str().c_str());
+			PushLog(0, LOG_LEVEL_DEBUG, ss.str().c_str());
 		}
 	}
 

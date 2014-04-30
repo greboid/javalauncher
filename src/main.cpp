@@ -14,13 +14,17 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	zsummer::log4z::ILog4zManager::GetInstance()->Start();
-	LOGD("Starting Launcher.");
-	if (argc >= 2 && argv[1] == std::string("--LAUNCHER_VERSION")) {
+	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
+	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
 		LOGD("--LAUNCHER_VERSION");
 		cout << LAUNCHER_VERSION << endl;
 		exit(0);
 	}
+	if (find(cliArgs.begin(), cliArgs.end(), "--DEBUG") != cliArgs.end()) {
+		cliArgs.erase(find(cliArgs.begin(), cliArgs.end(), "--DEBUG"));
+		zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
+	}
+	zsummer::log4z::ILog4zManager::GetInstance()->Start();
 	LOGD("Checking update file.");
 	std::ifstream file((char*)(Utils::GetAppDataDirectory() + Utils::getExeName()).c_str());
 	std::string version = "-1";
@@ -42,7 +46,7 @@ int main(int argc, char** argv) {
 	Updater updater(config);
 	try {
 		LOGD("Creating JVMLauncher.");
-		JVMLauncher* launcher = new JVMLauncher(Utils::arrayToVector(argc, argv), config);
+		JVMLauncher* launcher = new JVMLauncher(cliArgs, config);
 		LOGD("Launching JVM");
 		launcher->LaunchJVM();
 		LOGD("Getting directory.");
