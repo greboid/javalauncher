@@ -60,9 +60,11 @@ int main(int argc, char** argv) {
 			ShellExecute(NULL, LPSTR("open"), LPSTR((Utils::GetAppDataDirectory() + Utils::getExeName()).c_str()), LPSTR(argv), NULL, SW_SHOWNORMAL);
 			exit(0);
 		}
-		LOGD("Updating.");
+		LOGD("updater.doUpdate.");
 		if (updater.doUpdate(directory)) {
+			LOGD("Destroying JVM.");
 			launcher->destroyJVM();
+			LOGD("Relaunching.");
 			updater.relaunch();
 		}
 		LOGD("Calling main method.");

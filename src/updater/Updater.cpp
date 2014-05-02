@@ -25,53 +25,69 @@ bool Updater::doUpdate(std::string directory) {
 	createUpdateMutex();
 	LOGD("Waiting for mutex.");
 	waitForUpdaterMutex();
-	LOGD("Deleting old launcher.");
+	LOGD("Checking for old launcher.");
 	deleteOldLauncher();
 	bool relaunchNeeded = FALSE;
 	LOGD("Checking launcher auto update = " << LAUNCHER_AUTOUPDATE);
 	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
-		LOGD("Updating launcher.");
+		LOGD("Attempting to update launcher.");
 		int success = updateLauncher(directory, Utils::getExePath());
+		LOGD("Update result: " << success);
 		if (success == -1) {
+			LOGD("Failed: attempting to update app data")
 			success = updateLauncher(directory, Utils::GetAppDataDirectory());
+			LOGD("Update result: " << success);
 		}
 		if (success == 1) {
+			LOGD("Success, restart needed.");
 			relaunchNeeded = TRUE;
 		}
 	}
 	LOGD("Checking application update = " << APPLICATION_AUTOUPDATE);
 	if (config.getBoolValue("application.autoupdate", APPLICATION_AUTOUPDATE)) {
-		LOGD("Updating application.");
+		LOGD("Attempting to update application.");
 		int success = updateApplication(directory, Utils::getExePath());
 		if (success == -1) {
-			success = updateLauncher(directory, Utils::GetAppDataDirectory());
+			LOGD("Failed: Updating to app data.");
+			success = updateApplication(directory, Utils::GetAppDataDirectory());
 		}
 	}
 	LOGD("Releasing mutex.");
 	releaseUpdateMutex();
-	LOGD("Returning value.");
+	LOGD("Returning value: " << relaunchNeeded);
 	return relaunchNeeded;
 }
 
 int Updater::updateLauncher(std::string from, std::string to) {
 	std::ifstream file((char*)(from + "/" + Utils::getExeName()).c_str());
 	if (file.good()) {
+		LOGD("Update file exists")
 		file.close();
+		LOGD("Attempting to backup existing launcher.");
 		Updater::backupExistingLauncher();
 		if (!Updater::moveNewLauncher(from + "/" + Utils::getExeName(), to + Utils::getExePath())) {
+			LOGD("Moving new launcher failed.");
 			return -1;
 		}
+		LOGD("Updating launcher suceeded.");
 		return 1;
 	}
+	LOGD("Updating launcher not required.");
 	return 0;
 }
 
 int Updater::updateApplication(std::string from, std::string to) {
 	vector<string> files = Utils::addMatchingFilesToVector(from, std::regex("\\..*"));
+	if (files.size() == 0) {
+		LOGD("Updating application not required.");
+		return 0;
+	}
 	for (unsigned int i = 0; i < files.size(); i++) {
+		LOGD("Attempting to update: " << files[i]);
 		std::string updateSource = files[i];
 		std::string updateTarget = files[i].substr(1);
 		if (!Updater::moveNewLauncher(from + updateSource, to + updateTarget)) {
+			LOGD("Updating failed.");
 			return -1;
 		}
 	}
@@ -79,7 +95,9 @@ int Updater::updateApplication(std::string from, std::string to) {
 }
 
 bool Updater::moveNewLauncher(std::string oldName, std::string newName) {
+	LOGD("Attemting to to move: " << oldName << " : to : " << newName)
 	if (MoveFileEx((char*)oldName.c_str(), (char*)newName.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
+		LOGD("Unable to move file");
 		perror("Unable to move file");
 		return FALSE;
 	}
@@ -93,9 +111,12 @@ void Updater::relaunch() {
 	ZeroMemory(&sInfo, sizeof(sInfo));
 	sInfo.cb = sizeof(sInfo);
 	ZeroMemory(&pInfo, sizeof(pInfo));
+	LOGD("Creating new process.");
 	CreateProcess((char*)Utils::getExePathAndName().c_str(),
 		NULL, NULL, NULL, false, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pInfo);
+	LOGD("Releasing mutex");
 	Updater::releaseUpdateMutex();
+	LOGD("Exiting app.");
 	ExitProcess(0);
 }
 
@@ -103,6 +124,7 @@ void Updater::deleteOldLauncher() {
 	std::string exeNameOld = Utils::getExePathAndName() + ".old";
 	std::ifstream file(exeNameOld.c_str());
 	if (file.good()) {
+		LOGD("Old Launcher exists, deleting.");
 		file.close();
 		if (remove(exeNameOld.c_str()) != 0) {
 			perror("Failed to delete the old launcher");
@@ -114,7 +136,10 @@ void Updater::backupExistingLauncher() {
 	TCHAR buffer[MAX_PATH] = { 0 };
 	DWORD bufSize = sizeof (buffer) / sizeof (*buffer);
 	GetModuleFileName(NULL, buffer, bufSize);
-	MoveFile(Utils::getExePathAndName().c_str(), (Utils::getExePathAndName() + ".old").c_str());
+	if (MoveFileEx(Utils::getExePathAndName().c_str(), (Utils::getExePathAndName() + ".old").c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
+		LOGD("Unable to backup existing launcher.");
+		perror("Unable to move file");
+	}
 }
 
 bool Updater::isUpdateWaiting() {

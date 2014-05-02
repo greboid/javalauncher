@@ -7,13 +7,16 @@ vector<string> JVMLauncher::getCliArgs(vector<std::string> cliArgs, ConfigReader
 	cliArgs.erase(cliArgs.begin());
 	cliArgs.push_back("-l");
 	cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
-	return Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)), cliArgs);
+	vector<string> newCliArgs = Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)), cliArgs);
+	LOGD("CLI Args: " << newCliArgs.size());
+	return newCliArgs;
 }
 
 vector<string> JVMLauncher::getJvmArgs(ConfigReader config) {
 	vector<string> jvmArgs;
 	jvmArgs.push_back("-Dfile.encoding=utf-8");
 	jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", vector<string>(0)), jvmArgs);
+	LOGD("JVM Args: " << jvmArgs.size());
 	return jvmArgs;
 }
 
