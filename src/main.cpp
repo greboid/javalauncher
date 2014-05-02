@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
 		AttachConsole(GetCurrentProcessId());
 		zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
 	}
+	debugFile.close();
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
 	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
 		LOGD("--LAUNCHER_VERSION");
