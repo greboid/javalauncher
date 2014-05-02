@@ -14,15 +14,17 @@
 using namespace std;
 
 int main(int argc, char** argv) {
+	std::ifstream debugFile("debug.debug");
+	if (debugFile.good()) {
+		AllocConsole();
+		AttachConsole(GetCurrentProcessId());
+		zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
+	}
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
 	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
 		LOGD("--LAUNCHER_VERSION");
 		cout << LAUNCHER_VERSION << endl;
 		exit(0);
-	}
-	if (find(cliArgs.begin(), cliArgs.end(), "--DEBUG") != cliArgs.end()) {
-		cliArgs.erase(find(cliArgs.begin(), cliArgs.end(), "--DEBUG"));
-		zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
 	}
 	zsummer::log4z::ILog4zManager::GetInstance()->Start();
 	LOGD("Starting launcher.");

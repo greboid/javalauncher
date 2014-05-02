@@ -12,6 +12,7 @@ Win32/*
 **/*.dir/*
 nbproject/*
 Debug/**
+Release/**
 src/config/ConfigDefaults.h
 src/version.h
 
