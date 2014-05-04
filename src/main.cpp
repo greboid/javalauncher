@@ -9,24 +9,29 @@
 #include <sstream>
 #include <Shlobj.h>
 #include <windows.h>
-#include <conio.h>
 
 using namespace std;
 
 int main(int argc, char** argv) {
-	std::ifstream debugFile("debug.debug");
-	if (debugFile.good()) {
-		AllocConsole();
-		AttachConsole(GetCurrentProcessId());
-		zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
-	}
-	debugFile.close();
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
 	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
 		LOGD("--LAUNCHER_VERSION");
 		cout << LAUNCHER_VERSION << endl;
 		exit(0);
 	}
+	if (find(cliArgs.begin(), cliArgs.end(), "--DEBUG") != cliArgs.end()) {
+		LOGD("--DEBUG");
+		cliArgs.erase(find(cliArgs.begin(), cliArgs.end(), "--DEBUG"));
+		LOGD("Allocationg a console.");
+		AllocConsole();
+		LOGD("Attaching a console.");
+		AttachConsole(GetCurrentProcessId());
+		FILE *conin, *conout;
+		freopen_s(&conin, "conin$", "r", stdin);
+		freopen_s(&conout, "conout$", "w", stdout);
+		freopen_s(&conout, "conout$", "w", stderr);
+	}
+	zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
 	zsummer::log4z::ILog4zManager::GetInstance()->Start();
 	LOGD("Starting launcher.");
 	LOGD("Checking update file.");
