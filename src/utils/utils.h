@@ -4,7 +4,6 @@
 #include <string>
 #include <stdlib.h>
 #include <vector>
-#include <windows.h>
 #include <shlobj.h>
 #include <regex>
 #include <iostream>

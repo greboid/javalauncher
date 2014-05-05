@@ -5,34 +5,25 @@
 #include "config/ConfigDefaults.h"
 #include "updater/Updater.h"
 #include "utils/utils.h"
+#include "platform/platform.h"
 #include "version.h"
 #include <sstream>
 #include <Shlobj.h>
-#include <windows.h>
 
 using namespace std;
 
 int main(int argc, char** argv) {
+	zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
+	zsummer::log4z::ILog4zManager::GetInstance()->Start();
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
 	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
-		LOGD("--LAUNCHER_VERSION");
 		cout << LAUNCHER_VERSION << endl;
 		exit(0);
 	}
 	if (find(cliArgs.begin(), cliArgs.end(), "--DEBUG") != cliArgs.end()) {
-		LOGD("--DEBUG");
 		cliArgs.erase(find(cliArgs.begin(), cliArgs.end(), "--DEBUG"));
-		LOGD("Allocationg a console.");
-		AllocConsole();
-		LOGD("Attaching a console.");
-		AttachConsole(GetCurrentProcessId());
-		FILE *conin, *conout;
-		freopen_s(&conin, "conin$", "r", stdin);
-		freopen_s(&conout, "conout$", "w", stdout);
-		freopen_s(&conout, "conout$", "w", stderr);
+		Platform::createConsole();
 	}
-	zsummer::log4z::ILog4zManager::GetInstance()->SetLoggerLevel(LOG4Z_MAIN_LOGGER_ID, 0);
-	zsummer::log4z::ILog4zManager::GetInstance()->Start();
 	LOGD("Starting launcher.");
 	LOGD("Checking update file.");
 	std::ifstream file((char*)(Utils::GetAppDataDirectory() + Utils::getExeName()).c_str());
@@ -64,8 +55,7 @@ int main(int argc, char** argv) {
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
 		if (compareValue > 0) {
 			LOGD("Version is newer, updating.");
-			std::string commandLine = Utils::getExeName() + " ";
-			ShellExecute(NULL, LPSTR("open"), LPSTR((Utils::GetAppDataDirectory() + Utils::getExeName()).c_str()), LPSTR(argv), NULL, SW_SHOWNORMAL);
+			Platform::launchApplication((Utils::GetAppDataDirectory() + Utils::getExeName()), argv);
 			exit(0);
 		}
 		LOGD("updater.doUpdate.");

@@ -3,7 +3,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <windows.h>
 #include <string>
 #include "../config/ConfigReader.h"
 

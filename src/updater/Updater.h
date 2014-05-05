@@ -2,7 +2,6 @@
 #define	UPDATER_H
 
 #include <cstdlib>
-#include <windows.h>
 #include <stdio.h>
 #include <iostream>
 #include <fstream>

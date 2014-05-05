@@ -2,7 +2,6 @@
 #define	JVMLAUNCHER_H
 
 #include <stdexcept>
-#include <windows.h>
 #include <tchar.h>
 #include <jni.h>
 #include <string>
@@ -11,7 +10,6 @@
 #include <iostream>
 #include <ostream>
 #include <process.h>
-#include <windows.h>
 #include "../version.h"
 #include "../config/ConfigDefaults.h"
 #include "../config/ConfigReader.h"
