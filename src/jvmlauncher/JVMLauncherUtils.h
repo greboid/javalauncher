@@ -2,7 +2,6 @@
 #define	JVMLAUNCHERUTILS_H
 
 #include <stdexcept>
-#include <tchar.h>
 #include <jni.h>
 #include <string>
 #include <stdlib.h>

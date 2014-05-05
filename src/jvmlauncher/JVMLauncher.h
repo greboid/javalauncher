@@ -2,7 +2,6 @@
 #define	JVMLAUNCHER_H
 
 #include <stdexcept>
-#include <tchar.h>
 #include <jni.h>
 #include <string>
 #include <stdlib.h>
@@ -24,9 +23,7 @@ public:
 	std::string callGetDirectory();
     void callMainMethod();
 	int callIsNewer(std::string, std::string);
-    HANDLE forkAndLaunch();
 private:
-    static UINT WINAPI threadEntry(LPVOID);
     static void exit(jint);
     typedef jint(JNICALL* CreateJavaVM)(JavaVM**, void**, void*);
     ConfigReader config;

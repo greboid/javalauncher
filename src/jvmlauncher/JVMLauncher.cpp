@@ -36,20 +36,6 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 	this->appargs = getCliArgs(appargs, config);
 }
 
-HANDLE JVMLauncher::forkAndLaunch() {
-	//Create thread pointing it at new thread entry point
-	return CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadEntry,
-		(LPVOID) this, 0, NULL);
-}
-
-UINT WINAPI JVMLauncher::threadEntry(LPVOID param) {
-	//cast param to object instance
-	JVMLauncher* obj = (JVMLauncher*)param;
-	//Call jvm launch
-	obj->LaunchJVM();
-	return 0;
-}
-
 std::string JVMLauncher::getDLLFromRegistry() {
 	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
 	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
