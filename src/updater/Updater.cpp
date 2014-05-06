@@ -77,19 +77,30 @@ int Updater::updateLauncher(std::string from, std::string to) {
 }
 
 int Updater::updateApplication(std::string from, std::string to) {
-	vector<string> files = Utils::addMatchingFilesToVector(from, std::regex("\\..*"));
+	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*"));
 	if (files.size() == 0) {
 		LOGD("Updating application not required.");
 		return 0;
 	}
+	else {
+		LOGD("Updating application: " << files.size());
+	}
 	for (unsigned int i = 0; i < files.size(); i++) {
 		LOGD("Attempting to update: " << files[i]);
-		std::string updateSource = files[i];
-		std::string updateTarget = files[i].substr(1);
-		if (!Updater::moveNewLauncher(from + updateSource, to + updateTarget)) {
-			LOGD("Updating failed.");
-			return -1;
+		std::string updateSource = "." + files[i];
+		std::string updateTarget = files[i];
+		std::ifstream file((char*)(from + "/" + updateSource).c_str());
+		if (file.good()) {
+			LOGD("Update file exists, trying to copy.");
+			if (!Updater::moveNewLauncher(from + updateSource, to + updateTarget)) {
+				LOGD("Updating failed.");
+				return -1;
+			}
 		}
+		else {
+			LOGD("Update file does not exist.");
+		}
+		
 	}
 	return 1;
 }
