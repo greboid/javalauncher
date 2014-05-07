@@ -53,7 +53,7 @@ int Updater::updateLauncher(std::string from, std::string to) {
 		file.close();
 		LOGD("Attempting to backup existing launcher.");
 		Updater::backupExistingLauncher();
-		if (!Updater::moveNewLauncher(from + "/" + Utils::getExeName(), to + Utils::getExePath())) {
+		if (!Platform::moveFile(from + "/" + Utils::getExeName(), to + Utils::getExePath())) {
 			LOGD("Moving new launcher failed.");
 			return -1;
 		}
@@ -80,7 +80,7 @@ int Updater::updateApplication(std::string from, std::string to) {
 		std::ifstream file((char*)(from + "/" + updateSource).c_str());
 		if (file.good()) {
 			LOGD("Update file exists, trying to copy.");
-			if (!Updater::moveNewLauncher(from + updateSource, to + updateTarget)) {
+			if (!Platform::moveFile(from + updateSource, to + updateTarget)) {
 				LOGD("Updating failed.");
 				return -1;
 			}
@@ -91,16 +91,6 @@ int Updater::updateApplication(std::string from, std::string to) {
 		
 	}
 	return 1;
-}
-
-bool Updater::moveNewLauncher(std::string oldName, std::string newName) {
-	LOGD("Attemting to to move: " << oldName << " : to : " << newName)
-	if (MoveFileEx((char*)oldName.c_str(), (char*)newName.c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
-		LOGD("Unable to move file");
-		perror("Unable to move file");
-		return FALSE;
-	}
-	return TRUE;
 }
 
 void Updater::relaunch() {
@@ -136,9 +126,8 @@ void Updater::backupExistingLauncher() {
 	TCHAR buffer[MAX_PATH] = { 0 };
 	DWORD bufSize = sizeof (buffer) / sizeof (*buffer);
 	GetModuleFileName(NULL, buffer, bufSize);
-	if (MoveFileEx(Utils::getExePathAndName().c_str(), (Utils::getExePathAndName() + ".old").c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
+	if (Platform::moveFile(Utils::getExePathAndName(), Utils::getExePathAndName() + ".old")) {
 		LOGD("Unable to backup existing launcher.");
-		perror("Unable to move file");
 	}
 }
 

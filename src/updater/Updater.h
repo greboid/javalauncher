@@ -3,6 +3,7 @@
 
 #include "../log4z/log4z.h"
 #include "../platform/mutex.h"
+#include "../platform/platform.h"
 #include "../config/ConfigReader.h"
 #include <cstdlib>
 #include <stdio.h>
@@ -23,7 +24,6 @@ private:
     ConfigReader config;
     void deleteOldLauncher();
     void backupExistingLauncher();
-    bool moveNewLauncher(std::string, std::string);
 	int updateLauncher(std::string, std::string);
 	int updateApplication(std::string, std::string);
 };
