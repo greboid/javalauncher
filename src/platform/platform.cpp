@@ -101,7 +101,7 @@ std::string Platform::addTrailingSlash(std::string directory) {
 	std::string ending = "\\";
 	if (0 != directory.compare(directory.length() - ending.length(), ending.length(), ending)) {
 		LOGD("Adding trailing slash.");
-		return directory + "\\";
+		return directory + ending;
 	}
 	return directory;
 }
@@ -111,6 +111,7 @@ std::vector<std::string> Platform::listDirectory(std::string directory) {
 }
 
 std::vector<std::string> Platform::listDirectory(std::string directory, std::regex regex) {
+#ifdef WIN32
 	WIN32_FIND_DATA data;
 	HANDLE hFile = FindFirstFile((addTrailingSlash(directory) + "*.*").c_str(), &data);
 	std::vector<std::string> matchingFiles;
@@ -126,4 +127,5 @@ std::vector<std::string> Platform::listDirectory(std::string directory, std::reg
 	} while (FindNextFile(hFile, &data) != 0);
 	FindClose(hFile);
 	return matchingFiles;
+#endif
 }
