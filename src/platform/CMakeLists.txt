@@ -1,1 +1,1 @@
-add_library(platform platform.cpp platform.h)
+add_library(platform platform.cpp platform.h mutex.cpp mutex.h)

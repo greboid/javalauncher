@@ -1,10 +1,12 @@
 #ifndef SINGLEINSTANCE_H
 #define	SINGLEINSTANCE_H
 
+#include "../log4z/log4z.h"
+#include "../config/ConfigReader.h"
+#include "../platform/mutex.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include "../config/ConfigReader.h"
 
 class SingleInstance {
 public:
@@ -13,9 +15,8 @@ public:
     bool getCanStart();
     void stopped();
 private:
-    HANDLE instanceMutex;
+    Mutex instanceMutex;
     ConfigReader config;
 };
 
 #endif	/* SINGLEINSTANCE_H */
-
