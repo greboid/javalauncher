@@ -1,14 +1,16 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
+#include "../log4z/log4z.h"
+#include "../config/ConfigDefaults.h"
+#include "../config/ConfigReader.h"
+#include "../platform/platform.h"
 #include <string>
 #include <stdlib.h>
 #include <vector>
 #include <shlobj.h>
 #include <regex>
 #include <iostream>
-#include "../config/ConfigDefaults.h"
-#include "../config/ConfigReader.h"
 
 #define BUFSIZE 4096 
 

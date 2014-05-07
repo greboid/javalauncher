@@ -65,3 +65,11 @@ bool Platform::deleteFile(string file) {
 	}
 	return true;
 }
+
+string Platform::getExePath() {
+#ifdef WIN32
+	char buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	return std::string(buffer);
+#endif
+}

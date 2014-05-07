@@ -1,4 +1,3 @@
-#include "../log4z/log4z.h"
 #include "utils.h"
 
 using namespace std;
@@ -7,9 +6,7 @@ Utils::Utils() {
 }
 
 std::string Utils::getExePathAndName() {
-	char buffer[MAX_PATH];
-	GetModuleFileName(NULL, buffer, MAX_PATH);
-	return std::string(buffer);
+	return Platform::getExePath();
 }
 
 std::string Utils::getExeName() {
