@@ -96,3 +96,34 @@ std::string Platform::GetAppDataDirectory() {
 	return path + "\\" + APPLICATION_NAME + "\\";
 #endif
 }
+
+std::string Platform::addTrailingSlash(std::string directory) {
+	std::string ending = "\\";
+	if (0 != directory.compare(directory.length() - ending.length(), ending.length(), ending)) {
+		LOGD("Adding trailing slash.");
+		return directory + "\\";
+	}
+	return directory;
+}
+
+std::vector<std::string> Platform::listDirectory(std::string directory) {
+	return listDirectory(directory, std::regex(".*"));
+}
+
+std::vector<std::string> Platform::listDirectory(std::string directory, std::regex regex) {
+	WIN32_FIND_DATA data;
+	HANDLE hFile = FindFirstFile((addTrailingSlash(directory) + "*.*").c_str(), &data);
+	std::vector<std::string> matchingFiles;
+	do {
+		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+			LOGD("Checking if file matches: " << data.cFileName);
+			std::string filename = std::string(data.cFileName);
+			if (std::regex_match(filename, regex)) {
+				LOGD("File matched");
+				matchingFiles.push_back(filename);
+			}
+		}
+	} while (FindNextFile(hFile, &data) != 0);
+	FindClose(hFile);
+	return matchingFiles;
+}

@@ -13,6 +13,8 @@
 #include <windows.h>
 #include <shlobj.h>
 #endif
+#include <vector>
+#include <regex>
 #include <fstream>
 
 
@@ -26,6 +28,9 @@ public:
 	static std::string getExePath();
 	static void disableFolderVirtualisation();
 	static std::string GetAppDataDirectory();
+	static std::string addTrailingSlash(std::string directory);
+	static std::vector<std::string> listDirectory(std::string directory);
+	static std::vector<std::string> listDirectory(std::string directory, std::regex regex);
 private:
 	Platform();
 };

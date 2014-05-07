@@ -63,32 +63,11 @@ std::string Utils::ws2s(std::wstring s) {
 
 void Utils::addMatchingFilesToExistingVector(std::vector<std::string>& files, std::string path, std::regex regex) {
 	std::vector<std::string> newFiles = addMatchingFilesToVector(path, regex);
-	files = Utils::mergeVectors(files, newFiles);
+	files = Platform::listDirectory(path, regex);
 }
 
 std::vector<std::string> Utils::addMatchingFilesToVector(std::string path, std::regex regex) {
-	LOGD("Adding files to vector from: " << path);
-	std::string ending = "\\";
-	if (0 != path.compare(path.length() - ending.length(), ending.length(), ending)) {
-		LOGD("Adding trailing slash.");
-		path = path + "\\";
-	}
-	WIN32_FIND_DATA data;
-	HANDLE hFile = FindFirstFile((path + "*.*").c_str(), &data);
-	std::vector<std::string> matchingFiles;
-	do {
-		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-			LOGD("Checking if file matches: " << data.cFileName);
-			std::string filename = std::string(data.cFileName);
-			if (std::regex_match(filename, regex)) {
-				LOGD("File matched");
-				matchingFiles.push_back(filename);
-			}
-		}
-	} while (FindNextFile(hFile, &data) != 0);
-	FindClose(hFile);
-	LOGD("Finished adding files");
-	return matchingFiles;
+	return Platform::listDirectory(path, regex);
 }
 
 std::string Utils::launchAppReturnOutput(std::string executable) {
