@@ -52,7 +52,9 @@ int Updater::updateLauncher(std::string from, std::string to) {
 		LOGD("Update file exists")
 		file.close();
 		LOGD("Attempting to backup existing launcher.");
-		Updater::backupExistingLauncher();
+		if (Platform::moveFile(Utils::getExePathAndName(), Utils::getExePathAndName() + ".old")) {
+			LOGD("Unable to backup existing launcher.");
+		}
 		if (!Platform::moveFile(from + "/" + Utils::getExeName(), to + Utils::getExePath())) {
 			LOGD("Moving new launcher failed.");
 			return -1;
@@ -119,15 +121,6 @@ void Updater::deleteOldLauncher() {
 		if (remove(exeNameOld.c_str()) != 0) {
 			perror("Failed to delete the old launcher");
 		}
-	}
-}
-
-void Updater::backupExistingLauncher() {
-	TCHAR buffer[MAX_PATH] = { 0 };
-	DWORD bufSize = sizeof (buffer) / sizeof (*buffer);
-	GetModuleFileName(NULL, buffer, bufSize);
-	if (Platform::moveFile(Utils::getExePathAndName(), Utils::getExePathAndName() + ".old")) {
-		LOGD("Unable to backup existing launcher.");
 	}
 }
 
