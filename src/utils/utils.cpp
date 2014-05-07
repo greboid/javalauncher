@@ -61,15 +61,6 @@ std::string Utils::ws2s(std::wstring s) {
 	return string(s.begin(), s.end());
 }
 
-std::string Utils::GetAppDataDirectory() {
-	PWSTR wChar;
-	SHGetKnownFolderPath(FOLDERID_UserProgramFiles, 0, NULL, &wChar);
-	std::wstring wpath(wChar);
-	std::string path = Utils::ws2s(wpath);
-	CoTaskMemFree(static_cast<LPVOID>(wChar));
-	return path + "\\" + APPLICATION_NAME + "\\";
-}
-
 void Utils::addMatchingFilesToExistingVector(std::vector<std::string>& files, std::string path, std::regex regex) {
 	std::vector<std::string> newFiles = addMatchingFilesToVector(path, regex);
 	files = Utils::mergeVectors(files, newFiles);

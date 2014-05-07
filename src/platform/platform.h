@@ -2,6 +2,7 @@
 #define	PLATFORM_H
 
 #include "../log4z/log4z.h"
+#include "../utils/utils.h"
 #ifdef UNIX
 #include <fcntl.h>
 #include <unistd.h>
@@ -10,6 +11,7 @@
 #endif
 #ifdef WIN32
 #include <windows.h>
+#include <shlobj.h>
 #endif
 #include <fstream>
 
@@ -23,6 +25,7 @@ public:
 	static bool deleteFile(std::string file);
 	static std::string getExePath();
 	static void disableFolderVirtualisation();
+	static std::string GetAppDataDirectory();
 private:
 	Platform();
 };

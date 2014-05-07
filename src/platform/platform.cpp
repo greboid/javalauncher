@@ -85,3 +85,14 @@ void Platform::disableFolderVirtualisation() {
 	}
 #endif
 }
+
+std::string Platform::GetAppDataDirectory() {
+#ifdef WIN32
+	PWSTR wChar;
+	SHGetKnownFolderPath(FOLDERID_UserProgramFiles, 0, NULL, &wChar);
+	std::wstring wpath(wChar);
+	std::string path = Utils::ws2s(wpath);
+	CoTaskMemFree(static_cast<LPVOID>(wChar));
+	return path + "\\" + APPLICATION_NAME + "\\";
+#endif
+}

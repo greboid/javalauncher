@@ -23,7 +23,7 @@ bool Updater::doUpdate(std::string directory) {
 		LOGD("Update result: " << success);
 		if (success == -1) {
 			LOGD("Failed: attempting to update app data")
-			success = updateLauncher(directory, Utils::GetAppDataDirectory());
+			success = updateLauncher(directory, Platform::GetAppDataDirectory());
 			LOGD("Update result: " << success);
 		}
 		if (success == 1) {
@@ -37,7 +37,7 @@ bool Updater::doUpdate(std::string directory) {
 		int success = updateApplication(directory, Utils::getExePath());
 		if (success == -1) {
 			LOGD("Failed: Updating to app data.");
-			success = updateApplication(directory, Utils::GetAppDataDirectory());
+			success = updateApplication(directory, Platform::GetAppDataDirectory());
 		}
 	}
 	LOGD("Releasing mutex.");

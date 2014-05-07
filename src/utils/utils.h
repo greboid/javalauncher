@@ -8,7 +8,6 @@
 #include <string>
 #include <stdlib.h>
 #include <vector>
-#include <shlobj.h>
 #include <regex>
 #include <iostream>
 
@@ -23,7 +22,6 @@ public:
 	static std::string getExePath();
 	static std::string getExeName();
 	static std::string ws2s(std::wstring);
-	static std::string GetAppDataDirectory();
 	static void addMatchingFilesToExistingVector(std::vector<std::string>&, std::string, std::regex);
 	static std::vector<std::string> addMatchingFilesToVector(std::string, std::regex);
 	static std::string launchAppReturnOutput(std::string);

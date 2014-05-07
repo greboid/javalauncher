@@ -26,12 +26,12 @@ int main(int argc, char** argv) {
 	}
 	LOGD("Starting launcher.");
 	LOGD("Checking update file.");
-	std::ifstream file((char*)(Utils::GetAppDataDirectory() + Utils::getExeName()).c_str());
+	std::ifstream file((char*)(Platform::GetAppDataDirectory() + Utils::getExeName()).c_str());
 	std::string version = "-1";
 	if (file.good()) {
 		LOGD("Update file exists.");
 		file.close();
-		version = Utils::launchAppReturnOutput(Utils::GetAppDataDirectory() + Utils::getExeName());
+		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory() + Utils::getExeName());
 	}
 	LOGD("Disabling folder virtualisation.");
 	Platform::disableFolderVirtualisation();
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
 		if (compareValue > 0) {
 			LOGD("Version is newer, updating.");
-			Platform::launchApplication((Utils::GetAppDataDirectory() + Utils::getExeName()), argv);
+			Platform::launchApplication((Platform::GetAppDataDirectory() + Utils::getExeName()), argv);
 			exit(0);
 		}
 		LOGD("updater.doUpdate.");
