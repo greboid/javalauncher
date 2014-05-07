@@ -98,7 +98,12 @@ std::string Platform::GetAppDataDirectory() {
 }
 
 std::string Platform::addTrailingSlash(std::string directory) {
+#ifdef UNIX
+	std::string endinf = "/";
+#endif
+#ifdef WIN32
 	std::string ending = "\\";
+#endif
 	if (0 != directory.compare(directory.length() - ending.length(), ending.length(), ending)) {
 		LOGD("Adding trailing slash.");
 		return directory + ending;
