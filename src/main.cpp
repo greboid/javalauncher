@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
 			LOGD("Destroying JVM.");
 			launcher->destroyJVM();
 			LOGD("Relaunching.");
-			updater.relaunch();
+			updater.relaunch(argv);
 		}
 		LOGD("Calling main method.");
 		launcher->callMainMethod();
@@ -74,7 +74,6 @@ int main(int argc, char** argv) {
 		LOGE("Launching the JVM failed: ");
 		LOGE(ex.what());
 		LOGE("Press any key to exit");
-		_getch();
 	}
 	LOGD("Stopping single instance.");
 	singleInstance.stopped();

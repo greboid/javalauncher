@@ -95,21 +95,16 @@ int Updater::updateApplication(std::string from, std::string to) {
 	return 1;
 }
 
-void Updater::relaunch() {
+void Updater::relaunch(char** argv) {
 	updateMutex = Mutex();
 	updateMutex.init("DMDirc-Updater");
-	STARTUPINFO         sInfo;
-	PROCESS_INFORMATION pInfo;
-	ZeroMemory(&sInfo, sizeof(sInfo));
-	sInfo.cb = sizeof(sInfo);
-	ZeroMemory(&pInfo, sizeof(pInfo));
+	updateMutex.lock();
 	LOGD("Creating new process.");
-	CreateProcess((char*)Utils::getExePathAndName().c_str(),
-		NULL, NULL, NULL, false, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pInfo);
+	Platform::launchApplication(Utils::getExePathAndName(), argv);
 	LOGD("Releasing mutex");
 	updateMutex.unlock();
 	LOGD("Exiting app.");
-	ExitProcess(0);
+	exit(0);
 }
 
 bool Updater::isUpdateWaiting() {

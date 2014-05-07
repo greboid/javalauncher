@@ -2,14 +2,12 @@
 #define	UPDATER_H
 
 #include "../log4z/log4z.h"
-#include "../platform/mutex.h"
 #include "../platform/platform.h"
+#include "../platform/mutex.h"
 #include "../config/ConfigReader.h"
-#include <cstdlib>
-#include <stdio.h>
+#include <string>
 #include <iostream>
 #include <fstream>
-#include <conio.h>
 
 class Updater {
 public:
@@ -17,7 +15,7 @@ public:
     bool doUpdate(std::string);
     bool isUpdateWaiting();
     std::string getNewVersion();
-    void relaunch();
+    void relaunch(char** argv);
 private:
     Mutex updateMutex;
     std::string newVersion;
