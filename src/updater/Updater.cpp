@@ -1,4 +1,3 @@
-#include "../log4z/log4z.h"
 #include "Updater.h"
 
 using namespace std;
@@ -8,23 +7,12 @@ Updater::Updater(ConfigReader& config) {
 	this->newVersion = "";
 }
 
-void Updater::createUpdateMutex() {
-	updateMutex = CreateMutex(NULL, true, TEXT("DMDirc-Update"));
-}
-
-void Updater::waitForUpdaterMutex() {
-	WaitForSingleObject(updateMutex, INFINITE);
-}
-
-void Updater::releaseUpdateMutex() {
-	ReleaseMutex(updateMutex);
-}
-
 bool Updater::doUpdate(std::string directory) {
 	LOGD("Creating mutex.");
-	createUpdateMutex();
+	updateMutex = Mutex();
+	updateMutex.init("DMDirc-Updater");
 	LOGD("Waiting for mutex.");
-	waitForUpdaterMutex();
+	updateMutex.lock();
 	LOGD("Checking for old launcher.");
 	deleteOldLauncher();
 	bool relaunchNeeded = FALSE;
@@ -53,7 +41,7 @@ bool Updater::doUpdate(std::string directory) {
 		}
 	}
 	LOGD("Releasing mutex.");
-	releaseUpdateMutex();
+	updateMutex.unlock();
 	LOGD("Returning value: " << relaunchNeeded);
 	return relaunchNeeded;
 }
@@ -116,7 +104,8 @@ bool Updater::moveNewLauncher(std::string oldName, std::string newName) {
 }
 
 void Updater::relaunch() {
-	Updater::createUpdateMutex();
+	updateMutex = Mutex();
+	updateMutex.init("DMDirc-Updater");
 	STARTUPINFO         sInfo;
 	PROCESS_INFORMATION pInfo;
 	ZeroMemory(&sInfo, sizeof(sInfo));
@@ -126,7 +115,7 @@ void Updater::relaunch() {
 	CreateProcess((char*)Utils::getExePathAndName().c_str(),
 		NULL, NULL, NULL, false, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pInfo);
 	LOGD("Releasing mutex");
-	Updater::releaseUpdateMutex();
+	updateMutex.unlock();
 	LOGD("Exiting app.");
 	ExitProcess(0);
 }
