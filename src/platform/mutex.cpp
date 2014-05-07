@@ -1,5 +1,9 @@
 #include "mutex.h"
 
+Mutex::Mutex() {
+	instance = NULL;
+}
+
 bool Mutex::init(std::string name)
 {
 #ifdef UNIX

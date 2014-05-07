@@ -19,6 +19,7 @@
 
 class Mutex {
 public:
+	Mutex();
 	bool init(std::string name);
 	int lock();
 	int unlock();

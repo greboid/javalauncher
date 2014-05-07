@@ -66,5 +66,5 @@ std::vector<std::string> ConfigReader::getVectorValue(string key, std::vector<st
 }
 
 bool ConfigReader::parseBoolean(const std::string *str) {
-    return (char*) str == "true" || (char*) str == "yes" || (char*) str == "on" || (char*) str == "1";
+	return strcmp((char*)str, "true") || strcmp((char*)str, "yes") || strcmp((char*)str, "on") || strcmp((char*)str, "1");
 }

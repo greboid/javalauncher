@@ -62,7 +62,6 @@ std::string Utils::ws2s(std::wstring s) {
 }
 
 void Utils::addMatchingFilesToExistingVector(std::vector<std::string>& files, std::string path, std::regex regex) {
-	std::vector<std::string> newFiles = addMatchingFilesToVector(path, regex);
 	files = Platform::listDirectory(path, regex);
 }
 

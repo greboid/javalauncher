@@ -34,6 +34,9 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 	this->config = config;
 	this->jvmargs = getJvmArgs(config);
 	this->appargs = getCliArgs(appargs, config);
+	this->jvmDllInstance = NULL;
+	this->jvmEnv = NULL;
+	this->jvm = NULL;
 }
 
 std::string JVMLauncher::getDLLFromRegistry() {

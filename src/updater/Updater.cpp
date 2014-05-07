@@ -37,7 +37,7 @@ bool Updater::doUpdate(std::string directory) {
 		int success = updateApplication(directory, Utils::getExePath());
 		if (success == -1) {
 			LOGD("Failed: Updating to app data.");
-			success = updateApplication(directory, Platform::GetAppDataDirectory());
+			updateApplication(directory, Platform::GetAppDataDirectory());
 		}
 	}
 	LOGD("Releasing mutex.");

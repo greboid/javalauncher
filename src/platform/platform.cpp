@@ -99,7 +99,7 @@ std::string Platform::GetAppDataDirectory() {
 
 std::string Platform::addTrailingSlash(std::string directory) {
 #ifdef UNIX
-	std::string endinf = "/";
+	std::string ending = "/";
 #endif
 #ifdef WIN32
 	std::string ending = "\\";
@@ -151,7 +151,7 @@ std::string Platform::launchApplicationCapturingOutput(std::string application, 
 	}
 	PROCESS_INFORMATION piProcInfo;
 	STARTUPINFO siStartInfo;
-	BOOL bSuccess = FALSE;
+	BOOL bSuccess;
 	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
 	ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
 	siStartInfo.cb = sizeof(STARTUPINFO);
@@ -165,14 +165,13 @@ std::string Platform::launchApplicationCapturingOutput(std::string application, 
 	}
 
 	DWORD dwRead;
-	CHAR chBuf[BUFSIZE];
 	bSuccess = FALSE;
-	HANDLE hParentStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	std::string output;
 	if (WaitForSingleObject(piProcInfo.hProcess, 1000) == WAIT_TIMEOUT) {
 		TerminateProcess(piProcInfo.hProcess, 1);
 	}
 	else {
+    CHAR chBuf[BUFSIZE];
 		bSuccess = ReadFile(g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL);
 		if (!bSuccess || dwRead == 0){
 			return "0";
