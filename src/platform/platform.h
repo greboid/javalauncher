@@ -17,6 +17,8 @@ public:
 	static void createConsole();
 	static void launchApplication(std::string application, char** argv);
 	static bool moveFile(std::string oldFile, std::string newFile);
+	static bool deleteFileIfExists(std::string file);
+	static bool deleteFile(std::string file);
 private:
 	Platform();
 };

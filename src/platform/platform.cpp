@@ -48,3 +48,20 @@ bool Platform::moveFile(std::string oldFile, std::string newFile) {
 	return true;
 #endif
 }
+
+bool deleteFileIfExists(std::string file) {
+	std::ifstream file(file.c_str());
+	if (file.good()) {
+		file.close();
+		return deleteFile(file);
+	}
+	return true;
+}
+
+bool deleteFile(std::string file) {
+	if (remove(file.c_str()) != 0) {
+		perror("Failed to delete the old launcher");
+		return false;
+	}
+	return true;
+}

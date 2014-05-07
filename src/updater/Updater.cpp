@@ -14,7 +14,7 @@ bool Updater::doUpdate(std::string directory) {
 	LOGD("Waiting for mutex.");
 	updateMutex.lock();
 	LOGD("Checking for old launcher.");
-	deleteOldLauncher();
+	Platform::deleteFileIfExists(Utils::getExePathAndName() + ".old");
 	bool relaunchNeeded = FALSE;
 	LOGD("Checking launcher auto update = " << LAUNCHER_AUTOUPDATE);
 	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
@@ -110,18 +110,6 @@ void Updater::relaunch() {
 	updateMutex.unlock();
 	LOGD("Exiting app.");
 	ExitProcess(0);
-}
-
-void Updater::deleteOldLauncher() {
-	std::string exeNameOld = Utils::getExePathAndName() + ".old";
-	std::ifstream file(exeNameOld.c_str());
-	if (file.good()) {
-		LOGD("Old Launcher exists, deleting.");
-		file.close();
-		if (remove(exeNameOld.c_str()) != 0) {
-			perror("Failed to delete the old launcher");
-		}
-	}
 }
 
 bool Updater::isUpdateWaiting() {

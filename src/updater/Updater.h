@@ -22,7 +22,6 @@ private:
     Mutex updateMutex;
     std::string newVersion;
     ConfigReader config;
-    void deleteOldLauncher();
 	int updateLauncher(std::string, std::string);
 	int updateApplication(std::string, std::string);
 };
