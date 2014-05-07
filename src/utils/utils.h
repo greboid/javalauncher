@@ -22,7 +22,6 @@ public:
 	static std::string getExePathAndName();
 	static std::string getExePath();
 	static std::string getExeName();
-	static void disableFolderVirtualisation();
 	static std::string ws2s(std::wstring);
 	static std::string GetAppDataDirectory();
 	static void addMatchingFilesToExistingVector(std::vector<std::string>&, std::string, std::regex);

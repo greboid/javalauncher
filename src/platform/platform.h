@@ -22,6 +22,7 @@ public:
 	static bool deleteFileIfExists(std::string file);
 	static bool deleteFile(std::string file);
 	static std::string getExePath();
+	static void disableFolderVirtualisation();
 private:
 	Platform();
 };

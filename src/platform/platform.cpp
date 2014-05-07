@@ -73,3 +73,15 @@ string Platform::getExePath() {
 	return std::string(buffer);
 #endif
 }
+
+void Platform::disableFolderVirtualisation() {
+#ifdef WIN32
+	HANDLE hToken;
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)) {
+		if (GetLastError() != ERROR_INVALID_PARAMETER) {
+			return;
+		}
+		CloseHandle(hToken);
+	}
+#endif
+}

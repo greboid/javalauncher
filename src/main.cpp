@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 		version = Utils::launchAppReturnOutput(Utils::GetAppDataDirectory() + Utils::getExeName());
 	}
 	LOGD("Disabling folder virtualisation.");
-	Utils::disableFolderVirtualisation();
+	Platform::disableFolderVirtualisation();
 	ConfigReader config;
 	LOGD("Creating single instance.");
 	SingleInstance singleInstance(config);

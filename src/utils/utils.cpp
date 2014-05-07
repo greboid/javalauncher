@@ -57,17 +57,6 @@ std::vector<std::string> Utils::splitString(std::string input, std::string delim
 	return result;
 }
 
-
-void Utils::disableFolderVirtualisation() {
-	HANDLE hToken;
-	if (OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)) {
-		if (GetLastError() != ERROR_INVALID_PARAMETER) {
-			return;
-		}
-		CloseHandle(hToken);
-	}
-}
-
 std::string Utils::ws2s(std::wstring s) {
 	int len;
 	int slength = (int)s.length();
