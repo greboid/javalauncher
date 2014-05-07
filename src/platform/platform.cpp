@@ -134,3 +134,58 @@ std::vector<std::string> Platform::listDirectory(std::string directory, std::reg
 	return matchingFiles;
 #endif
 }
+
+std::string Platform::launchApplicationCapturingOutput(std::string application, char** argv) {
+#ifdef WIN32
+	HANDLE g_hChildStd_OUT_Rd;
+	HANDLE g_hChildStd_OUT_Wr;
+	SECURITY_ATTRIBUTES saAttr;
+	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+	saAttr.bInheritHandle = TRUE;
+	saAttr.lpSecurityDescriptor = NULL;
+	if (!CreatePipe(&g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &saAttr, 0)) {
+		return "-1";
+	}
+	if (!SetHandleInformation(g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0)) {
+		return "-1";
+	}
+	PROCESS_INFORMATION piProcInfo;
+	STARTUPINFO siStartInfo;
+	BOOL bSuccess = FALSE;
+	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+	ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
+	siStartInfo.cb = sizeof(STARTUPINFO);
+	siStartInfo.hStdError = g_hChildStd_OUT_Wr;
+	siStartInfo.hStdOutput = g_hChildStd_OUT_Wr;
+	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+	std::string commandLine = application + " --LAUNCHER_VERSION";
+	bSuccess = CreateProcess(LPSTR(application.c_str()), LPSTR(commandLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo);
+	if (!bSuccess) {
+		return "0";
+	}
+
+	DWORD dwRead;
+	CHAR chBuf[BUFSIZE];
+	bSuccess = FALSE;
+	HANDLE hParentStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::string output;
+	if (WaitForSingleObject(piProcInfo.hProcess, 1000) == WAIT_TIMEOUT) {
+		TerminateProcess(piProcInfo.hProcess, 1);
+	}
+	else {
+		bSuccess = ReadFile(g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL);
+		if (!bSuccess || dwRead == 0){
+			return "0";
+		}
+		for (unsigned int i = 0; i <= dwRead; i++) {
+			if (chBuf[i] == '\r' || chBuf[i] == '\n' || chBuf[i] == '\0') {
+				output = std::string(chBuf, i);
+				break;
+			}
+		}
+	}
+	CloseHandle(piProcInfo.hProcess);
+	CloseHandle(piProcInfo.hThread);
+	return output;
+#endif
+}

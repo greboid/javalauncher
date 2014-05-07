@@ -31,6 +31,7 @@ public:
 	static std::string addTrailingSlash(std::string directory);
 	static std::vector<std::string> listDirectory(std::string directory);
 	static std::vector<std::string> listDirectory(std::string directory, std::regex regex);
+	static std::string launchApplicationCapturingOutput(std::string application, char** argv);
 private:
 	Platform();
 };

@@ -24,7 +24,7 @@ public:
 	static std::string ws2s(std::wstring);
 	static void addMatchingFilesToExistingVector(std::vector<std::string>&, std::string, std::regex);
 	static std::vector<std::string> addMatchingFilesToVector(std::string, std::regex);
-	static std::string launchAppReturnOutput(std::string);
+	static std::string launchAppReturnOutput(std::string, char** argv);
 private:
 	Utils();
 protected:

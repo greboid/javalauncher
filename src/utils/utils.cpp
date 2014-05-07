@@ -70,55 +70,6 @@ std::vector<std::string> Utils::addMatchingFilesToVector(std::string path, std::
 	return Platform::listDirectory(path, regex);
 }
 
-std::string Utils::launchAppReturnOutput(std::string executable) {
-	HANDLE g_hChildStd_OUT_Rd;
-	HANDLE g_hChildStd_OUT_Wr;
-	SECURITY_ATTRIBUTES saAttr;
-	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-	saAttr.bInheritHandle = TRUE;
-	saAttr.lpSecurityDescriptor = NULL;
-	if (!CreatePipe(&g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &saAttr, 0)) {
-		return "-1";
-	}
-	if (!SetHandleInformation(g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0)) {
-		return "-1";
-	}
-	PROCESS_INFORMATION piProcInfo;
-	STARTUPINFO siStartInfo;
-	BOOL bSuccess = FALSE;
-	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
-	ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
-	siStartInfo.cb = sizeof(STARTUPINFO);
-	siStartInfo.hStdError = g_hChildStd_OUT_Wr;
-	siStartInfo.hStdOutput = g_hChildStd_OUT_Wr;
-	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
-	std::string commandLine = executable + " --LAUNCHER_VERSION";
-	bSuccess = CreateProcess(LPSTR(executable.c_str()), LPSTR(commandLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &siStartInfo, &piProcInfo);
-	if (!bSuccess) {
-		return "0";
-	}
-
-	DWORD dwRead;
-	CHAR chBuf[BUFSIZE];
-	bSuccess = FALSE;
-	HANDLE hParentStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	std::string output;
-	if (WaitForSingleObject(piProcInfo.hProcess, 1000) == WAIT_TIMEOUT) {
-		TerminateProcess(piProcInfo.hProcess, 1);
-	}
-	else {
-		bSuccess = ReadFile(g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL);
-		if (!bSuccess || dwRead == 0){
-			return "0";
-		}
-		for (unsigned int i = 0; i <= dwRead; i++) {
-			if (chBuf[i] == '\r' || chBuf[i] == '\n' || chBuf[i] == '\0') {
-				output = std::string(chBuf, i);
-				break;
-			}
-		}
-	}
-	CloseHandle(piProcInfo.hProcess);
-	CloseHandle(piProcInfo.hThread);
-	return output;
+std::string Utils::launchAppReturnOutput(std::string executable, char** argv) {
+	return Platform::launchApplicationCapturingOutput(executable, argv);
 }

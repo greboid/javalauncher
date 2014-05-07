@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 	if (file.good()) {
 		LOGD("Update file exists.");
 		file.close();
-		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory() + Utils::getExeName());
+		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory() + Utils::getExeName(), argv);
 	}
 	LOGD("Disabling folder virtualisation.");
 	Platform::disableFolderVirtualisation();
