@@ -4,7 +4,7 @@
 #include "log4z/log4z.h"
 #include "utils/utils.h"
 #include <cstdlib>
-#include <string>
+#include <cstring>
 #include <iostream>
 #include <fstream>
 #include <map>

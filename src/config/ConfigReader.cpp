@@ -21,7 +21,7 @@ void ConfigReader::init() {
         string key;
         string value;
         while(getline(configFile, line)) {
-            int pos = line.find("=");
+            unsigned int pos = line.find("=");
             if(pos != string::npos) {
                 key = line.substr(0, pos );
                 value = line.substr(pos + 1);
