@@ -1,8 +1,5 @@
 #include "SingleInstance.h"
 
-#define SINGLEINSTANCE TRUE
-#define SETTING "launcher.singleinstance"
-
 using namespace std;
 
 SingleInstance::SingleInstance(ConfigReader& config) {
@@ -19,7 +16,7 @@ SingleInstance::~SingleInstance() {
 
 bool SingleInstance::getCanStart() {
 	LOGD("Checking if we should use single instance.");
-	if (config.getBoolValue(SETTING, SINGLEINSTANCE)) {
+	if (config.getBoolValue("launcher.singleinstance", LAUNCHER_SINGLEINSTANCE)) {
 		LOGD("Creating single instance.");
 		instanceMutex = Mutex();
 		if (!instanceMutex.init("DMDirc")) {
