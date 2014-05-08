@@ -74,7 +74,7 @@ void JVMLauncher::LaunchJVM() {
 		throw JVMLauncherException("Could not launch the JVM");
 	}
 	//Attach to main thread
-	jvm->AttachCurrentThread((LPVOID*)& jvmEnv, NULL);
+	jvm->AttachCurrentThread((void**)& jvmEnv, NULL);
 }
 
 void JVMLauncher::destroyJVM() {
