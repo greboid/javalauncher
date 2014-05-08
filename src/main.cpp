@@ -8,7 +8,6 @@
 #include "platform/platform.h"
 #include "version.h"
 #include <sstream>
-#include <Shlobj.h>
 
 using namespace std;
 
