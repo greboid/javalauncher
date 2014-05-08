@@ -37,36 +37,9 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 	this->jvm = NULL;
 }
 
-std::string JVMLauncher::getDLLFromRegistry() {
-	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
-	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
-	return result;
-}
-
-std::string JVMLauncher::getJavaHomeFromRegistry() {
-	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
-	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
-	return result;
-}
-
-std::string JVMLauncher::getRegistryValue(std::string key, std::string subkey) {
-	HKEY regKey;
-	if (RegOpenKey(HKEY_LOCAL_MACHINE, (char*)key.c_str(), &regKey) != ERROR_SUCCESS) {
-		throw JVMLauncherException("Cannot find registry key");
-	}
-	DWORD dwType = REG_SZ;
-	char value[1024];
-	DWORD value_length = 1024;
-	if (RegQueryValueEx(regKey, (char*)subkey.c_str(), NULL, &dwType, (LPBYTE)&value, &value_length) != ERROR_SUCCESS) {
-		throw new JVMLauncherException("Cannot find key value");
-	}
-	RegCloseKey(regKey);
-	return value;
-}
-
 void JVMLauncher::LaunchJVM() {
-	std::string jvmDll = getDLLFromRegistry();
-	javaHome = getJavaHomeFromRegistry();
+	std::string jvmDll = Platform::getJavaDLLFromRegistry();
+	javaHome = Platform::getJavaHomeFromRegistry();
 	//Build library path
 	std::string strJavaLibraryPath = "-Djava.library.path=";
 	strJavaLibraryPath += javaHome + "\\lib" + "," + javaHome + "\\jre\\lib";

@@ -41,9 +41,6 @@ private:
     JavaVM* jvm;
 	vector<string> getCliArgs(vector<string>, ConfigReader& config);
 	vector<string> getJvmArgs(ConfigReader config);
-    std::string getDLLFromRegistry();
-    std::string getRegistryValue(std::string, std::string);
-    std::string getJavaHomeFromRegistry();
     void addAllJarsFromPath(std::string);
 protected:
 };

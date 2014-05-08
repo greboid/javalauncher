@@ -36,6 +36,9 @@ public:
 	static std::vector<std::string> listDirectory(std::string directory, std::regex regex);
 	static std::string launchApplicationCapturingOutput(std::string application, char** argv);
 	static CreateJavaVM getJVMInstance(std::string javaLibrary);
+	static std::string getJavaDLLFromRegistry();
+	static std::string getRegistryValue(std::string, std::string);
+	static std::string getJavaHomeFromRegistry();
 private:
 	Platform();
 };

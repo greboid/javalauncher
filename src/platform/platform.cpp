@@ -235,3 +235,51 @@ CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
 	throw JVMLauncherException("Cannot load jvm.dll");
 #endif
 }
+
+std::string Platform::getJavaDLLFromRegistry() {
+#ifdef UNIX
+	return "";
+#elseif WIN32
+	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
+	return result;
+#else
+	return "";
+#endif
+	return "";
+}
+
+std::string Platform::getJavaHomeFromRegistry() {
+#ifdef UNIX
+	return "";
+#elseif WIN32
+	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
+	return result;
+#else
+	return "";
+#endif
+	return "";
+}
+
+std::string Platform::getRegistryValue(std::string key, std::string subkey) {
+#ifdef UNIX
+	return "";
+#elseif WIN32
+	HKEY regKey;
+	if (RegOpenKey(HKEY_LOCAL_MACHINE, (char*)key.c_str(), &regKey) != ERROR_SUCCESS) {
+		throw JVMLauncherException("Cannot find registry key");
+	}
+	DWORD dwType = REG_SZ;
+	char value[1024];
+	DWORD value_length = 1024;
+	if (RegQueryValueEx(regKey, (char*)subkey.c_str(), NULL, &dwType, (LPBYTE)&value, &value_length) != ERROR_SUCCESS) {
+		throw new JVMLauncherException("Cannot find key value");
+	}
+	RegCloseKey(regKey);
+	return value;
+#else
+	return "";
+#endif
+	return "";
+}
