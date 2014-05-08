@@ -3,6 +3,7 @@
 
 #include "log4z/log4z.h"
 #include "utils/utils.h"
+#include "jvmlauncher/JVMLauncherException.cpp"
 #ifdef UNIX
 #include <fcntl.h>
 #include <unistd.h>
@@ -13,6 +14,7 @@
 #include <windows.h>
 #include <shlobj.h>
 #endif
+#include <jni.h>
 #include <vector>
 #include <regex>
 #include <fstream>
@@ -20,6 +22,7 @@
 
 class Platform {
 public:
+	typedef jint(JNICALL* CreateJavaVM)(JavaVM**, void**, void*);
 	static void createConsole();
 	static void launchApplication(std::string application, char** argv);
 	static bool moveFile(std::string oldFile, std::string newFile);
@@ -32,6 +35,7 @@ public:
 	static std::vector<std::string> listDirectory(std::string directory);
 	static std::vector<std::string> listDirectory(std::string directory, std::regex regex);
 	static std::string launchApplicationCapturingOutput(std::string application, char** argv);
+	static CreateJavaVM getJVMInstance(std::string javaLibrary);
 private:
 	Platform();
 };

@@ -10,7 +10,6 @@
 #include <vector>
 #include <iostream>
 #include <ostream>
-#include <process.h>
 
 class JVMLauncherUtils {
 public:

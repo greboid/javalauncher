@@ -33,7 +33,6 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 	this->config = config;
 	this->jvmargs = getJvmArgs(config);
 	this->appargs = getCliArgs(appargs, config);
-	this->jvmDllInstance = NULL;
 	this->jvmEnv = NULL;
 	this->jvm = NULL;
 }
@@ -66,7 +65,7 @@ std::string JVMLauncher::getRegistryValue(std::string key, std::string subkey) {
 }
 
 void JVMLauncher::LaunchJVM() {
-	jvmDll = getDLLFromRegistry();
+	std::string jvmDll = getDLLFromRegistry();
 	javaHome = getJavaHomeFromRegistry();
 	//Build library path
 	std::string strJavaLibraryPath = "-Djava.library.path=";
@@ -95,15 +94,7 @@ void JVMLauncher::LaunchJVM() {
 	vm_args.nOptions = jvmargs.size() + 3;
 	vm_args.ignoreUnrecognized = JNI_FALSE;
 	//Load JVM.dll
-	jvmDllInstance = LoadLibraryA(jvmDll.c_str());
-	if (jvmDllInstance == 0) {
-		throw JVMLauncherException("Cannot load jvm.dll");
-	}
-	//Load JVM
-	jvmInstance = (CreateJavaVM)GetProcAddress(jvmDllInstance, "JNI_CreateJavaVM");
-	if (jvmInstance == NULL) {
-		throw JVMLauncherException("Cannot load jvm.dll");
-	}
+	jvmInstance = Platform::getJVMInstance(jvmDll);
 	//Create the JVM
 	jint res = jvmInstance(&jvm, (void **)&jvmEnv, &vm_args);
 	if (res < 0) {

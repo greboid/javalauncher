@@ -1,4 +1,5 @@
 #include "platform.h"
+typedef jint(JNICALL* CreateJavaVM)(JavaVM**, void**, void*);
 
 using namespace std;
 
@@ -206,4 +207,31 @@ std::string Platform::launchApplicationCapturingOutput(std::string application, 
 	return output;
 #endif
 return "";
+}
+
+CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
+#ifdef UNIX
+	void* jvmDllInstance = dlopen(javaLibrary.c_str());
+	if (jvmDllInstance == 0) {
+		throw JVMLauncherException("Cannot load jvm.dll");
+	}
+	CreateJavaVM jvmInstance = (CreateJavaVM)dlsym(jvmDllInstance, "JNI_CreateJavaVM");
+	if (jvmInstance == NULL) {
+		throw JVMLauncherException("Cannot load jvm.dll");
+	}
+	return jvmInstance;
+#elseif WIN32
+	HMODULE jvmDllInstance = LoadLibraryA(javaLibrary.c_str());
+	if (jvmDllInstance == 0) {
+		throw JVMLauncherException("Cannot load jvm.dll");
+	}
+	//Load JVM
+	CreateJavaVM jvmInstance = (CreateJavaVM)GetProcAddress(jvmDllInstance, "JNI_CreateJavaVM");
+	if (jvmInstance == NULL) {
+		throw JVMLauncherException("Cannot load jvm.dll");
+	}
+	return jvmInstance;
+#else
+	throw JVMLauncherException("Cannot load jvm.dll");
+#endif
 }

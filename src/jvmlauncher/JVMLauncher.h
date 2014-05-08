@@ -14,7 +14,6 @@
 #include <vector>
 #include <iostream>
 #include <ostream>
-#include <process.h>
 
 class JVMLauncher {
 public:
@@ -28,14 +27,12 @@ private:
     static void exit(jint);
     typedef jint(JNICALL* CreateJavaVM)(JavaVM**, void**, void*);
     ConfigReader config;
-    HINSTANCE jvmDllInstance;
     std::vector<std::string> jvmargs;
     std::vector<std::string> appargs;
     std::string mainClassName;
 	std::string utilsClassName;
     std::string javaHome;
     std::string appHome;
-    std::string jvmDll;
     std::vector<std::string> jars;
     CreateJavaVM jvmInstance;
     jclass mainClass;
