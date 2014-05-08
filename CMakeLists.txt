@@ -17,8 +17,8 @@ set(APPLICATION_PATH "c:\\\\Program Files\\\\DMDirc\\\\")
 set(APPLICATION_MAIN "com/dmdirc/Main")
 set(LAUNCHERUTILS_MAIN "com/dmdirc/LauncherUtils")
 set(APPLICATION_SETUP "com/dmdric/LauncherUtils")
-SET(APPLICATION_AUTOUPDATE TRUE)
-SET(LAUNCHER_AUTOUPDATE TRUE)
+SET(APPLICATION_AUTOUPDATE true)
+SET(LAUNCHER_AUTOUPDATE true)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/config/ConfigDefaults.h.in"

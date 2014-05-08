@@ -15,7 +15,7 @@ bool Updater::doUpdate(std::string directory) {
 	updateMutex.lock();
 	LOGD("Checking for old launcher.");
 	Platform::deleteFileIfExists(Utils::getExePathAndName() + ".old");
-	bool relaunchNeeded = FALSE;
+	bool relaunchNeeded = false;
 	LOGD("Checking launcher auto update = " << LAUNCHER_AUTOUPDATE);
 	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
 		LOGD("Attempting to update launcher.");
@@ -28,7 +28,7 @@ bool Updater::doUpdate(std::string directory) {
 		}
 		if (success == 1) {
 			LOGD("Success, restart needed.");
-			relaunchNeeded = TRUE;
+			relaunchNeeded = true;
 		}
 	}
 	LOGD("Checking application update = " << APPLICATION_AUTOUPDATE);

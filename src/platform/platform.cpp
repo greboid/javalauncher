@@ -38,7 +38,7 @@ bool Platform::moveFile(std::string oldFile, std::string newFile) {
 
 	close(source);
 	close(dest);
-	return TRUE;
+	return true;
 #endif
 #ifdef WIN32
 	if (MoveFileEx(oldFile.c_str(), (newFile + ".old").c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
@@ -47,6 +47,7 @@ bool Platform::moveFile(std::string oldFile, std::string newFile) {
 	}
 	return true;
 #endif
+return true;
 }
 
 bool Platform::deleteFileIfExists(string file) {
@@ -67,11 +68,16 @@ bool Platform::deleteFile(string file) {
 }
 
 string Platform::getExePath() {
+#ifdef UNIX
+	//Do something
+	return "";
+#endif
 #ifdef WIN32
 	char buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, MAX_PATH);
 	return std::string(buffer);
 #endif
+return "";
 }
 
 void Platform::disableFolderVirtualisation() {
@@ -87,6 +93,9 @@ void Platform::disableFolderVirtualisation() {
 }
 
 std::string Platform::GetAppDataDirectory() {
+#ifdef UNIX
+	return "";
+#endif
 #ifdef WIN32
 	PWSTR wChar;
 	SHGetKnownFolderPath(FOLDERID_UserProgramFiles, 0, NULL, &wChar);
@@ -95,6 +104,7 @@ std::string Platform::GetAppDataDirectory() {
 	CoTaskMemFree(static_cast<LPVOID>(wChar));
 	return path + "\\" + APPLICATION_NAME + "\\";
 #endif
+return "";
 }
 
 std::string Platform::addTrailingSlash(std::string directory) {
@@ -117,6 +127,9 @@ std::vector<std::string> Platform::listDirectory(std::string directory) {
 }
 
 std::vector<std::string> Platform::listDirectory(std::string directory, std::regex regex) {
+#ifdef UNIX
+	return std::vector<std::string>();
+#endif
 #ifdef WIN32
 	WIN32_FIND_DATA data;
 	HANDLE hFile = FindFirstFile((addTrailingSlash(directory) + "*.*").c_str(), &data);
@@ -134,9 +147,13 @@ std::vector<std::string> Platform::listDirectory(std::string directory, std::reg
 	FindClose(hFile);
 	return matchingFiles;
 #endif
+return std::vector<std::string>();
 }
 
 std::string Platform::launchApplicationCapturingOutput(std::string application, char** argv) {
+#ifdef UNIX
+	return "";
+#endif
 #ifdef WIN32
 	HANDLE g_hChildStd_OUT_Rd;
 	HANDLE g_hChildStd_OUT_Wr;
@@ -188,4 +205,5 @@ std::string Platform::launchApplicationCapturingOutput(std::string application, 
 	CloseHandle(piProcInfo.hThread);
 	return output;
 #endif
+return "";
 }

@@ -1,6 +1,8 @@
 #ifndef JVMLAUNCHERUTILS_H
 #define	JVMLAUNCHERUTILS_H
 
+#include "JVMLauncherException.cpp"
+#include "config/ConfigReader.h"
 #include <stdexcept>
 #include <jni.h>
 #include <string>
@@ -9,8 +11,6 @@
 #include <iostream>
 #include <ostream>
 #include <process.h>
-#include "JVMLauncherException.cpp"
-#include "../config/ConfigReader.h"
 
 class JVMLauncherUtils {
 public:
