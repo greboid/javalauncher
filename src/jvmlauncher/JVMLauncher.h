@@ -1,6 +1,12 @@
 #ifndef JVMLAUNCHER_H
 #define	JVMLAUNCHER_H
 
+#include "log4z/log4z.h"
+#include "version.h"
+#include "config/ConfigDefaults.h"
+#include "config/ConfigReader.h"
+#include "updater/Updater.h"
+#include "JVMLauncherUtils.h"
 #include <stdexcept>
 #include <jni.h>
 #include <string>
@@ -9,11 +15,6 @@
 #include <iostream>
 #include <ostream>
 #include <process.h>
-#include "../version.h"
-#include "../config/ConfigDefaults.h"
-#include "../config/ConfigReader.h"
-#include "../updater/Updater.h"
-#include "JVMLauncherUtils.h"
 
 class JVMLauncher {
 public:

@@ -1,4 +1,3 @@
-#include "../log4z/log4z.h"
 #include "ConfigReader.h"
 
 using namespace std;

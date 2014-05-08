@@ -1,9 +1,9 @@
 #ifndef SINGLEINSTANCE_H
 #define	SINGLEINSTANCE_H
 
-#include "../log4z/log4z.h"
-#include "../config/ConfigReader.h"
-#include "../platform/mutex.h"
+#include "log4z/log4z.h"
+#include "config/ConfigReader.h"
+#include "platform/mutex.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>

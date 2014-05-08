@@ -1,13 +1,14 @@
 #ifndef CONFIGREADER_H
 #define	CONFIGREADER_H
 
+#include "log4z/log4z.h"
+#include "utils/utils.h"
 #include <cstdlib>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <map>
 #include <vector>
-#include "../utils/utils.h"
 
 class ConfigReader {
 public:

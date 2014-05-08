@@ -1,8 +1,8 @@
 #ifndef PLATFORM_H
 #define	PLATFORM_H
 
-#include "../log4z/log4z.h"
-#include "../utils/utils.h"
+#include "log4z/log4z.h"
+#include "utils/utils.h"
 #ifdef UNIX
 #include <fcntl.h>
 #include <unistd.h>

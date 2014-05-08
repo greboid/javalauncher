@@ -1,10 +1,10 @@
 #ifndef UPDATER_H
 #define	UPDATER_H
 
-#include "../log4z/log4z.h"
-#include "../platform/platform.h"
-#include "../platform/mutex.h"
-#include "../config/ConfigReader.h"
+#include "log4z/log4z.h"
+#include "platform/platform.h"
+#include "platform/mutex.h"
+#include "config/ConfigReader.h"
 #include <string>
 #include <iostream>
 #include <fstream>

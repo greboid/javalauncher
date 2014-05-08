@@ -1,10 +1,10 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
-#include "../log4z/log4z.h"
-#include "../config/ConfigDefaults.h"
-#include "../config/ConfigReader.h"
-#include "../platform/platform.h"
+#include "log4z/log4z.h"
+#include "config/ConfigDefaults.h"
+#include "config/ConfigReader.h"
+#include "platform/platform.h"
 #include <string>
 #include <stdlib.h>
 #include <vector>
