@@ -3,7 +3,7 @@ Java Launcher
 
 Designed for DMDirc, but aiming to be fairly generic.
 
- - Configurable
+ - [Settings](docs/settings.md)
  - Single instance
  - Self updating
  - Updating the app
