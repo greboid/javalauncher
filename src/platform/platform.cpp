@@ -113,7 +113,7 @@ std::string Platform::addTrailingSlash(std::string directory) {
 #ifdef WIN32
 	ending = "\\";
 #else
-	ending = "/"
+	ending = "/";
 #endif
 	if (0 != directory.compare(directory.length() - ending.length(), ending.length(), ending)) {
 		LOGD("Adding trailing slash.");
