@@ -10,7 +10,10 @@ IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
   ENDIF(GIT_FOUND)
 ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
 
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h)
+CONFIGURE_FILE(
+  "${PROJECT_SOURCE_DIR}/src/version.h.in"
+  "${PROJECT_BINARY_DIR}/src/version.h"
+)
 
 set(APPLICATION_NAME DMDirc)
 set(APPLICATION_PATH "c:\\\\Program Files\\\\DMDirc\\\\")
@@ -40,6 +43,7 @@ add_subdirectory(src/log4z)
 add_subdirectory(src/platform)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_BINARY_DIR}/src)
 add_executable(javalauncher src/main.cpp ${RES_FILES})
 target_link_libraries (javalauncher Utils)
 target_link_libraries (javalauncher ConfigReader)
