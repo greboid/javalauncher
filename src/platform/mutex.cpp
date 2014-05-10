@@ -8,7 +8,7 @@ bool Mutex::init(std::string name)
 {
 #ifdef UNIX
 	return pthread_mutex_init(instance, NULL);
-#elseif WIN32
+#elif WIN32
 	instance = CreateMutex(NULL, true, TEXT(name.c_str()));
 	if (instance && GetLastError() == ERROR_ALREADY_EXISTS) {
 		return FALSE;
@@ -23,7 +23,7 @@ int Mutex::lock()
 {
 #ifdef UNIX
 	return pthread_mutex_lock(mutex);
-#elseif WIN32
+#elif WIN32
 	return (WaitForSingleObject(instance, INFINITE) == WAIT_FAILED ? 1 : 0);
 #else
 	return -1;
@@ -34,7 +34,7 @@ int Mutex::unlock()
 {
 #ifdef UNIX
 	return pthread_mutex_unlock(mutex);
-#elseif WIN32
+#elif WIN32
 	bool value = ReleaseMutex(instance) == 0;
 	CloseHandle(instance);
 	return value;

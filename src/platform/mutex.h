@@ -12,7 +12,7 @@
 
 #ifdef UNIX
 #define MUTEX pthread_mutex_t
-#elsife WIN32
+#elif WIN32
 #define MUTEX HANDLE
 #else
 #define MUTEX void*

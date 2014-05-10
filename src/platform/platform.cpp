@@ -40,15 +40,15 @@ bool Platform::moveFile(std::string oldFile, std::string newFile) {
 	close(source);
 	close(dest);
 	return true;
-#endif
-#ifdef WIN32
+#elif WIN32
 	if (MoveFileEx(oldFile.c_str(), (newFile + ".old").c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
 		perror("Unable to move file");
 		return false;
 	}
 	return true;
-#endif
+#else
 return true;
+#endif
 }
 
 bool Platform::deleteFileIfExists(string file) {
@@ -72,13 +72,13 @@ string Platform::getExePath() {
 #ifdef UNIX
 	//Do something
 	return "";
-#endif
-#ifdef WIN32
+#elif WIN32
 	char buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, MAX_PATH);
 	return std::string(buffer);
-#endif
+#else
 return "";
+#endif
 }
 
 void Platform::disableFolderVirtualisation() {
@@ -96,25 +96,24 @@ void Platform::disableFolderVirtualisation() {
 std::string Platform::GetAppDataDirectory() {
 #ifdef UNIX
 	return "";
-#endif
-#ifdef WIN32
+#elif WIN32
 	PWSTR wChar;
 	SHGetKnownFolderPath(FOLDERID_UserProgramFiles, 0, NULL, &wChar);
 	std::wstring wpath(wChar);
 	std::string path = Utils::ws2s(wpath);
 	CoTaskMemFree(static_cast<LPVOID>(wChar));
 	return path + "\\" + APPLICATION_NAME + "\\";
-#endif
+#else
 return "";
+#endif
 }
 
 std::string Platform::addTrailingSlash(std::string directory) {
 	std::string ending;
-#ifdef UNIX
-	ending = "/";
-#endif
 #ifdef WIN32
 	ending = "\\";
+#else
+	ending = "/"
 #endif
 	if (0 != directory.compare(directory.length() - ending.length(), ending.length(), ending)) {
 		LOGD("Adding trailing slash.");
@@ -130,8 +129,7 @@ std::vector<std::string> Platform::listDirectory(std::string directory) {
 std::vector<std::string> Platform::listDirectory(std::string directory, std::regex regex) {
 #ifdef UNIX
 	return std::vector<std::string>();
-#endif
-#ifdef WIN32
+#elif WIN32
 	WIN32_FIND_DATA data;
 	HANDLE hFile = FindFirstFile((addTrailingSlash(directory) + "*.*").c_str(), &data);
 	std::vector<std::string> matchingFiles;
@@ -147,15 +145,15 @@ std::vector<std::string> Platform::listDirectory(std::string directory, std::reg
 	} while (FindNextFile(hFile, &data) != 0);
 	FindClose(hFile);
 	return matchingFiles;
-#endif
+#else
 return std::vector<std::string>();
+#endif
 }
 
 std::string Platform::launchApplicationCapturingOutput(std::string application, char** argv) {
 #ifdef UNIX
 	return "";
-#endif
-#ifdef WIN32
+#elif WIN32
 	HANDLE g_hChildStd_OUT_Rd;
 	HANDLE g_hChildStd_OUT_Wr;
 	SECURITY_ATTRIBUTES saAttr;
@@ -205,8 +203,9 @@ std::string Platform::launchApplicationCapturingOutput(std::string application, 
 	CloseHandle(piProcInfo.hProcess);
 	CloseHandle(piProcInfo.hThread);
 	return output;
-#endif
+#else
 return "";
+#endif
 }
 
 CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
@@ -220,26 +219,28 @@ CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
 		throw JVMLauncherException("Cannot load jvm.dll");
 	}
 	return jvmInstance;
-#elseif WIN32
+#elif WIN32
 	HMODULE jvmDllInstance = LoadLibraryA(javaLibrary.c_str());
 	if (jvmDllInstance == 0) {
-		throw JVMLauncherException("Cannot load jvm.dll");
+		LOGD("Unable to create JVM: jvmDllInstance=NULL")
+		throw JVMLauncherException("Cannot create DLL instance");
 	}
 	//Load JVM
 	CreateJavaVM jvmInstance = (CreateJavaVM)GetProcAddress(jvmDllInstance, "JNI_CreateJavaVM");
 	if (jvmInstance == NULL) {
-		throw JVMLauncherException("Cannot load jvm.dll");
+		LOGD("Unable to create JVM: jvminstance=NULL")
+		throw JVMLauncherException("Cannot create Java CM");
 	}
 	return jvmInstance;
 #else
-	throw JVMLauncherException("Cannot load jvm.dll");
+	throw JVMLauncherException("No code for this OS.");
 #endif
 }
 
 std::string Platform::getJavaDLLFromRegistry() {
 #ifdef UNIX
 	return "";
-#elseif WIN32
+#elif WIN32
 	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
 	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
 	return result;
@@ -252,7 +253,7 @@ std::string Platform::getJavaDLLFromRegistry() {
 std::string Platform::getJavaHomeFromRegistry() {
 #ifdef UNIX
 	return "";
-#elseif WIN32
+#elif WIN32
 	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
 	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
 	return result;
@@ -265,7 +266,7 @@ std::string Platform::getJavaHomeFromRegistry() {
 std::string Platform::getRegistryValue(std::string key, std::string subkey) {
 #ifdef UNIX
 	return "";
-#elseif WIN32
+#elif WIN32
 	HKEY regKey;
 	if (RegOpenKey(HKEY_LOCAL_MACHINE, (char*)key.c_str(), &regKey) != ERROR_SUCCESS) {
 		throw JVMLauncherException("Cannot find registry key");
