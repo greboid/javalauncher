@@ -38,7 +38,9 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 }
 
 void JVMLauncher::LaunchJVM() {
+	LOGD("Getting DLL from registry");
 	std::string jvmDll = Platform::getJavaDLLFromRegistry();
+	LOGD("Setting Java Home from registry")
 	javaHome = Platform::getJavaHomeFromRegistry();
 	//Build library path
 	std::string strJavaLibraryPath = "-Djava.library.path=";

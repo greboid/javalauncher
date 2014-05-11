@@ -81,18 +81,6 @@ return "";
 #endif
 }
 
-void Platform::disableFolderVirtualisation() {
-#ifdef WIN32
-	HANDLE hToken;
-	if (OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken)) {
-		if (GetLastError() != ERROR_INVALID_PARAMETER) {
-			return;
-		}
-		CloseHandle(hToken);
-	}
-#endif
-}
-
 std::string Platform::GetAppDataDirectory() {
 #ifdef UNIX
 	return "";
@@ -220,7 +208,8 @@ CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
 	}
 	return jvmInstance;
 #elif WIN32
-	HMODULE jvmDllInstance = LoadLibraryA(javaLibrary.c_str());
+	LOGD("Trying to load JVM Instancew with library: " << javaLibrary);
+	HMODULE jvmDllInstance = LoadLibrary(javaLibrary.c_str());
 	if (jvmDllInstance == 0) {
 		LOGD("Unable to create JVM: jvmDllInstance=NULL")
 		throw JVMLauncherException("Cannot create DLL instance");
@@ -239,48 +228,60 @@ CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
 
 std::string Platform::getJavaDLLFromRegistry() {
 #ifdef UNIX
+	LOGD("Linux doesn't have a registry");
 	return "";
 #elif WIN32
 	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+	LOGD("Registry: java current version: " << currentVersion);
 	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
+	LOGD("Registry: runtime lib: " << result);
 	return result;
 #else
+	LOGD("No code for this OS");
 	return "";
 #endif
-	return "";
 }
 
 std::string Platform::getJavaHomeFromRegistry() {
 #ifdef UNIX
+	LOGD("Linux doesn't have a registry");
 	return "";
 #elif WIN32
 	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+	LOGD("Registry: java current version: " << currentVersion);
 	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
+	LOGD("Registry: java home: " << result);
 	return result;
 #else
+	LOGD("No code for this OS");
 	return "";
 #endif
-	return "";
 }
 
 std::string Platform::getRegistryValue(std::string key, std::string subkey) {
 #ifdef UNIX
+	LOGD("Linux doesn't have a registry");
 	return "";
 #elif WIN32
+	LOGD("WIN32")
 	HKEY regKey;
-	if (RegOpenKey(HKEY_LOCAL_MACHINE, (char*)key.c_str(), &regKey) != ERROR_SUCCESS) {
-		throw JVMLauncherException("Cannot find registry key");
+#if _WIN64
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, (char*)key.c_str(), 0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &regKey) != ERROR_SUCCESS) {
+#elif _WIN32
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, (char*)key.c_str(), 0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &regKey) != ERROR_SUCCESS)  {
+#endif
+		throw JVMLauncherException("Cannot find registry key: " + key);
 	}
 	DWORD dwType = REG_SZ;
 	char value[1024];
 	DWORD value_length = 1024;
 	if (RegQueryValueEx(regKey, (char*)subkey.c_str(), NULL, &dwType, (LPBYTE)&value, &value_length) != ERROR_SUCCESS) {
-		throw new JVMLauncherException("Cannot find key value");
+		throw new JVMLauncherException("Cannot find key value: " + key + " = " + value);
 	}
 	RegCloseKey(regKey);
 	return value;
 #else
+	LOGD("No code for this OS");
 	return "";
 #endif
-	return "";
 }

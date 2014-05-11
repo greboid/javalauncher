@@ -29,7 +29,6 @@ public:
 	static bool deleteFileIfExists(std::string file);
 	static bool deleteFile(std::string file);
 	static std::string getExePath();
-	static void disableFolderVirtualisation();
 	static std::string GetAppDataDirectory();
 	static std::string addTrailingSlash(std::string directory);
 	static std::vector<std::string> listDirectory(std::string directory);
