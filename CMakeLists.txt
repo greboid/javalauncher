@@ -12,7 +12,7 @@ ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
 
 CONFIGURE_FILE(
   "${PROJECT_SOURCE_DIR}/src/version.h.in"
-  "${PROJECT_BINARY_DIR}/src/version.h"
+  "${PROJECT_SOURCE_DIR}/src/version.h"
 )
 
 set(APPLICATION_NAME DMDirc)
@@ -26,7 +26,7 @@ SET(LAUNCHER_SINGLEINSTANCE true)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/config/ConfigDefaults.h.in"
-  "${PROJECT_BINARY_DIR}/src/config/ConfigDefaults.h"
+  "${PROJECT_SOURCE_DIR}/src/config/ConfigDefaults.h"
 )
 
 FIND_PACKAGE(JNI REQUIRED)
@@ -34,25 +34,6 @@ INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 
 
 set(RES_FILES "${PROJECT_SOURCE_DIR}/res/version.rc" "${PROJECT_SOURCE_DIR}/res/icon.rc")
-
-add_subdirectory(src/config)
-add_subdirectory(src/jvmlauncher)
-add_subdirectory(src/singleinstance)
-add_subdirectory(src/updater)
-add_subdirectory(src/utils)
-add_subdirectory(src/log4z)
-add_subdirectory(src/platform)
-
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_BINARY_DIR}/src)
-add_executable(javalauncher src/main.cpp ${RES_FILES})
-target_link_libraries (javalauncher Utils)
-target_link_libraries (javalauncher ConfigReader)
-target_link_libraries (javalauncher JVMLauncher)
-target_link_libraries (javalauncher SingleInstance)
-target_link_libraries (javalauncher Updater)
-target_link_libraries (javalauncher log4z)
-target_link_libraries (javalauncher platform)
 
 if(MSVC)
 	set (CMAKE_EXE_LINKER_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup /DEBUG")
@@ -71,3 +52,8 @@ endif(MSVC)
 if(UNIX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
 endif()
+
+set(EXECUTABLE_NAME "javalauncher")
+include_directories(${CMAKE_SOURCE_DIR}/src)
+file(GLOB SRC_FILES src/*.cpp src/**/*.cpp src/**/*.h)
+add_executable("${EXECUTABLE_NAME}" ${SRC_FILES})

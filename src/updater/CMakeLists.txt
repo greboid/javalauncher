@@ -1,6 +1,0 @@
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${PROJECT_BINARY_DIR}/src)
-add_library(Updater Updater.cpp Updater.h)
-if(UNIX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
-endif()
