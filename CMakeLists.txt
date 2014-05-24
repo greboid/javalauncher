@@ -68,7 +68,7 @@ add_dependencies(${PROJECT_TEST_NAME} googletest)
 
 set(EXECUTABLE_NAME "javalauncher")
 include_directories(${CMAKE_SOURCE_DIR}/src)
-file(GLOB_RECURSE SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}src/*.h)
+file(GLOB_RECURSE SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.h)
 add_executable("${EXECUTABLE_NAME}" ${SRC_FILES})
 
 if(NOT WIN32)
