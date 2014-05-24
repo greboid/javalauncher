@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
-project(JavaLauncher)
+set(PROJECT_NAME JavaLauncher)
+set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
+project(${PROJECT_NAME})
 
 IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
   FIND_PACKAGE(Git)
@@ -36,6 +38,7 @@ INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 set(RES_FILES "${PROJECT_SOURCE_DIR}/res/version.rc" "${PROJECT_SOURCE_DIR}/res/icon.rc")
 
 if(MSVC)
+  set(MSVC_COMPILER_DEFS "-D_VARIADIC_MAX=10")
 	set (CMAKE_EXE_LINKER_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup /DEBUG")
 	set (CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 	set (CMAKE_EXE_LINKER_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
@@ -53,7 +56,36 @@ if(UNIX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread")
 endif()
 
+set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/third_party)
+add_subdirectory(${EXT_PROJECTS_DIR}/gtest)
+
+enable_testing()
+
+include_directories(${GTEST_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/test ${COMMON_INCLUDES})
+file(GLOB_RECURSE TEST_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
+add_executable("${PROJECT_TEST_NAME}" "${TEST_FILES}")
+add_dependencies(${PROJECT_TEST_NAME} googletest)
+
 set(EXECUTABLE_NAME "javalauncher")
 include_directories(${CMAKE_SOURCE_DIR}/src)
-file(GLOB SRC_FILES src/*.cpp src/**/*.cpp src/**/*.h)
+file(GLOB_RECURSE SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}src/*.h)
 add_executable("${EXECUTABLE_NAME}" ${SRC_FILES})
+
+if(NOT WIN32)
+	target_link_libraries(${PROJECT_TEST_NAME} pthread)
+	target_link_libraries(${PROJECT_TEST_NAME}
+		${GTEST_LIBS_DIR}/libgtest.a
+		${GTEST_LIBS_DIR}/libgtest_main.a
+	)
+else()
+	target_link_libraries(${PROJECT_TEST_NAME}
+	       debug ${GTEST_LIBS_DIR}/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES}
+	       optimized ${GTEST_LIBS_DIR}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES}
+	)
+	target_link_libraries(${PROJECT_TEST_NAME}
+	       debug ${GTEST_LIBS_DIR}/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES}
+	       optimized ${GTEST_LIBS_DIR}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES}
+	)
+endif()
+
+add_test(test1 ${PROJECT_TEST_NAME})
