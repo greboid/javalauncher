@@ -22,7 +22,7 @@ bool Updater::doUpdate(std::string directory) {
 		int success = updateLauncher(directory, Utils::getExePath());
 		LOGD("Update result: " << success);
 		if (success == -1) {
-			LOGD("Failed: attempting to update app data")
+			LOGD("Failed: attempting to update app data");
 			success = updateLauncher(directory, Platform::GetAppDataDirectory());
 			LOGD("Update result: " << success);
 		}
@@ -49,7 +49,7 @@ bool Updater::doUpdate(std::string directory) {
 int Updater::updateLauncher(std::string from, std::string to) {
 	std::ifstream file((char*)(from + "/" + Utils::getExeName()).c_str());
 	if (file.good()) {
-		LOGD("Update file exists")
+		LOGD("Update file exists");
 		file.close();
 		LOGD("Attempting to backup existing launcher.");
 		if (Platform::moveFile(Utils::getExePathAndName(), Utils::getExePathAndName() + ".old")) {

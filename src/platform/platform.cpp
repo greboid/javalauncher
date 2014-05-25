@@ -211,13 +211,13 @@ CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
 	LOGD("Trying to load JVM Instancew with library: " << javaLibrary);
 	HMODULE jvmDllInstance = LoadLibrary(javaLibrary.c_str());
 	if (jvmDllInstance == 0) {
-		LOGD("Unable to create JVM: jvmDllInstance=NULL")
+		LOGD("Unable to create JVM: jvmDllInstance=NULL");
 		throw JVMLauncherException("Cannot create DLL instance");
 	}
 	//Load JVM
 	CreateJavaVM jvmInstance = (CreateJavaVM)GetProcAddress(jvmDllInstance, "JNI_CreateJavaVM");
 	if (jvmInstance == NULL) {
-		LOGD("Unable to create JVM: jvminstance=NULL")
+		LOGD("Unable to create JVM: jvminstance=NULL");
 		throw JVMLauncherException("Cannot create Java CM");
 	}
 	return jvmInstance;
@@ -263,7 +263,7 @@ std::string Platform::getRegistryValue(std::string key, std::string subkey) {
 	LOGD("Linux doesn't have a registry");
 	return "";
 #elif WIN32
-	LOGD("WIN32")
+	LOGD("WIN32");
 	HKEY regKey;
 #if _WIN64
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, (char*)key.c_str(), 0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &regKey) != ERROR_SUCCESS) {
