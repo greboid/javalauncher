@@ -81,8 +81,10 @@ int Updater::updateApplication(std::string from, std::string to) {
 		std::string updateTarget = files[i];
 		std::ifstream file((char*)(from + "/" + updateSource).c_str());
 		if (file.good()) {
+			file.close();
 			LOGD("Update file exists, trying to copy.");
-			if (!Platform::moveFile(from + updateSource, to + updateTarget)) {
+			LOGD("Updating: " << from + "/" + updateSource << " <=> " << to + "/" + updateTarget)
+			if (!Platform::moveFile(from + "/" + updateSource, to + "/" + updateTarget)) {
 				LOGD("Updating failed.");
 				return -1;
 			}
