@@ -187,7 +187,7 @@ typedef int LoggerId;
 //! all logger synchronous display to the screen or not
 #define LOG4Z_ALL_SYNCHRONOUS_DISPLAY true
 //! all logger write log to file or not
-#define LOG4Z_ALL_WRITE_TO_FILE false
+#define LOG4Z_ALL_WRITE_TO_FILE true
 
 //! default logger output file.
 #define LOG4Z_DEFAULT_PATH "./log/"

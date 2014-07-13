@@ -21,7 +21,7 @@ void ConfigReader::init() {
         string key;
         string value;
         while(getline(configFile, line)) {
-            unsigned int pos = line.find("=");
+            size_t pos = line.find("=");
             if(pos != string::npos) {
                 key = line.substr(0, pos );
                 value = line.substr(pos + 1);
@@ -50,8 +50,8 @@ bool ConfigReader::getBoolValue(string key, bool defaultValue) {
     if (search == settings.end() ) {
     	return defaultValue;
     } else {
-		LOGD("Config Value (bool): " << key << " : " << &search->second);
-        return parseBoolean(&search->second);
+		LOGD("Config Value (bool): " << key << " : " << search->second);
+        return parseBoolean(search->second);
     }
 }
 
@@ -64,6 +64,12 @@ std::vector<std::string> ConfigReader::getVectorValue(string key, std::vector<st
     return Utils::splitString(search->second, ",");
 }
 
-bool ConfigReader::parseBoolean(const std::string *str) {
-	return strcmp((char*)str, "true") || strcmp((char*)str, "yes") || strcmp((char*)str, "on") || strcmp((char*)str, "1");
+bool ConfigReader::parseBoolean(std::string str) {
+	LOGD("Trying to parse boolean: " << str);
+	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+	std::istringstream is(str);
+	bool b;
+	is >> std::boolalpha >> b;
+	LOGD("Parsed as: " << b);
+	return b;
 }

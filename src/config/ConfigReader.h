@@ -22,7 +22,7 @@ private:
     std::map<std::string, std::string> settings;
     std::string name;
     void init();
-    bool parseBoolean(const std::string*);
+    bool parseBoolean(std::string);
 };
 
 #endif	/* CONFIGREADER_H */

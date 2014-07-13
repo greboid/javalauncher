@@ -41,8 +41,8 @@ bool Platform::moveFile(std::string oldFile, std::string newFile) {
 	close(dest);
 	return true;
 #elif WIN32
-	if (MoveFileEx(oldFile.c_str(), (newFile + ".old").c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
-		perror("Unable to move file");
+	if (MoveFileEx(oldFile.c_str(), (newFile).c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING) == 0) {
+		LOGD("Unable to move file: " << strerror(errno))
 		return false;
 	}
 	return true;

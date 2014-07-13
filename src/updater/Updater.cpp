@@ -83,8 +83,8 @@ int Updater::updateApplication(std::string from, std::string to) {
 		if (file.good()) {
 			file.close();
 			LOGD("Update file exists, trying to copy.");
-			LOGD("Updating: " << from + "/" + updateSource << " <=> " << to + "/" + updateTarget)
-			if (!Platform::moveFile(from + "/" + updateSource, to + "/" + updateTarget)) {
+			LOGD("Updating: " << from + updateSource << " <=> " << to + updateTarget)
+			if (!Platform::moveFile(from + updateSource, to + updateTarget)) {
 				LOGD("Updating failed.");
 				return -1;
 			}

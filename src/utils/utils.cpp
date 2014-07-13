@@ -18,7 +18,7 @@ std::string Utils::getExeName() {
 std::string Utils::getExePath() {
 	std::string fullPath = getExePathAndName();
 	std::string::size_type pos = std::string(fullPath).find_last_of("\\/");
-	return std::string(fullPath).substr(0, pos);
+	return Platform::addTrailingSlash(std::string(fullPath).substr(0, pos));
 }
 
 std::vector<std::string> Utils::mergeVectors(std::vector<std::string> vector1, std::vector<std::string> vector2) {
