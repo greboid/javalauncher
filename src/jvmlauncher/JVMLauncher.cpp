@@ -45,6 +45,7 @@ void JVMLauncher::LaunchJVM() {
 	//Build library path
 	std::string strJavaLibraryPath = "-Djava.library.path=";
 	strJavaLibraryPath += javaHome + "\\lib" + "," + javaHome + "\\jre\\lib";
+	LOGD("Java Library Path: " << strJavaLibraryPath);
 	//Add jars to classpath
 	std::string strJavaClassPath = "-Djava.class.path=";
 	if (jars.size() > 0) {
@@ -53,6 +54,7 @@ void JVMLauncher::LaunchJVM() {
 		}
 		strJavaClassPath += appHome + jars[jars.size() - 1];
 	}
+	LOGD("Java Class Path: " << strJavaClassPath);
 	//Configure JVM Options
 	JavaVMOption options[100];
 	options[0].optionString = (char*)(strJavaClassPath.c_str());

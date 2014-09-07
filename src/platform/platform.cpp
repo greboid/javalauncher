@@ -122,9 +122,10 @@ std::vector<std::string> Platform::listDirectory(std::string directory, std::reg
 	HANDLE hFile = FindFirstFile((addTrailingSlash(directory) + "*.*").c_str(), &data);
 	std::vector<std::string> matchingFiles;
 	do {
+		LOGD("Checking if directory: " << std::string(data.cFileName));
 		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-			LOGD("Checking if file matches: " << data.cFileName);
 			std::string filename = std::string(data.cFileName);
+			LOGD("Checking if file matches: " << filename);
 			if (std::regex_match(filename, regex)) {
 				LOGD("File matched");
 				matchingFiles.push_back(filename);
