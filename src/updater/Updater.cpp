@@ -96,7 +96,7 @@ int Updater::updateApplication(std::string from, std::string to) {
 	else {
 		LOGD("Updating application: " << files.size());
 	}
-	boolean restartNeeded = 0;
+	bool restartNeeded = 0;
 	for (unsigned int i = 0; i < files.size(); i++) {
 		LOGD("Attempting to update: " << files[i]);
 		std::string updateSource = "." + files[i];
@@ -105,7 +105,7 @@ int Updater::updateApplication(std::string from, std::string to) {
 		if (file.good()) {
 			file.close();
 			LOGD("Update file exists, trying to copy.");
-			LOGD("Updating: " << from + updateSource << " <=> " << to + updateTarget);
+			LOGD("Updating: " << from + updateSource << " => " << to + updateTarget);
 			Platform::moveFile(to + updateTarget, to + updateTarget + ".old");
 			if (Platform::moveFile(from + updateSource, to + updateTarget)) {
 				LOGD("Updating suceeded.");
