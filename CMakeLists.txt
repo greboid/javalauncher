@@ -34,13 +34,11 @@ configure_file (
 FIND_PACKAGE(JNI REQUIRED)
 INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
 
-
 set(RES_FILES "${PROJECT_SOURCE_DIR}/res/version.rc" "${PROJECT_SOURCE_DIR}/res/icon.rc")
 
-include_directories(${CMAKE_SOURCE_DIR}/src ${LOG4Z_SOURCE})
+include_directories(${CMAKE_SOURCE_DIR}/src)
 file(GLOB_RECURSE SRC_FILES ${RES_FILES} ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.h)
-add_executable(${PROJECT_NAME} ${SRC_FILES} ${LOG4Z_SRC_FILES})
-
+add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 if(MSVC)
 	set (CMAKE_EXE_LINKER_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup /DEBUG")
