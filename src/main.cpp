@@ -6,7 +6,6 @@
 #include "Updater.h"
 #include "utils.h"
 #include "platform.h"
-#include "version.h"
 #include <sstream>
 
 using namespace std;
