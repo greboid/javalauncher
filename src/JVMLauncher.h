@@ -1,14 +1,14 @@
 #ifndef JVMLAUNCHER_H
 #define	JVMLAUNCHER_H
 
-#include "log4z/log4z.h"
+#include "log4z.h"
 #include "version.h"
-#include "config/ConfigDefaults.h"
-#include "config/ConfigReader.h"
-#include "updater/Updater.h"
+#include "ConfigDefaults.h"
+#include "ConfigReader.h"
+#include "Updater.h"
 #include "JVMLauncherUtils.h"
 #include <stdexcept>
-#include <jni.h>
+#include "jni.h"
 #include <string>
 #include <stdlib.h>
 #include <vector>

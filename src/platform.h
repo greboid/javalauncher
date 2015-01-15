@@ -1,9 +1,10 @@
 #ifndef PLATFORM_H
 #define	PLATFORM_H
 
-#include "log4z/log4z.h"
-#include "utils/utils.h"
-#include "jvmlauncher/JVMLauncherException.cpp"
+#include "log4z.h"
+#include "utils.h"
+#include "JVMLauncherException.cpp"
+#include "jni.h"
 #ifdef UNIX
 #include <fcntl.h>
 #include <unistd.h>
@@ -14,7 +15,6 @@
 #include <windows.h>
 #include <shlobj.h>
 #endif
-#include <jni.h>
 #include <vector>
 #include <regex>
 #include <fstream>
@@ -24,7 +24,7 @@ class Platform {
 public:
 	typedef jint(JNICALL* CreateJavaVM)(JavaVM**, void**, void*);
 	static void createConsole();
-	static void launchApplication(std::string application, char** argv);
+	static void launchApplication(std::string application, std::string arguments);
 	static bool moveFile(std::string oldFile, std::string newFile);
 	static bool deleteFileIfExists(std::string file);
 	static bool deleteFile(std::string file);

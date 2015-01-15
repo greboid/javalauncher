@@ -1,11 +1,11 @@
-#include "log4z/log4z.h"
-#include "jvmlauncher/JVMLauncher.h"
-#include "singleinstance/SingleInstance.h"
-#include "config/ConfigReader.h"
-#include "config/ConfigDefaults.h"
-#include "updater/Updater.h"
-#include "utils/utils.h"
-#include "platform/platform.h"
+#include "log4z.h"
+#include "JVMLauncher.h"
+#include "SingleInstance.h"
+#include "ConfigReader.h"
+#include "ConfigDefaults.h"
+#include "Updater.h"
+#include "utils.h"
+#include "platform.h"
 #include "version.h"
 #include <sstream>
 
@@ -26,12 +26,14 @@ int main(int argc, char** argv) {
 	LOGD("Starting launcher.");
 	LOGD("Checking update file.");
 	std::ifstream file((char*)(Platform::GetAppDataDirectory() + Utils::getExeName()).c_str());
+	LOGD("File: ");
 	std::string version = "-1";
 	if (file.good()) {
 		LOGD("Update file exists.");
 		file.close();
 		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory() + Utils::getExeName(), argv);
 	}
+	LOGD("Creating config.");
 	ConfigReader config;
 	LOGD("Creating single instance.");
 	SingleInstance singleInstance(config);
@@ -42,6 +44,8 @@ int main(int argc, char** argv) {
 	LOGD("Creating updater.");
 	Updater updater(config);
 	try {
+		LOGD("Moving application Updates.");
+		updater.moveApplicationUpdates();
 		LOGD("Creating JVMLauncher.");
 		JVMLauncher* launcher = new JVMLauncher(cliArgs, config);
 		LOGD("Launching JVM");
@@ -52,7 +56,7 @@ int main(int argc, char** argv) {
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
 		if (compareValue > 0) {
 			LOGD("Version is newer, updating.");
-			Platform::launchApplication((Platform::GetAppDataDirectory() + Utils::getExeName()), argv);
+			Platform::launchApplication((Platform::GetAppDataDirectory() + Utils::getExeName()), Utils::vectorToString(Utils::arrayToVector(argc, argv)));
 			exit(0);
 		}
 		LOGD("updater.doUpdate.");
@@ -60,7 +64,7 @@ int main(int argc, char** argv) {
 			LOGD("Destroying JVM.");
 			launcher->destroyJVM();
 			LOGD("Relaunching.");
-			updater.relaunch(argv);
+			updater.relaunch(Utils::vectorToString(Utils::arrayToVector(argc, argv)));
 		}
 		LOGD("Calling main method.");
 		launcher->callMainMethod();
@@ -73,7 +77,7 @@ int main(int argc, char** argv) {
 		LOGE("Press any key to exit");
 	}
 	LOGD("Stopping single instance.");
-	singleInstance.stopped();
+	//singleInstance.stopped();
 	LOGD("Exiting.");
 	return EXIT_SUCCESS;
 }

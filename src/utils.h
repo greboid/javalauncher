@@ -1,10 +1,10 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
-#include "log4z/log4z.h"
-#include "config/ConfigDefaults.h"
-#include "config/ConfigReader.h"
-#include "platform/platform.h"
+#include "log4z.h"
+#include "ConfigDefaults.h"
+#include "ConfigReader.h"
+#include "platform.h"
 #include <string>
 #include <stdlib.h>
 #include <vector>
@@ -17,6 +17,7 @@ class Utils {
 public:
 	static std::vector<std::string> mergeVectors(std::vector<std::string>, std::vector<std::string>);
 	static std::vector<std::string> arrayToVector(int, char**);
+	static std::string vectorToString(std::vector<std::string>);
 	static std::vector<std::string> splitString(std::string, std::string);
 	static std::string getExePathAndName();
 	static std::string getExePath();

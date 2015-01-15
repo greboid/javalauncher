@@ -7,10 +7,9 @@ Updater::Updater(ConfigReader& config) {
 	this->newVersion = "";
 }
 
-void Updater::relaunch(char** argv) {
-	getAndLockMutex();
+void Updater::relaunch(std::string args) {
 	LOGD("Creating new process.");
-	Platform::launchApplication(Utils::getExePathAndName(), argv);
+	Platform::launchApplication(Utils::getExePathAndName(), args);
 	LOGD("Releasing mutex");
 	updateMutex.unlock();
 	LOGD("Exiting app.");
@@ -57,6 +56,9 @@ bool Updater::doUpdate(std::string directory) {
 			LOGD("Failed: Updating to app data.");
 			updateApplication(directory, Platform::GetAppDataDirectory());
 		}
+		if (success == 1) {
+			relaunchNeeded = true;
+		}
 	}
 	LOGD("Releasing mutex.");
 	updateMutex.unlock();
@@ -87,6 +89,21 @@ int Updater::updateLauncher(std::string from, std::string to) {
 	}
 }
 
+void Updater::moveApplicationUpdates() {
+	std::string to = Utils::getExePath();
+	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*\.tmp"));
+	for (unsigned int i = 0; i < files.size(); i++) {
+		std::string updateSource = files[i];
+		std::string updateTarget = files[i].substr(0, files[i].length() - 4);
+		if (Platform::moveFile(to + updateSource, to + updateTarget)) {
+			LOGD("Updating suceeded.");
+		}
+		else {
+			LOGD("Updating failed.");
+		}
+	}
+}
+
 int Updater::updateApplication(std::string from, std::string to) {
 	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*"));
 	if (files.size() == 0) {
@@ -96,7 +113,7 @@ int Updater::updateApplication(std::string from, std::string to) {
 	else {
 		LOGD("Updating application: " << files.size());
 	}
-	bool restartNeeded = 0;
+	int restartNeeded = 0;
 	for (unsigned int i = 0; i < files.size(); i++) {
 		LOGD("Attempting to update: " << files[i]);
 		std::string updateSource = "." + files[i];
@@ -106,14 +123,13 @@ int Updater::updateApplication(std::string from, std::string to) {
 			file.close();
 			LOGD("Update file exists, trying to copy.");
 			LOGD("Updating: " << from + updateSource << " => " << to + updateTarget);
-			Platform::moveFile(to + updateTarget, to + updateTarget + ".old");
-			if (Platform::moveFile(from + updateSource, to + updateTarget)) {
+			if (Platform::moveFile(from + updateSource, to + updateTarget + ".tmp")) {
 				LOGD("Updating suceeded.");
 				restartNeeded = 1;
 			}
 			else {
 				LOGD("Updating failed.");
-				restartNeeded = -1;
+				restartNeeded = 0;
 			}
 		}
 		else {

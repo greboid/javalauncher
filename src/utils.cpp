@@ -43,6 +43,17 @@ std::vector<std::string> Utils::arrayToVector(int size, char** array) {
 	return result;
 }
 
+std::string Utils::vectorToString(std::vector<std::string> strings) {
+	std::string result = "";
+	for (int i = 0; i < strings.size(); i++) {
+		result += strings.at(i);
+		if (i != strings.size()) {
+			result += " ";
+		}
+	}
+	return result;
+}
+
 std::vector<std::string> Utils::splitString(std::string input, std::string delimiter) {
 	unsigned start = 0;
 	unsigned end;

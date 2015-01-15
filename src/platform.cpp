@@ -19,9 +19,10 @@ void Platform::createConsole() {
 #endif
 }
 
-void Platform::launchApplication(string application, char** arguments) {
+void Platform::launchApplication(string application, string arguments) {
 #ifdef WIN32
-	ShellExecute(NULL, LPSTR("open"), LPSTR(application.c_str()), LPSTR(arguments), NULL, SW_SHOWNORMAL);
+	LOGD("Launching: " << application << " Args: " << arguments)
+	ShellExecute(NULL, LPSTR("open"), LPSTR(application.c_str()), LPSTR(arguments.c_str()), NULL, SW_SHOWNORMAL);
 #endif
 }
 

@@ -1,8 +1,8 @@
 #ifndef CONFIGREADER_H
 #define	CONFIGREADER_H
 
-#include "log4z/log4z.h"
-#include "utils/utils.h"
+#include "log4z.h"
+#include "utils.h"
 #include <cstdlib>
 #include <cstring>
 #include <iostream>

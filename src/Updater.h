@@ -1,21 +1,22 @@
 #ifndef UPDATER_H
 #define	UPDATER_H
 
-#include "log4z/log4z.h"
-#include "platform/platform.h"
-#include "platform/mutex.h"
-#include "config/ConfigReader.h"
+#include "log4z.h"
+#include "platform.h"
+#include "mutex.h"
+#include "ConfigReader.h"
 #include <string>
 #include <iostream>
 #include <fstream>
 
 class Updater {
 public:
-    Updater(ConfigReader&);
+	Updater(ConfigReader&);
+	void moveApplicationUpdates();
     bool doUpdate(std::string);
     bool isUpdateWaiting();
     std::string getNewVersion();
-    void relaunch(char** argv);
+    void relaunch(std::string args);
 private:
     Mutex updateMutex;
     std::string newVersion;
