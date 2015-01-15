@@ -199,7 +199,7 @@
       <Output TaskParameter="ConsoleOutput" PropertyName="GitVersion" />
     </Exec>
     <WriteLinesToFile
-      File="src/gitversion.h"
+      File="$(ProjectDir)src/gitversion.h"
       Lines="#define LAUNCHER_VERSION &quot;$(GitVersion)&quot;"
       Overwrite="true"
       Encoding="Unicode"/>
