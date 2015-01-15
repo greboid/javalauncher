@@ -6,6 +6,7 @@
 #include "ConfigReader.h"
 #include "Updater.h"
 #include "JVMLauncherUtils.h"
+#include "gitversion.h"
 #include <stdexcept>
 #include "jni.h"
 #include <string>
