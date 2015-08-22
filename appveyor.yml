@@ -1,0 +1,15 @@
+version: 1.0.{build}
+configuration: Release
+platform:
+- x64
+- Win32
+nuget:
+  disable_publish_on_pr: true
+build:
+  project: JavaLauncher.sln
+  verbosity: minimal
+artifacts:
+- path: build\Win32\Release\JavaLauncher-Win32.exe
+  name: Win32
+- path: build\x64\Release\JavaLauncher-x64.exe
+  name: x64
