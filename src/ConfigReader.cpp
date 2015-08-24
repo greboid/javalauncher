@@ -4,13 +4,13 @@ using namespace std;
 
 ConfigReader::ConfigReader() {
 	this->name = (Utils::getExeName() + std::string(".ini"));
-	LOGD("Config file: " << this->name);
+	BOOST_LOG_TRIVIAL(debug) << "Config file: " << this->name;
 	init();
 }
 
 ConfigReader::ConfigReader(string name) {
     this->name = name;
-	LOGD("Config file: " << this->name);
+	BOOST_LOG_TRIVIAL(debug) << "Config file: " << this->name;
     init();
 }
 
@@ -40,7 +40,7 @@ string ConfigReader::getStringValue(string key, string defaultValue) {
     if (search == settings.end() ) {
     	return defaultValue;
     } else {
-		LOGD("Config Value (string): " << key << " : " << search->second);
+		BOOST_LOG_TRIVIAL(debug) << "Config Value (string): " << key << " : " << search->second;
         return search->second;
     }
 }
@@ -50,7 +50,7 @@ bool ConfigReader::getBoolValue(string key, bool defaultValue) {
     if (search == settings.end() ) {
     	return defaultValue;
     } else {
-		LOGD("Config Value (bool): " << key << " : " << search->second);
+		BOOST_LOG_TRIVIAL(debug) << "Config Value (bool): " << key << " : " << search->second;
         return parseBoolean(search->second);
     }
 }
@@ -60,16 +60,16 @@ std::vector<std::string> ConfigReader::getVectorValue(string key, std::vector<st
     if (search == settings.end() ) {
     	return defaultValue;
     }
-	LOGD("Config Value (vector): " << key << " : " << search->second);
+	BOOST_LOG_TRIVIAL(debug) << "Config Value (vector): " << key << " : " << search->second;
     return Utils::splitString(search->second, ",");
 }
 
 bool ConfigReader::parseBoolean(std::string str) {
-	LOGD("Trying to parse boolean: " << str);
+	BOOST_LOG_TRIVIAL(debug) << "Trying to parse boolean: " << str;
 	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 	std::istringstream is(str);
 	bool b;
 	is >> std::boolalpha >> b;
-	LOGD("Parsed as: " << b);
+	BOOST_LOG_TRIVIAL(debug) << "Parsed as: " << b;
 	return b;
 }

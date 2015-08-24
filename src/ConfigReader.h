@@ -1,7 +1,7 @@
 #ifndef CONFIGREADER_H
 #define	CONFIGREADER_H
 
-#include "log4z.h"
+#include "Logger.h"
 #include "utils.h"
 #include <cstdlib>
 #include <cstring>

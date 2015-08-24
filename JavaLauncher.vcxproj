@@ -155,7 +155,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
@@ -169,7 +169,7 @@
     <ClCompile Include="src\JVMLauncher.cpp" />
     <ClCompile Include="src\JVMLauncherException.cpp" />
     <ClCompile Include="src\JVMLauncherUtils.cpp" />
-    <ClCompile Include="src\log4z.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mutex.cpp" />
     <ClCompile Include="src\platform.cpp" />
@@ -183,7 +183,8 @@
     <ClInclude Include="src\jni.h" />
     <ClInclude Include="src\JVMLauncher.h" />
     <ClInclude Include="src\JVMLauncherUtils.h" />
-    <ClInclude Include="src\log4z.h" />
+    <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\main.h" />
     <ClInclude Include="src\mutex.h" />
     <ClInclude Include="src\platform.h" />
     <ClInclude Include="src\resource.h" />
@@ -195,13 +196,39 @@
     <ResourceCompile Include="src\icon.rc" />
     <ResourceCompile Include="src\version.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\boost_log-vc140.1.59.0.0\build\native\boost_log-vc140.targets" Condition="Exists('packages\boost_log-vc140.1.59.0.0\build\native\boost_log-vc140.targets')" />
+    <Import Project="packages\boost.1.59.0.0\build\native\boost.targets" Condition="Exists('packages\boost.1.59.0.0\build\native\boost.targets')" />
+    <Import Project="packages\boost_program_options-vc140.1.59.0.0\build\native\boost_program_options-vc140.targets" Condition="Exists('packages\boost_program_options-vc140.1.59.0.0\build\native\boost_program_options-vc140.targets')" />
+    <Import Project="packages\boost_system-vc140.1.59.0.0\build\native\boost_system-vc140.targets" Condition="Exists('packages\boost_system-vc140.1.59.0.0\build\native\boost_system-vc140.targets')" />
+    <Import Project="packages\boost_filesystem-vc140.1.59.0.0\build\native\boost_filesystem-vc140.targets" Condition="Exists('packages\boost_filesystem-vc140.1.59.0.0\build\native\boost_filesystem-vc140.targets')" />
+    <Import Project="packages\boost_date_time-vc140.1.59.0.0\build\native\boost_date_time-vc140.targets" Condition="Exists('packages\boost_date_time-vc140.1.59.0.0\build\native\boost_date_time-vc140.targets')" />
+    <Import Project="packages\boost_thread-vc140.1.59.0.0\build\native\boost_thread-vc140.targets" Condition="Exists('packages\boost_thread-vc140.1.59.0.0\build\native\boost_thread-vc140.targets')" />
+    <Import Project="packages\boost_log_setup-vc140.1.59.0.0\build\native\boost_log_setup-vc140.targets" Condition="Exists('packages\boost_log_setup-vc140.1.59.0.0\build\native\boost_log_setup-vc140.targets')" />
+    <Import Project="packages\boost_chrono-vc140.1.59.0.0\build\native\boost_chrono-vc140.targets" Condition="Exists('packages\boost_chrono-vc140.1.59.0.0\build\native\boost_chrono-vc140.targets')" />
   </ImportGroup>
   <Target Name="BeforeCompile" BeforeTargets="PrepareForBuild">
     <Exec Command="git describe --tags" ConsoleToMSBuild="true" EchoOff="true" WorkingDirectory="$(ProjectDir)">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitVersion" />
     </Exec>
     <WriteLinesToFile File="$(ProjectDir)src/gitversion.h" Lines="#define LAUNCHER_VERSION &quot;$(GitVersion)&quot;" Overwrite="true" Encoding="Unicode" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\boost_log-vc140.1.59.0.0\build\native\boost_log-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_log-vc140.1.59.0.0\build\native\boost_log-vc140.targets'))" />
+    <Error Condition="!Exists('packages\boost.1.59.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost.1.59.0.0\build\native\boost.targets'))" />
+    <Error Condition="!Exists('packages\boost_program_options-vc140.1.59.0.0\build\native\boost_program_options-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_program_options-vc140.1.59.0.0\build\native\boost_program_options-vc140.targets'))" />
+    <Error Condition="!Exists('packages\boost_system-vc140.1.59.0.0\build\native\boost_system-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_system-vc140.1.59.0.0\build\native\boost_system-vc140.targets'))" />
+    <Error Condition="!Exists('packages\boost_filesystem-vc140.1.59.0.0\build\native\boost_filesystem-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_filesystem-vc140.1.59.0.0\build\native\boost_filesystem-vc140.targets'))" />
+    <Error Condition="!Exists('packages\boost_date_time-vc140.1.59.0.0\build\native\boost_date_time-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_date_time-vc140.1.59.0.0\build\native\boost_date_time-vc140.targets'))" />
+    <Error Condition="!Exists('packages\boost_thread-vc140.1.59.0.0\build\native\boost_thread-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_thread-vc140.1.59.0.0\build\native\boost_thread-vc140.targets'))" />
+    <Error Condition="!Exists('packages\boost_log_setup-vc140.1.59.0.0\build\native\boost_log_setup-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_log_setup-vc140.1.59.0.0\build\native\boost_log_setup-vc140.targets'))" />
+    <Error Condition="!Exists('packages\boost_chrono-vc140.1.59.0.0\build\native\boost_chrono-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost_chrono-vc140.1.59.0.0\build\native\boost_chrono-vc140.targets'))" />
   </Target>
 </Project>

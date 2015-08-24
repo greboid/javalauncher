@@ -1,7 +1,7 @@
 #ifndef JVMLAUNCHER_H
 #define	JVMLAUNCHER_H
 
-#include "log4z.h"
+#include "Logger.h"
 #include "ConfigDefaults.h"
 #include "ConfigReader.h"
 #include "Updater.h"

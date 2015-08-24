@@ -1,7 +1,7 @@
 #ifndef UPDATER_H
 #define	UPDATER_H
 
-#include "log4z.h"
+#include "Logger.h"
 #include "platform.h"
 #include "mutex.h"
 #include "ConfigReader.h"

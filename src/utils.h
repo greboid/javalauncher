@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define	UTILS_H
 
-#include "log4z.h"
+#include "Logger.h"
 #include "ConfigDefaults.h"
 #include "ConfigReader.h"
 #include "platform.h"

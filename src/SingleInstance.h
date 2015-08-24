@@ -1,7 +1,7 @@
 #ifndef SINGLEINSTANCE_H
 #define	SINGLEINSTANCE_H
 
-#include "log4z.h"
+#include "Logger.h"
 #include "ConfigReader.h"
 #include "mutex.h"
 #include <cstdlib>

@@ -1,7 +1,7 @@
 #ifndef PLATFORM_H
 #define	PLATFORM_H
 
-#include "log4z.h"
+#include "Logger.h"
 #include "utils.h"
 #include "JVMLauncherException.cpp"
 #include "jni.h"

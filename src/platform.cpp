@@ -8,9 +8,9 @@ Platform::Platform() {
 
 void Platform::createConsole() {
 #ifdef WIN32
-	LOGD("Allocationg a console.");
+	BOOST_LOG_TRIVIAL(debug) << "Allocationg a console.";
 	AllocConsole();
-	LOGD("Attaching a console.");
+	BOOST_LOG_TRIVIAL(debug) << "Attaching a console.";
 	AttachConsole(GetCurrentProcessId());
 	FILE *conin, *conout;
 	freopen_s(&conin, "conin$", "r", stdin);
@@ -21,7 +21,7 @@ void Platform::createConsole() {
 
 void Platform::launchApplication(string application, string arguments) {
 #ifdef WIN32
-	LOGD("Launching: " << application << " Args: " << arguments)
+	BOOST_LOG_TRIVIAL(debug) << "Launching: " << application << " Args: " << arguments;
 	ShellExecute(NULL, LPSTR("open"), LPSTR(application.c_str()), LPSTR(arguments.c_str()), NULL, SW_SHOWNORMAL);
 #endif
 }
@@ -42,10 +42,10 @@ bool Platform::moveFile(std::string oldFile, std::string newFile) {
 	close(dest);
 	return true;
 #elif WIN32
-	LOGD("Moving File: " << oldFile << " => " << newFile);
+	BOOST_LOG_TRIVIAL(debug) << "Moving File: " << oldFile << " => " << newFile;
 	if (MoveFileEx(oldFile.c_str(), (newFile).c_str(), MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) == 0) {
 		DWORD dw = GetLastError();
-		LOGD("Unable to move file: " << dw << ": " << strerror(dw));
+		BOOST_LOG_TRIVIAL(debug) << "Unable to move file: " << dw << ": " << strerror(dw);
 		return false;
 	}
 	return true;
@@ -107,7 +107,7 @@ std::string Platform::addTrailingSlash(std::string directory) {
 	ending = "/";
 #endif
 	if (0 != directory.compare(directory.length() - ending.length(), ending.length(), ending)) {
-		LOGD("Adding trailing slash.");
+		BOOST_LOG_TRIVIAL(debug) << "Adding trailing slash.";
 		return directory + ending;
 	}
 	return directory;
@@ -125,12 +125,12 @@ std::vector<std::string> Platform::listDirectory(std::string directory, std::reg
 	HANDLE hFile = FindFirstFile((addTrailingSlash(directory) + "*.*").c_str(), &data);
 	std::vector<std::string> matchingFiles;
 	do {
-		LOGD("Checking if directory: " << std::string(data.cFileName));
+		BOOST_LOG_TRIVIAL(debug) << "Checking if directory: " << std::string(data.cFileName);
 		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
 			std::string filename = std::string(data.cFileName);
-			LOGD("Checking if file matches: " << filename);
+			BOOST_LOG_TRIVIAL(debug) << "Checking if file matches: " << filename;
 			if (std::regex_match(filename, regex)) {
-				LOGD("File matched");
+				BOOST_LOG_TRIVIAL(debug) << "File matched";
 				matchingFiles.push_back(filename);
 			}
 		}
@@ -212,16 +212,16 @@ CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
 	}
 	return jvmInstance;
 #elif WIN32
-	LOGD("Trying to load JVM Instancew with library: " << javaLibrary);
+	BOOST_LOG_TRIVIAL(debug) << "Trying to load JVM Instancew with library: " << javaLibrary;
 	HMODULE jvmDllInstance = LoadLibrary(javaLibrary.c_str());
 	if (jvmDllInstance == 0) {
-		LOGD("Unable to create JVM: jvmDllInstance=NULL");
+		BOOST_LOG_TRIVIAL(debug) << "Unable to create JVM: jvmDllInstance=NULL";
 		throw JVMLauncherException("Cannot create DLL instance");
 	}
 	//Load JVM
 	CreateJavaVM jvmInstance = (CreateJavaVM)GetProcAddress(jvmDllInstance, "JNI_CreateJavaVM");
 	if (jvmInstance == NULL) {
-		LOGD("Unable to create JVM: jvminstance=NULL");
+		BOOST_LOG_TRIVIAL(debug) << "Unable to create JVM: jvminstance=NULL";
 		throw JVMLauncherException("Cannot create Java CM");
 	}
 	return jvmInstance;
@@ -232,42 +232,42 @@ CreateJavaVM Platform::getJVMInstance(std::string javaLibrary) {
 
 std::string Platform::getJavaDLLFromRegistry() {
 #ifdef UNIX
-	LOGD("Linux doesn't have a registry");
+	BOOST_LOG_TRIVIAL(debug) << "Linux doesn't have a registry");
 	return "";
 #elif WIN32
 	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
-	LOGD("Registry: java current version: " << currentVersion);
+	BOOST_LOG_TRIVIAL(debug) << "Registry: java current version: " << currentVersion;
 	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
-	LOGD("Registry: runtime lib: " << result);
+	BOOST_LOG_TRIVIAL(debug) << "Registry: runtime lib: " << result;
 	return result;
 #else
-	LOGD("No code for this OS");
+	BOOST_LOG_TRIVIAL(debug) << "No code for this OS";
 	return "";
 #endif
 }
 
 std::string Platform::getJavaHomeFromRegistry() {
 #ifdef UNIX
-	LOGD("Linux doesn't have a registry");
+	BOOST_LOG_TRIVIAL(debug) << "Linux doesn't have a registry");
 	return "";
 #elif WIN32
 	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
-	LOGD("Registry: java current version: " << currentVersion);
+	BOOST_LOG_TRIVIAL(debug) << "Registry: java current version: " << currentVersion;
 	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
-	LOGD("Registry: java home: " << result);
+	BOOST_LOG_TRIVIAL(debug) << "Registry: java home: " << result;
 	return result;
 #else
-	LOGD("No code for this OS");
+	BOOST_LOG_TRIVIAL(debug) << "No code for this OS";
 	return "";
 #endif
 }
 
 std::string Platform::getRegistryValue(std::string key, std::string subkey) {
 #ifdef UNIX
-	LOGD("Linux doesn't have a registry");
+	BOOST_LOG_TRIVIAL(debug) << "Linux doesn't have a registry";
 	return "";
 #elif WIN32
-	LOGD("WIN32");
+	BOOST_LOG_TRIVIAL(debug) << "WIN32";
 	HKEY regKey;
 #if _WIN64
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, (char*)key.c_str(), 0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &regKey) != ERROR_SUCCESS) {
@@ -285,7 +285,7 @@ std::string Platform::getRegistryValue(std::string key, std::string subkey) {
 	RegCloseKey(regKey);
 	return value;
 #else
-	LOGD("No code for this OS");
+	BOOST_LOG_TRIVIAL(debug) << "No code for this OS";
 	return "";
 #endif
 }

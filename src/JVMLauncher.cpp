@@ -7,7 +7,7 @@ vector<string> JVMLauncher::getCliArgs(vector<std::string> cliArgs, ConfigReader
 	cliArgs.push_back("-l");
 	cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
 	vector<string> newCliArgs = Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)), cliArgs);
-	LOGD("CLI Args: " << newCliArgs.size());
+	BOOST_LOG_TRIVIAL(debug) << "CLI Args: " << newCliArgs.size();
 	return newCliArgs;
 }
 
@@ -15,7 +15,7 @@ vector<string> JVMLauncher::getJvmArgs(ConfigReader config) {
 	vector<string> jvmArgs;
 	jvmArgs.push_back("-Dfile.encoding=utf-8");
 	jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", vector<string>(0)), jvmArgs);
-	LOGD("JVM Args: " << jvmArgs.size());
+	BOOST_LOG_TRIVIAL(debug) << "JVM Args: " << jvmArgs.size();
 	return jvmArgs;
 }
 
@@ -38,14 +38,14 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 }
 
 void JVMLauncher::LaunchJVM() {
-	LOGD("Getting DLL from registry");
+	BOOST_LOG_TRIVIAL(debug) << "Getting DLL from registry";
 	std::string jvmDll = Platform::getJavaDLLFromRegistry();
-	LOGD("Setting Java Home from registry")
+	BOOST_LOG_TRIVIAL(debug) << "Setting Java Home from registry";
 	javaHome = Platform::getJavaHomeFromRegistry();
 	//Build library path
 	std::string strJavaLibraryPath = "-Djava.library.path=";
 	strJavaLibraryPath += javaHome + "\\lib" + "," + javaHome + "\\jre\\lib";
-	LOGD("Java Library Path: " << strJavaLibraryPath);
+	BOOST_LOG_TRIVIAL(debug) << "Java Library Path: " << strJavaLibraryPath;
 	//Add jars to classpath
 	std::string strJavaClassPath = "-Djava.class.path=";
 	if (jars.size() > 0) {
@@ -54,7 +54,7 @@ void JVMLauncher::LaunchJVM() {
 		}
 		strJavaClassPath += appHome + jars[jars.size() - 1];
 	}
-	LOGD("Java Class Path: " << strJavaClassPath);
+	BOOST_LOG_TRIVIAL(debug) << "Java Class Path: " << strJavaClassPath;
 	//Configure JVM Options
 	JavaVMOption options[100];
 	options[0].optionString = (char*)(strJavaClassPath.c_str());
@@ -113,5 +113,5 @@ int JVMLauncher::callIsNewer(std::string version1, std::string version2) {
 }
 
 void JVMLauncher::exit(jint status) {
-	LOGD("JVM quitting: " << status);
+	BOOST_LOG_TRIVIAL(debug) << "JVM quitting: " << status;
 }

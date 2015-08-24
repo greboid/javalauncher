@@ -8,24 +8,24 @@ Updater::Updater(ConfigReader& config) {
 }
 
 void Updater::relaunch(std::string args) {
-	LOGD("Creating new process.");
+	BOOST_LOG_TRIVIAL(debug) << "Creating new process.";
 	Platform::launchApplication(Utils::getExePathAndName(), args);
-	LOGD("Releasing mutex");
+	BOOST_LOG_TRIVIAL(debug) << "Releasing mutex";
 	updateMutex.unlock();
-	LOGD("Exiting app.");
+	BOOST_LOG_TRIVIAL(debug) << "Exiting app.";
 	exit(0);
 }
 
 void Updater::getAndLockMutex() {
-	LOGD("Creating mutex.");
+	BOOST_LOG_TRIVIAL(debug) << "Creating mutex.";
 	updateMutex = Mutex();
 	updateMutex.init("DMDirc-Updater");
-	LOGD("Waiting for mutex.");
+	BOOST_LOG_TRIVIAL(debug) << "Waiting for mutex.";
 	updateMutex.lock();
 }
 
 void Updater::deleteOldLauncher() {
-	LOGD("Checking for old launcher.");
+	BOOST_LOG_TRIVIAL(debug) << "Checking for old launcher.";
 	Platform::deleteFileIfExists(Utils::getExePathAndName() + ".old");
 }
 
@@ -33,58 +33,58 @@ bool Updater::doUpdate(std::string directory) {
 	getAndLockMutex();
 	deleteOldLauncher();
 	bool relaunchNeeded = false;
-	LOGD("Checking launcher auto update = " << LAUNCHER_AUTOUPDATE);
+	BOOST_LOG_TRIVIAL(debug) << "Checking launcher auto update = " << LAUNCHER_AUTOUPDATE;
 	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
-		LOGD("Attempting to update launcher.");
+		BOOST_LOG_TRIVIAL(debug) << "Attempting to update launcher.";
 		int success = updateLauncher(directory, Utils::getExePath());
-		LOGD("Update result: " << success);
+		BOOST_LOG_TRIVIAL(debug) << "Update result: " << success;
 		if (success == -1) {
-			LOGD("Failed: attempting to update app data");
+			BOOST_LOG_TRIVIAL(debug) << "Failed: attempting to update app data";
 			success = updateLauncher(directory, Platform::GetAppDataDirectory());
-			LOGD("Update result: " << success);
+			BOOST_LOG_TRIVIAL(debug) << "Update result: " << success;
 		}
 		if (success == 1) {
-			LOGD("Success, restart needed.");
+			BOOST_LOG_TRIVIAL(debug) << "Success, restart needed.";
 			relaunchNeeded = true;
 		}
 	}
-	LOGD("Checking application update = " << APPLICATION_AUTOUPDATE);
+	BOOST_LOG_TRIVIAL(debug) << "Checking application update = " << APPLICATION_AUTOUPDATE;
 	if (config.getBoolValue("application.autoupdate", APPLICATION_AUTOUPDATE)) {
-		LOGD("Attempting to update application.");
+		BOOST_LOG_TRIVIAL(debug) << "Attempting to update application.";
 		int success = updateApplication(directory, Utils::getExePath());
 		if (success == -1) {
-			LOGD("Failed: Updating to app data.");
+			BOOST_LOG_TRIVIAL(debug) << "Failed: Updating to app data.";
 			updateApplication(directory, Platform::GetAppDataDirectory());
 		}
 		if (success == 1) {
 			relaunchNeeded = true;
 		}
 	}
-	LOGD("Releasing mutex.");
+	BOOST_LOG_TRIVIAL(debug) << "Releasing mutex.";
 	updateMutex.unlock();
-	LOGD("Returning value: " << relaunchNeeded);
+	BOOST_LOG_TRIVIAL(debug) << "Returning value: " << relaunchNeeded;
 	return relaunchNeeded;
 }
 
 int Updater::updateLauncher(std::string from, std::string to) {
 	std::ifstream file((char*)(from + "/" + Utils::getExeName()).c_str());
 	if (file.good()) {
-		LOGD("Update file exists");
+		BOOST_LOG_TRIVIAL(debug) << "Update file exists";
 		file.close();
-		LOGD("Attempting to backup existing launcher.");
+		BOOST_LOG_TRIVIAL(debug) << "Attempting to backup existing launcher.";
 		if (Platform::moveFile(Utils::getExePathAndName(), Utils::getExePathAndName() + ".old")) {
-			LOGD("Unable to backup existing launcher.");
+			BOOST_LOG_TRIVIAL(debug) << "Unable to backup existing launcher.";
 			return -1;
 		}
 		if (!Platform::moveFile(from + "/" + Utils::getExeName(), to + Utils::getExePath())) {
-			LOGD("Moving new launcher failed.");
+			BOOST_LOG_TRIVIAL(debug) << "Moving new launcher failed.";
 			return -1;
 		}
-		LOGD("Updating launcher suceeded.");
+		BOOST_LOG_TRIVIAL(debug) << "Updating launcher suceeded.";
 		return 1;
 	} else {
 		file.close();
-		LOGD("Updating launcher not required.");
+		BOOST_LOG_TRIVIAL(debug) << "Updating launcher not required.";
 		return 0;
 	}
 }
@@ -96,10 +96,10 @@ void Updater::moveApplicationUpdates() {
 		std::string updateSource = files[i];
 		std::string updateTarget = files[i].substr(0, files[i].length() - 4);
 		if (Platform::moveFile(to + updateSource, to + updateTarget)) {
-			LOGD("Updating suceeded.");
+			BOOST_LOG_TRIVIAL(debug) << "Updating suceeded.";
 		}
 		else {
-			LOGD("Updating failed.");
+			BOOST_LOG_TRIVIAL(debug) << "Updating failed.";
 		}
 	}
 }
@@ -107,33 +107,33 @@ void Updater::moveApplicationUpdates() {
 int Updater::updateApplication(std::string from, std::string to) {
 	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*"));
 	if (files.size() == 0) {
-		LOGD("Updating application not required.");
+		BOOST_LOG_TRIVIAL(debug) << "Updating application not required.";
 		return 0;
 	}
 	else {
-		LOGD("Updating application: " << files.size());
+		BOOST_LOG_TRIVIAL(debug) << "Updating application: " << files.size();
 	}
 	int restartNeeded = 0;
 	for (unsigned int i = 0; i < files.size(); i++) {
-		LOGD("Attempting to update: " << files[i]);
+		BOOST_LOG_TRIVIAL(debug) << "Attempting to update: " << files[i];
 		std::string updateSource = "." + files[i];
 		std::string updateTarget = files[i];
 		std::ifstream file((char*)(from + "/" + updateSource).c_str());
 		if (file.good()) {
 			file.close();
-			LOGD("Update file exists, trying to copy.");
-			LOGD("Updating: " << from + updateSource << " => " << to + updateTarget);
+			BOOST_LOG_TRIVIAL(debug) << "Update file exists, trying to copy.";
+			BOOST_LOG_TRIVIAL(debug) << "Updating: " << from + updateSource << " => " << to + updateTarget;
 			if (Platform::moveFile(from + updateSource, to + updateTarget + ".tmp")) {
-				LOGD("Updating suceeded.");
+				BOOST_LOG_TRIVIAL(debug) << "Updating suceeded.";
 				restartNeeded = 1;
 			}
 			else {
-				LOGD("Updating failed.");
+				BOOST_LOG_TRIVIAL(debug) << "Updating failed.";
 				restartNeeded = 0;
 			}
 		}
 		else {
-			LOGD("Update file does not exist.");
+			BOOST_LOG_TRIVIAL(debug) << "Update file does not exist.";
 		}
 		
 	}

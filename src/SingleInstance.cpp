@@ -7,37 +7,37 @@ SingleInstance::SingleInstance(ConfigReader& config) {
 }
 
 SingleInstance::~SingleInstance() {
-	LOGD("Destroying single instance.");
+	BOOST_LOG_TRIVIAL(debug) << "Destroying single instance.";
     if (instanceMutex.unlock()) {
-		LOGD("Stopping instance.");
+		BOOST_LOG_TRIVIAL(debug) << "Stopping instance.";
         stopped();
     }
 }
 
 bool SingleInstance::getCanStart() {
-	LOGD("Checking if we should use single instance.");
+	BOOST_LOG_TRIVIAL(debug) << "Checking if we should use single instance.";
 	if (config.getBoolValue("launcher.singleinstance", LAUNCHER_SINGLEINSTANCE)) {
-		LOGD("Creating single instance.");
+		BOOST_LOG_TRIVIAL(debug) << "Creating single instance.";
 		instanceMutex = Mutex();
 		if (!instanceMutex.init("DMDirc")) {
-			LOGD("Single instance exists, we should not start.");
+			BOOST_LOG_TRIVIAL(debug) << "Single instance exists, we should not start.";
 			stopped();
             return false;
 		}
 		else {
-			LOGD("Single instance does not exist.");
+			BOOST_LOG_TRIVIAL(debug) << "Single instance does not exist.";
 			return true;
 		}
 	}
 	else {
-		LOGD("Single instance not set, we should start.");
+		BOOST_LOG_TRIVIAL(debug) << "Single instance not set, we should start.";
 		stopped();
 		return true;
 	}
 }
 
 void SingleInstance::stopped() {
-	LOGD("Releasing mutex.");
+	BOOST_LOG_TRIVIAL(debug) << "Releasing mutex.";
 	instanceMutex.unlock();
 }
 
