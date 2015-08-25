@@ -22,15 +22,15 @@ int main(int argc, char** argv) {
 		;
 	po::options_description conf("Configuration Options");
 	conf.add_options()
+		("jvm.args", po::value<string>()->default_value(""), "Arguments to pass to the JVM in addition to -Dfile.encoding=utf-8")
 		("application.name",po::value<string>()->default_value(APPLICATION_NAME), "The application's name")
 		("application.main", po::value<string>()->default_value(APPLICATION_MAIN), "The application's Main class")
 		("application.args", po::value<string>()->default_value(""), "Arguments to pass to the application")
 		("application.path", po::value<string>()->default_value(APPLICATION_PATH), "The path of the application")
-		("launcherutils.main", po::value<string>()->default_value(APPLICATION_SETUP), "Launcher Utilities class  (See docs for API)")
-		("jvm.args", po::value<string>()->default_value(""), "Arguments to pass to the JVM in addition to -Dfile.encoding=utf-8")
+		("application.autoupdate", po::value<int>()->default_value(1), "Should the launcher auto update the application")
+		("launcher.main", po::value<string>()->default_value(APPLICATION_SETUP), "Launcher Utilities class  (See docs for API)")
 		("launcher.singleinstance", po::value<int>()->default_value(1), "Should we use a global single instance")
 		("launcher.autoupdate", po::value<int>()->default_value(1), "Should the launcher auto update itself")
-		("application.autoupdate", po::value<int>()->default_value(1), "Should the launcher auto update the application")
 		;
 	po::variables_map options;
 	try {

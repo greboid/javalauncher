@@ -30,7 +30,7 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, boost::program_options::va
 		throw JVMLauncherException("No jar files found.");
 	}
 	this->mainClassName = config["application.main"].as<string>();
-	this->utilsClassName = config["launcherutils.main"].as<string>();
+	this->utilsClassName = config["launcher.main"].as<string>();
 	this->config = config;
 	this->jvmargs = getJvmArgs(config);
 	this->appargs = getCliArgs(appargs, config);
