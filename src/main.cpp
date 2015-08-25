@@ -1,6 +1,5 @@
 #include "JVMLauncher.h"
 #include "SingleInstance.h"
-#include "ConfigReader.h"
 #include "ConfigDefaults.h"
 #include "Updater.h"
 #include "utils.h"
@@ -42,7 +41,7 @@ int main(int argc, char** argv) {
 	if (options.count("debug") != 1) {
 		FreeConsole();
 	}
-	Logger::init(options.count("debug"));
+	
 	try {
 		ifstream file((char*)(Utils::getExePath() + "//" + "launcher.config").c_str(), ios::in);
 		po::store(po::parse_config_file(file, conf), options);
@@ -53,9 +52,10 @@ int main(int argc, char** argv) {
 		}
 		po::notify(options);
 	} catch (po::error& e) {
-		BOOST_LOG_TRIVIAL(error) << "ERROR: " << e.what() << std::endl << std::endl;
+		cerr << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
 	}
+	Logger::init(options.count("debug"), options["application.name"].as<string>());
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
 	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
 		cout << LAUNCHER_VERSION << endl;
@@ -67,29 +67,27 @@ int main(int argc, char** argv) {
 	}
 	BOOST_LOG_TRIVIAL(debug) << "Starting launcher.";
 	BOOST_LOG_TRIVIAL(debug) << "Checking update file.";
-	std::ifstream file((char*)(Platform::GetAppDataDirectory() + Utils::getExeName()).c_str());
+	std::ifstream file(Platform::GetAppDataDirectory(options["application.name"].as<string>() + Utils::getExeName()).c_str());
 	BOOST_LOG_TRIVIAL(debug) << "File: ";
 	std::string version = "-1";
 	if (file.good()) {
 		BOOST_LOG_TRIVIAL(debug) << "Update file exists.";
 		file.close();
-		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory() + Utils::getExeName(), argv);
+		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory(options["application.name"].as<string>()) + Utils::getExeName(), argv);
 	}
-	BOOST_LOG_TRIVIAL(debug) << "Creating config.";
-	ConfigReader config;
 	BOOST_LOG_TRIVIAL(debug) << "Creating single instance.";
-	SingleInstance singleInstance(config);
+	SingleInstance singleInstance(options);
 	if (!singleInstance.getCanStart()) {
 		BOOST_LOG_TRIVIAL(error) << "Another instance already running.";
 		return EXIT_FAILURE;
 	}
 	BOOST_LOG_TRIVIAL(debug) << "Creating updater.";
-	Updater updater(config);
+	Updater updater(options);
 	try {
 		BOOST_LOG_TRIVIAL(debug) << "Moving application Updates.";
 		updater.moveApplicationUpdates();
 		BOOST_LOG_TRIVIAL(debug) << "Creating JVMLauncher.";
-		JVMLauncher* launcher = new JVMLauncher(cliArgs, config);
+		JVMLauncher* launcher = new JVMLauncher(cliArgs, options);
 		BOOST_LOG_TRIVIAL(debug) << "Launching JVM";
 		launcher->LaunchJVM();
 		BOOST_LOG_TRIVIAL(debug) << "Getting directory.";
@@ -98,7 +96,7 @@ int main(int argc, char** argv) {
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
 		if (compareValue > 0) {
 			BOOST_LOG_TRIVIAL(debug) << "Version is newer, updating.";
-			Platform::launchApplication((Platform::GetAppDataDirectory() + Utils::getExeName()), Utils::vectorToString(Utils::arrayToVector(argc, argv)));
+			Platform::launchApplication((Platform::GetAppDataDirectory(options["application.name"].as<string>()) + Utils::getExeName()), Utils::vectorToString(Utils::arrayToVector(argc, argv)));
 			exit(0);
 		}
 		BOOST_LOG_TRIVIAL(debug) << "updater.doUpdate.";

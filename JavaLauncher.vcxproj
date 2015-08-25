@@ -165,7 +165,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\ConfigReader.cpp" />
     <ClCompile Include="src\JVMLauncher.cpp" />
     <ClCompile Include="src\JVMLauncherException.cpp" />
     <ClCompile Include="src\JVMLauncherUtils.cpp" />
@@ -179,12 +178,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ConfigDefaults.h" />
-    <ClInclude Include="src\ConfigReader.h" />
     <ClInclude Include="src\jni.h" />
     <ClInclude Include="src\JVMLauncher.h" />
     <ClInclude Include="src\JVMLauncherUtils.h" />
     <ClInclude Include="src\Logger.h" />
-    <ClInclude Include="src\main.h" />
     <ClInclude Include="src\mutex.h" />
     <ClInclude Include="src\platform.h" />
     <ClInclude Include="src\resource.h" />

@@ -1,12 +1,12 @@
 #include "Logger.h"
 
-void Logger::init(int debug) {
-	boost::log::add_console_log(
-		std::cout,
-		boost::log::keywords::format = "[%TimeStamp%] *%Severity%* %Message%",
-		boost::log::keywords::auto_flush = true
-		)->set_filter(boost::log::trivial::severity >= boost::log::trivial::warning);
+void Logger::init(int debug, std::string name) {
 	if (debug) {
+		boost::log::add_console_log(
+			std::cout,
+			boost::log::keywords::format = "[%TimeStamp%] *%Severity%* %Message%",
+			boost::log::keywords::auto_flush = true
+			)->set_filter(boost::log::trivial::severity >= boost::log::trivial::trace);
 		boost::log::add_file_log(
 			boost::log::keywords::file_name = (std::string)APPLICATION_NAME+"_Debug.log",
 			boost::log::keywords::rotation_size = 1 * 1024 * 1024,
@@ -15,6 +15,12 @@ void Logger::init(int debug) {
 			boost::log::keywords::format = "[%TimeStamp%] *%Severity%* %Message%",
 			boost::log::keywords::auto_flush = true
 			);
+	} else {
+		boost::log::add_console_log(
+			std::cout,
+			boost::log::keywords::format = "[%TimeStamp%] *%Severity%* %Message%",
+			boost::log::keywords::auto_flush = true
+			)->set_filter(boost::log::trivial::severity >= boost::log::trivial::warning);
 	}
 	boost::log::add_common_attributes();
 	boost::log::core::get()->set_filter(

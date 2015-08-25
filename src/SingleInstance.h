@@ -2,21 +2,21 @@
 #define	SINGLEINSTANCE_H
 
 #include "Logger.h"
-#include "ConfigReader.h"
 #include "mutex.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <boost/program_options.hpp>
 
 class SingleInstance {
 public:
-    SingleInstance(ConfigReader&);
+    SingleInstance(boost::program_options::variables_map&);
     virtual ~SingleInstance();
     bool getCanStart();
     void stopped();
 private:
     Mutex instanceMutex;
-    ConfigReader config;
+	boost::program_options::variables_map config;
 };
 
 #endif	/* SINGLEINSTANCE_H */

@@ -4,14 +4,14 @@
 #include "Logger.h"
 #include "platform.h"
 #include "mutex.h"
-#include "ConfigReader.h"
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <boost/program_options.hpp>
 
 class Updater {
 public:
-	Updater(ConfigReader&);
+	Updater(boost::program_options::variables_map&);
 	void moveApplicationUpdates();
     bool doUpdate(std::string);
     bool isUpdateWaiting();
@@ -20,7 +20,7 @@ public:
 private:
     Mutex updateMutex;
     std::string newVersion;
-    ConfigReader config;
+	boost::program_options::variables_map config;
 	void deleteOldLauncher();
 	void getAndLockMutex();
 	int updateLauncher(std::string, std::string);

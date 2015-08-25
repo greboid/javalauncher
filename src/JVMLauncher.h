@@ -3,7 +3,6 @@
 
 #include "Logger.h"
 #include "ConfigDefaults.h"
-#include "ConfigReader.h"
 #include "Updater.h"
 #include "JVMLauncherUtils.h"
 #include "gitversion.h"
@@ -17,7 +16,7 @@
 
 class JVMLauncher {
 public:
-    JVMLauncher(std::vector<std::string>, ConfigReader&);
+    JVMLauncher(std::vector<std::string>, boost::program_options::variables_map&);
     void LaunchJVM();
     void destroyJVM();
 	std::string callGetDirectory();
@@ -26,7 +25,7 @@ public:
 private:
     static void exit(jint);
     typedef jint(JNICALL* CreateJavaVM)(JavaVM**, void**, void*);
-    ConfigReader config;
+	boost::program_options::variables_map config;
     std::vector<std::string> jvmargs;
     std::vector<std::string> appargs;
     std::string mainClassName;
@@ -39,8 +38,8 @@ private:
     jmethodID mainMethod;
     JNIEnv* jvmEnv;
     JavaVM* jvm;
-	vector<string> getCliArgs(vector<string>, ConfigReader& config);
-	vector<string> getJvmArgs(ConfigReader config);
+	vector<string> getCliArgs(vector<string>, boost::program_options::variables_map& config);
+	vector<string> getJvmArgs(boost::program_options::variables_map config);
     void addAllJarsFromPath(std::string);
 protected:
 };

@@ -3,7 +3,6 @@
 
 #include "Logger.h"
 #include "ConfigDefaults.h"
-#include "ConfigReader.h"
 #include "platform.h"
 #include <string>
 #include <stdlib.h>

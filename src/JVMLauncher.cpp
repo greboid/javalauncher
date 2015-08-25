@@ -2,25 +2,26 @@
 
 using namespace std;
 
-vector<string> JVMLauncher::getCliArgs(vector<std::string> cliArgs, ConfigReader& config) {
+vector<string> JVMLauncher::getCliArgs(vector<std::string> cliArgs, boost::program_options::variables_map& config) {
 	cliArgs.erase(cliArgs.begin());
 	cliArgs.push_back("-l");
 	cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
-	vector<string> newCliArgs = Utils::mergeVectors(config.getVectorValue("application.args", vector<string>(0)), cliArgs);
+	
+	vector<string> newCliArgs = Utils::mergeVectors(config["application.args"].as<vector<string>>(), cliArgs);
 	BOOST_LOG_TRIVIAL(debug) << "CLI Args: " << newCliArgs.size();
 	return newCliArgs;
 }
 
-vector<string> JVMLauncher::getJvmArgs(ConfigReader config) {
+vector<string> JVMLauncher::getJvmArgs(boost::program_options::variables_map config) {
 	vector<string> jvmArgs;
 	jvmArgs.push_back("-Dfile.encoding=utf-8");
-	jvmArgs = Utils::mergeVectors(config.getVectorValue("jvm.args", vector<string>(0)), jvmArgs);
+	jvmArgs = Utils::mergeVectors(config["jvm.args"].as<vector<string>>(), jvmArgs);
 	BOOST_LOG_TRIVIAL(debug) << "JVM Args: " << jvmArgs.size();
 	return jvmArgs;
 }
 
-JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
-	std::string path = config.getStringValue("application.path", APPLICATION_PATH);
+JVMLauncher::JVMLauncher(vector<std::string> appargs, boost::program_options::variables_map& config) {
+	std::string path = config["application.path"].as<string>();
 	//set application home
 	appHome.append(path);
 	//add all jars from path
@@ -28,8 +29,8 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, ConfigReader& config) {
 	if (jars.size() == 0) {
 		throw JVMLauncherException("No jar files found.");
 	}
-	this->mainClassName = config.getStringValue("application.main", APPLICATION_MAIN);
-	this->utilsClassName = config.getStringValue("launcherutils.main", LAUNCHERUTILS_MAIN);
+	this->mainClassName = config["application.main"].as<string>();
+	this->utilsClassName = config["launcherutils.main"].as<string>();
 	this->config = config;
 	this->jvmargs = getJvmArgs(config);
 	this->appargs = getCliArgs(appargs, config);

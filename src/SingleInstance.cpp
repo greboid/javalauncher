@@ -2,7 +2,7 @@
 
 using namespace std;
 
-SingleInstance::SingleInstance(ConfigReader& config) {
+SingleInstance::SingleInstance(boost::program_options::variables_map& config) {
     this->config = config;
 }
 
@@ -16,10 +16,11 @@ SingleInstance::~SingleInstance() {
 
 bool SingleInstance::getCanStart() {
 	BOOST_LOG_TRIVIAL(debug) << "Checking if we should use single instance.";
-	if (config.getBoolValue("launcher.singleinstance", LAUNCHER_SINGLEINSTANCE)) {
+	BOOST_LOG_TRIVIAL(debug) << "Value: " << config["launcher.singleinstance"].as<int>();
+	if (config["launcher.singleinstance"].as<int>() == 1) {
 		BOOST_LOG_TRIVIAL(debug) << "Creating single instance.";
 		instanceMutex = Mutex();
-		if (!instanceMutex.init("DMDirc")) {
+		if (!instanceMutex.init(config["application.name"].as<string>())) {
 			BOOST_LOG_TRIVIAL(debug) << "Single instance exists, we should not start.";
 			stopped();
             return false;

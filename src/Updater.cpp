@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Updater::Updater(ConfigReader& config) {
+Updater::Updater(boost::program_options::variables_map& config) {
 	this->config = config;
 	this->newVersion = "";
 }
@@ -33,8 +33,8 @@ bool Updater::doUpdate(std::string directory) {
 	getAndLockMutex();
 	deleteOldLauncher();
 	bool relaunchNeeded = false;
-	BOOST_LOG_TRIVIAL(debug) << "Checking launcher auto update = " << LAUNCHER_AUTOUPDATE;
-	if (config.getBoolValue("launcher.autoupdate", LAUNCHER_AUTOUPDATE)) {
+	BOOST_LOG_TRIVIAL(debug) << "Checking launcher auto update";
+	if (config["launcher.autoupdate"].as<int>() == 1) {
 		BOOST_LOG_TRIVIAL(debug) << "Attempting to update launcher.";
 		int success = updateLauncher(directory, Utils::getExePath());
 		BOOST_LOG_TRIVIAL(debug) << "Update result: " << success;
@@ -48,8 +48,8 @@ bool Updater::doUpdate(std::string directory) {
 			relaunchNeeded = true;
 		}
 	}
-	BOOST_LOG_TRIVIAL(debug) << "Checking application update = " << APPLICATION_AUTOUPDATE;
-	if (config.getBoolValue("application.autoupdate", APPLICATION_AUTOUPDATE)) {
+	BOOST_LOG_TRIVIAL(debug) << "Checking application update";
+	if (config["application.autoupdate"].as<int>() == 1) {
 		BOOST_LOG_TRIVIAL(debug) << "Attempting to update application.";
 		int success = updateApplication(directory, Utils::getExePath());
 		if (success == -1) {
@@ -91,7 +91,7 @@ int Updater::updateLauncher(std::string from, std::string to) {
 
 void Updater::moveApplicationUpdates() {
 	std::string to = Utils::getExePath();
-	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*\.tmp"));
+	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*\\.tmp"));
 	for (unsigned int i = 0; i < files.size(); i++) {
 		std::string updateSource = files[i];
 		std::string updateTarget = files[i].substr(0, files[i].length() - 4);
