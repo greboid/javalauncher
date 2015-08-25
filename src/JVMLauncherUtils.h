@@ -2,7 +2,6 @@
 #define	JVMLAUNCHERUTILS_H
 
 #include "JVMLauncherException.cpp"
-#include "ConfigReader.h"
 #include <stdexcept>
 #include "jni.h"
 #include <string>

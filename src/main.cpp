@@ -22,14 +22,15 @@ int main(int argc, char** argv) {
 		;
 	po::options_description conf("Configuration Options");
 	conf.add_options()
-		("application.main", po::value<string>()->default_value(APPLICATION_MAIN), "Application's Main class")
+		("application.name",po::value<string>()->default_value(APPLICATION_NAME), "The application's name")
+		("application.main", po::value<string>()->default_value(APPLICATION_MAIN), "The application's Main class")
 		("application.args", po::value<string>()->default_value(""), "Arguments to pass to the application")
 		("application.path", po::value<string>()->default_value(APPLICATION_PATH), "The path of the application")
-		("launcherutils.main", po::value<string>()->default_value(LAUNCHERUTILS_MAIN), "Launcher Utilities class  (See docs for API)")
+		("launcherutils.main", po::value<string>()->default_value(APPLICATION_SETUP), "Launcher Utilities class  (See docs for API)")
 		("jvm.args", po::value<string>()->default_value(""), "Arguments to pass to the JVM in addition to -Dfile.encoding=utf-8")
-		("launcher.singleinstance", po::value<bool>()->default_value(LAUNCHER_SINGLEINSTANCE), "Should we use a global single instance")
-		("launcher.autoupdate", po::value<bool>()->default_value(LAUNCHER_AUTOUPDATE), "Should the launcher auto update itself")
-		("application.autoupdate", po::value<bool>()->default_value(APPLICATION_AUTOUPDATE), "Should the launcher auto update the application")
+		("launcher.singleinstance", po::value<int>()->default_value(1), "Should we use a global single instance")
+		("launcher.autoupdate", po::value<int>()->default_value(1), "Should the launcher auto update itself")
+		("application.autoupdate", po::value<int>()->default_value(1), "Should the launcher auto update the application")
 		;
 	po::variables_map options;
 	try {
@@ -38,6 +39,7 @@ int main(int argc, char** argv) {
 		BOOST_LOG_TRIVIAL(error) << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
 	}
+	Logger::init(options.count("debug"), APPLICATION_NAME);
 	if (options.count("debug") != 1) {
 		FreeConsole();
 	}
@@ -55,7 +57,6 @@ int main(int argc, char** argv) {
 		cerr << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
 	}
-	Logger::init(options.count("debug"), options["application.name"].as<string>());
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
 	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
 		cout << LAUNCHER_VERSION << endl;
@@ -67,13 +68,12 @@ int main(int argc, char** argv) {
 	}
 	BOOST_LOG_TRIVIAL(debug) << "Starting launcher.";
 	BOOST_LOG_TRIVIAL(debug) << "Checking update file.";
-	std::ifstream file(Platform::GetAppDataDirectory(options["application.name"].as<string>() + Utils::getExeName()).c_str());
-	BOOST_LOG_TRIVIAL(debug) << "File: ";
+	std::ifstream file((char*)(Platform::GetAppDataDirectory() + Utils::getExeName()).c_str());
 	std::string version = "-1";
 	if (file.good()) {
 		BOOST_LOG_TRIVIAL(debug) << "Update file exists.";
 		file.close();
-		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory(options["application.name"].as<string>()) + Utils::getExeName(), argv);
+		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory() + Utils::getExeName(), argv);
 	}
 	BOOST_LOG_TRIVIAL(debug) << "Creating single instance.";
 	SingleInstance singleInstance(options);
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
 		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
 		if (compareValue > 0) {
 			BOOST_LOG_TRIVIAL(debug) << "Version is newer, updating.";
-			Platform::launchApplication((Platform::GetAppDataDirectory(options["application.name"].as<string>()) + Utils::getExeName()), Utils::vectorToString(Utils::arrayToVector(argc, argv)));
+			Platform::launchApplication((Platform::GetAppDataDirectory() + Utils::getExeName()), Utils::vectorToString(Utils::arrayToVector(argc, argv)));
 			exit(0);
 		}
 		BOOST_LOG_TRIVIAL(debug) << "updater.doUpdate.";
