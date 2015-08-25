@@ -1,6 +1,5 @@
 #ifndef LOGGER_H
 #define	LOGGER_H
-#include "ConfigDefaults.h"
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
@@ -13,7 +12,7 @@
 
 class Logger {
 public:
-	static void init(int debug);
+	static void init(int debug, std::string name);
 private:
 protected:
 };
