@@ -16,8 +16,8 @@ SingleInstance::~SingleInstance() {
 
 bool SingleInstance::getCanStart() {
 	BOOST_LOG_TRIVIAL(debug) << "Checking if we should use single instance.";
-	BOOST_LOG_TRIVIAL(debug) << "Value: " << config["launcher.singleinstance"].as<int>();
-	if (config["launcher.singleinstance"].as<int>() == 1) {
+	BOOST_LOG_TRIVIAL(debug) << "Value: " << config["launcher.singleinstance"].as<bool>();
+	if (config["launcher.singleinstance"].as<bool>()) {
 		BOOST_LOG_TRIVIAL(debug) << "Creating single instance.";
 		instanceMutex = Mutex();
 		if (!instanceMutex.init(config["application.name"].as<string>())) {

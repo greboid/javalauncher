@@ -34,7 +34,7 @@ bool Updater::doUpdate(std::string directory) {
 	deleteOldLauncher();
 	bool relaunchNeeded = false;
 	BOOST_LOG_TRIVIAL(debug) << "Checking launcher auto update";
-	if (config["launcher.autoupdate"].as<int>() == 1) {
+	if (config["launcher.autoupdate"].as<bool>()) {
 		BOOST_LOG_TRIVIAL(debug) << "Attempting to update launcher.";
 		int success = updateLauncher(directory, Utils::getExePath());
 		BOOST_LOG_TRIVIAL(debug) << "Update result: " << success;
@@ -49,7 +49,7 @@ bool Updater::doUpdate(std::string directory) {
 		}
 	}
 	BOOST_LOG_TRIVIAL(debug) << "Checking application update";
-	if (config["application.autoupdate"].as<int>() == 1) {
+	if (config["application.autoupdate"].as<bool>()) {
 		BOOST_LOG_TRIVIAL(debug) << "Attempting to update application.";
 		int success = updateApplication(directory, Utils::getExePath());
 		if (success == -1) {
