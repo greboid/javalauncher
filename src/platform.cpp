@@ -107,7 +107,6 @@ std::string Platform::addTrailingSlash(std::string directory) {
 	ending = "/";
 #endif
 	if (0 != directory.compare(directory.length() - ending.length(), ending.length(), ending)) {
-		BOOST_LOG_TRIVIAL(debug) << "Adding trailing slash.";
 		return directory + ending;
 	}
 	return directory;

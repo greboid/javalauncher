@@ -39,10 +39,6 @@ int main(int argc, char** argv) {
 		BOOST_LOG_TRIVIAL(error) << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
 	}
-	Logger::init(options.count("debug"), APPLICATION_NAME);
-	if (options.count("debug") != 1) {
-		FreeConsole();
-	}
 	
 	try {
 		ifstream file((char*)(Utils::getExePath() + "//" + "launcher.config").c_str(), ios::in);
@@ -56,6 +52,10 @@ int main(int argc, char** argv) {
 	} catch (po::error& e) {
 		cerr << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
+	}
+	Logger::init(options.count("debug"), APPLICATION_NAME);
+	if (options.count("debug") != 1) {
+		FreeConsole();
 	}
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
 	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
