@@ -53,28 +53,16 @@ int main(int argc, char** argv) {
 		cerr << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
 	}
+	if (options.count("version") == 1) {
+		cout << LAUNCHER_VERSION << endl;
+		exit(0);
+	}
 	Logger::init(options.count("debug"), APPLICATION_NAME);
 	if (options.count("debug") != 1) {
 		FreeConsole();
 	}
 	vector<string> cliArgs = Utils::arrayToVector(argc, argv);
-	if (find(cliArgs.begin(), cliArgs.end(), "--LAUNCHER_VERSION") != cliArgs.end()) {
-		cout << LAUNCHER_VERSION << endl;
-		exit(0);
-	}
-	if (find(cliArgs.begin(), cliArgs.end(), "--DEBUG") != cliArgs.end()) {
-		cliArgs.erase(find(cliArgs.begin(), cliArgs.end(), "--DEBUG"));
-		Platform::createConsole();
-	}
 	BOOST_LOG_TRIVIAL(debug) << "Starting launcher.";
-	BOOST_LOG_TRIVIAL(debug) << "Checking update file.";
-	std::ifstream file((char*)(Platform::GetAppDataDirectory() + Utils::getExeName()).c_str());
-	std::string version = "-1";
-	if (file.good()) {
-		BOOST_LOG_TRIVIAL(debug) << "Update file exists.";
-		file.close();
-		version = Utils::launchAppReturnOutput(Platform::GetAppDataDirectory() + Utils::getExeName(), argv);
-	}
 	BOOST_LOG_TRIVIAL(debug) << "Creating single instance.";
 	SingleInstance singleInstance(options);
 	if (!singleInstance.getCanStart()) {
@@ -92,14 +80,6 @@ int main(int argc, char** argv) {
 		launcher->LaunchJVM();
 		BOOST_LOG_TRIVIAL(debug) << "Getting directory.";
 		std::string directory = launcher->callGetDirectory();
-		BOOST_LOG_TRIVIAL(debug) << "Checking if existing is newer or older.";
-		int compareValue = launcher->callIsNewer(version, LAUNCHER_VERSION);
-		if (compareValue > 0) {
-			BOOST_LOG_TRIVIAL(debug) << "Version is newer, updating.";
-			Platform::launchApplication((Platform::GetAppDataDirectory() + Utils::getExeName()), Utils::vectorToString(Utils::arrayToVector(argc, argv)));
-			exit(0);
-		}
-		BOOST_LOG_TRIVIAL(debug) << "updater.doUpdate.";
 		if (updater.doUpdate(directory)) {
 			BOOST_LOG_TRIVIAL(debug) << "Destroying JVM.";
 			launcher->destroyJVM();

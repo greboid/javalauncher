@@ -38,11 +38,6 @@ bool Updater::doUpdate(std::string directory) {
 		BOOST_LOG_TRIVIAL(debug) << "Attempting to update launcher.";
 		int success = updateLauncher(directory, Utils::getExePath());
 		BOOST_LOG_TRIVIAL(debug) << "Update result: " << success;
-		if (success == -1) {
-			BOOST_LOG_TRIVIAL(debug) << "Failed: attempting to update app data";
-			success = updateLauncher(directory, Platform::GetAppDataDirectory());
-			BOOST_LOG_TRIVIAL(debug) << "Update result: " << success;
-		}
 		if (success == 1) {
 			BOOST_LOG_TRIVIAL(debug) << "Success, restart needed.";
 			relaunchNeeded = true;
@@ -52,10 +47,6 @@ bool Updater::doUpdate(std::string directory) {
 	if (config["application.autoupdate"].as<bool>()) {
 		BOOST_LOG_TRIVIAL(debug) << "Attempting to update application.";
 		int success = updateApplication(directory, Utils::getExePath());
-		if (success == -1) {
-			BOOST_LOG_TRIVIAL(debug) << "Failed: Updating to app data.";
-			updateApplication(directory, Platform::GetAppDataDirectory());
-		}
 		if (success == 1) {
 			relaunchNeeded = true;
 		}
