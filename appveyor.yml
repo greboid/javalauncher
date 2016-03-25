@@ -1,4 +1,7 @@
-version: 1.0.{build}
+version: 1.0.{build}
+
+install:
+  - SET PATH=C:\Program Files (x86)\MSBuild\14.0\bin\;%PATH%
 configuration: Release
 platform:
 - x64
