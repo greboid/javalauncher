@@ -17,7 +17,7 @@
 class JVMLauncher {
 public:
     JVMLauncher(std::vector<std::string>, boost::program_options::variables_map&);
-    void LaunchJVM();
+    void launchJVM();
     void destroyJVM();
 	std::string callGetDirectory();
     void callMainMethod();

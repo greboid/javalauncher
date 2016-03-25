@@ -2,8 +2,6 @@ version: 1.0.{build}
 
 environment:
   VisualStudioVersion: 14.0
-install:
-  - SET PATH=C:\Program Files (x86)\MSBuild\14.0\bin\;%PATH%
 configuration: Release
 platform:
 - x64
@@ -11,12 +9,14 @@ platform:
 nuget:
   disable_publish_on_pr: true
 before_build:
-- set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+- cmd: nuget.exe restore
 build:
-  project: JavaLauncher.sln
+  project: JavaLauncher.vcxproj
   verbosity: minimal
 artifacts:
 - path: build\Win32\Release\JavaLauncher-Win32.exe
   name: Win32
 - path: build\x64\Release\JavaLauncher-x64.exe
   name: x64
+cache:
+- packages -> **\packages.config

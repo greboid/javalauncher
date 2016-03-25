@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 		BOOST_LOG_TRIVIAL(debug) << "Creating JVMLauncher.";
 		JVMLauncher* launcher = new JVMLauncher(cliArgs, options);
 		BOOST_LOG_TRIVIAL(debug) << "Launching JVM";
-		launcher->LaunchJVM();
+		launcher->launchJVM();
 		BOOST_LOG_TRIVIAL(debug) << "Getting directory.";
 		std::string directory = launcher->callGetDirectory();
 		if (updater.doUpdate(directory)) {

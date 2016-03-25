@@ -38,7 +38,7 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, boost::program_options::va
 	this->jvm = NULL;
 }
 
-void JVMLauncher::LaunchJVM() {
+void JVMLauncher::launchJVM() {
 	BOOST_LOG_TRIVIAL(debug) << "Getting DLL from registry";
 	std::string jvmDll = Platform::getJavaDLLFromRegistry();
 	BOOST_LOG_TRIVIAL(debug) << "Setting Java Home from registry";
