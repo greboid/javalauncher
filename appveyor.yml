@@ -12,7 +12,7 @@ before_build:
 - cmd: nuget.exe restore
 build:
   project: JavaLauncher.sln
-  verbosity: minimal
+  verbosity: detailed
 artifacts:
 - path: build\Win32\Release\JavaLauncher-Win32.exe
   name: Win32
