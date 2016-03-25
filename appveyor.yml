@@ -18,3 +18,5 @@ artifacts:
   name: Win32
 - path: build\x64\Release\JavaLauncher-x64.exe
   name: x64
+cache:
+- packages -> **\packages.config
