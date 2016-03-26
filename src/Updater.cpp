@@ -81,8 +81,11 @@ int Updater::updateLauncher(std::string from, std::string to) {
 }
 
 void Updater::moveApplicationUpdates() {
+	BOOST_LOG_TRIVIAL(debug) << "Getting app path.";
 	std::string to = Utils::getExePath();
+	BOOST_LOG_TRIVIAL(debug) << "Getting matching files to update.";
 	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*\\.tmp"));
+	BOOST_LOG_TRIVIAL(debug) << "Looping files to update.";
 	for (unsigned int i = 0; i < files.size(); i++) {
 		std::string updateSource = files[i];
 		std::string updateTarget = files[i].substr(0, files[i].length() - 4);
@@ -93,6 +96,7 @@ void Updater::moveApplicationUpdates() {
 			BOOST_LOG_TRIVIAL(debug) << "Updating failed.";
 		}
 	}
+	BOOST_LOG_TRIVIAL(debug) << "Finished moving application updates.";
 }
 
 int Updater::updateApplication(std::string from, std::string to) {
@@ -128,5 +132,6 @@ int Updater::updateApplication(std::string from, std::string to) {
 		}
 		
 	}
+	BOOST_LOG_TRIVIAL(debug) << "Finished updating application.";
 	return restartNeeded;
 }

@@ -6,16 +6,23 @@ vector<string> JVMLauncher::getCliArgs(vector<std::string> cliArgs, boost::progr
 	cliArgs.erase(cliArgs.begin());
 	cliArgs.push_back("-l");
 	cliArgs.push_back(std::string("bob-") + std::string(LAUNCHER_VERSION));
-	
-	vector<string> newCliArgs = Utils::mergeVectors(config["application.args"].as<vector<string>>(), cliArgs);
+	vector<string> newCliArgs;
+	if ((config["application.args"].as<string>()).compare("") != 0) {
+		newCliArgs = Utils::mergeVectors(config["application.args"].as<vector<string>>(), cliArgs);
+	}
 	BOOST_LOG_TRIVIAL(debug) << "CLI Args: " << newCliArgs.size();
 	return newCliArgs;
 }
 
 vector<string> JVMLauncher::getJvmArgs(boost::program_options::variables_map config) {
 	vector<string> jvmArgs;
+	BOOST_LOG_TRIVIAL(debug) << "Adding UTF-8.";
 	jvmArgs.push_back("-Dfile.encoding=utf-8");
-	jvmArgs = Utils::mergeVectors(config["jvm.args"].as<vector<string>>(), jvmArgs);
+	BOOST_LOG_TRIVIAL(debug) << "Merging config items in.";
+	if ((config["jvm.args"].as<string>()).compare("") != 0) {
+		BOOST_LOG_TRIVIAL(debug) << "Config JVM Args: " << config["jvm.args"].as<string>() << ".";
+		jvmArgs = Utils::mergeVectors(config["jvm.args"].as<vector<string>>(), jvmArgs);
+	}
 	BOOST_LOG_TRIVIAL(debug) << "JVM Args: " << jvmArgs.size();
 	return jvmArgs;
 }
@@ -24,18 +31,22 @@ JVMLauncher::JVMLauncher(vector<std::string> appargs, boost::program_options::va
 	std::string path = config["application.path"].as<string>();
 	//set application home
 	appHome.append(path);
-	//add all jars from path
+	BOOST_LOG_TRIVIAL(debug) << "Finding all jars";
 	Utils::addMatchingFilesToExistingVector(jars, path, std::regex(".*\\.jar"));
 	if (jars.size() == 0) {
 		throw JVMLauncherException("No jar files found.");
 	}
+	BOOST_LOG_TRIVIAL(debug) << "Setting up JNI.";
 	this->mainClassName = config["application.main"].as<string>();
 	this->utilsClassName = config["launcher.main"].as<string>();
 	this->config = config;
+	BOOST_LOG_TRIVIAL(debug) << "Getting JVM Arguments.";
 	this->jvmargs = getJvmArgs(config);
+	BOOST_LOG_TRIVIAL(debug) << "Getting CLI arguments.";
 	this->appargs = getCliArgs(appargs, config);
 	this->jvmEnv = NULL;
 	this->jvm = NULL;
+	BOOST_LOG_TRIVIAL(debug) << "Finished setting up JNI.";
 }
 
 void JVMLauncher::launchJVM() {

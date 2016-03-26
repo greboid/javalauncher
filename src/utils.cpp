@@ -22,16 +22,23 @@ std::string Utils::getExePath() {
 }
 
 std::vector<std::string> Utils::mergeVectors(std::vector<std::string> vector1, std::vector<std::string> vector2) {
+	BOOST_LOG_TRIVIAL(debug) << "Starting merge.";
+	BOOST_LOG_TRIVIAL(debug) << "Vector 1 size: " << vector1.size() << ".";
+	BOOST_LOG_TRIVIAL(debug) << "Vector 2 size: " << vector2.size() << ".";
 	std::vector <std::string> result(vector1.size() + vector2.size());
+	BOOST_LOG_TRIVIAL(debug) << "New size: " << result.size() << ".";
 	int index = 0;
+	BOOST_LOG_TRIVIAL(debug) << "Adding first vector.";
 	for (unsigned int i = 0; i < vector1.size(); i++) {
 		result[index] = vector1[i];
 		index++;
 	}
+	BOOST_LOG_TRIVIAL(debug) << "Adding second vector.";
 	for (unsigned int i = 0; i < vector2.size(); i++) {
 		result[index] = vector2[i];
 		index++;
 	}
+	BOOST_LOG_TRIVIAL(debug) << "Finished merge.";
 	return result;
 }
 

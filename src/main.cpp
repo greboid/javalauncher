@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
 		cerr << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
 	}
+	BOOST_LOG_TRIVIAL(debug) << "App Path: " << options["application.path"].as<string>();
 	if (options.count("version") == 1) {
 		cout << LAUNCHER_VERSION << endl;
 		exit(0);
