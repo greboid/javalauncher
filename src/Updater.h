@@ -12,7 +12,7 @@
 class Updater {
 public:
 	Updater(boost::program_options::variables_map&);
-	void moveApplicationUpdates();
+	void moveApplicationUpdates(std::string from);
     bool doUpdate(std::string);
     bool isUpdateWaiting();
     std::string getNewVersion();

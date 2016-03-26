@@ -27,10 +27,10 @@ int main(int argc, char** argv) {
 		("application.main", po::value<string>()->default_value(APPLICATION_MAIN), "The application's Main class")
 		("application.args", po::value<string>()->default_value(""), "Arguments to pass to the application")
 		("application.path", po::value<string>()->default_value(APPLICATION_PATH), "The path of the application")
-		("application.autoupdate", po::value<bool>()->default_value(APPLICATION_AUTOUPDATE), "Should the launcher auto update the application")
+		("application.autoupdate", po::bool_switch()->default_value(APPLICATION_AUTOUPDATE), "Should the launcher auto update the application")
 		("launcher.main", po::value<string>()->default_value(APPLICATION_SETUP), "Launcher Utilities class  (See docs for API)")
-		("launcher.singleinstance", po::value<bool>()->default_value(LAUNCHER_SINGLEINSTANCE), "Should we use a global single instance")
-		("launcher.autoupdate", po::value<bool>()->default_value(LAUNCHER_AUTOUPDATE), "Should the launcher auto update itself")
+		("launcher.singleinstance", po::bool_switch()->default_value(LAUNCHER_SINGLEINSTANCE), "Should we use a global single instance")
+		("launcher.autoupdate", po::bool_switch()->default_value(LAUNCHER_AUTOUPDATE), "Should the launcher auto update itself")
 		;
 	po::variables_map options;
 	try {
@@ -73,14 +73,16 @@ int main(int argc, char** argv) {
 	BOOST_LOG_TRIVIAL(debug) << "Creating updater.";
 	Updater updater(options);
 	try {
-		BOOST_LOG_TRIVIAL(debug) << "Moving application Updates.";
-		updater.moveApplicationUpdates();
 		BOOST_LOG_TRIVIAL(debug) << "Creating JVMLauncher.";
 		JVMLauncher* launcher = new JVMLauncher(cliArgs, options);
 		BOOST_LOG_TRIVIAL(debug) << "Launching JVM";
 		launcher->launchJVM();
 		BOOST_LOG_TRIVIAL(debug) << "Getting directory.";
 		std::string directory = launcher->callGetDirectory();
+		BOOST_LOG_TRIVIAL(debug) << "Directory: " << directory << ".";
+		BOOST_LOG_TRIVIAL(debug) << "Moving application Updates.";
+		updater.moveApplicationUpdates(directory);
+		BOOST_LOG_TRIVIAL(debug) << "Starting launcher update.";
 		if (updater.doUpdate(directory)) {
 			BOOST_LOG_TRIVIAL(debug) << "Destroying JVM.";
 			launcher->destroyJVM();

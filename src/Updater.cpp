@@ -80,16 +80,16 @@ int Updater::updateLauncher(std::string from, std::string to) {
 	}
 }
 
-void Updater::moveApplicationUpdates() {
+void Updater::moveApplicationUpdates(std::string from) {
 	BOOST_LOG_TRIVIAL(debug) << "Getting app path.";
 	std::string to = Utils::getExePath();
 	BOOST_LOG_TRIVIAL(debug) << "Getting matching files to update.";
-	vector<string> files = Utils::addMatchingFilesToVector(to, std::regex(".*\\.tmp"));
+	vector<string> files = Utils::addMatchingFilesToVector(from, std::regex(".*\\.tmp"));
 	BOOST_LOG_TRIVIAL(debug) << "Looping files to update.";
 	for (unsigned int i = 0; i < files.size(); i++) {
 		std::string updateSource = files[i];
 		std::string updateTarget = files[i].substr(0, files[i].length() - 4);
-		if (Platform::moveFile(to + updateSource, to + updateTarget)) {
+		if (Platform::moveFile(from + updateSource, to + updateTarget)) {
 			BOOST_LOG_TRIVIAL(debug) << "Updating suceeded.";
 		}
 		else {
