@@ -14,6 +14,7 @@
 #ifdef WIN32
 #include <windows.h>
 #include <shlobj.h>
+#include <ShellScalingApi.h>
 #endif
 #include <vector>
 #include <regex>
@@ -28,6 +29,7 @@ public:
 	static bool moveFile(std::string oldFile, std::string newFile);
 	static bool deleteFileIfExists(std::string file);
 	static bool deleteFile(std::string file);
+	static void platformInit();
 	static std::string getExePath();
 	static std::string addTrailingSlash(std::string directory);
 	static std::vector<std::string> listDirectory(std::string directory);

@@ -39,6 +39,8 @@ int main(int argc, char** argv) {
 		BOOST_LOG_TRIVIAL(error) << "ERROR: " << e.what() << std::endl << std::endl;
 		return 1;
 	}
+
+	Platform::platformInit();
 	
 	try {
 		ifstream file((char*)(Utils::getExePath() + "//" + "launcher.config").c_str(), ios::in);

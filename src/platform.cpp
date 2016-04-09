@@ -53,6 +53,11 @@ bool Platform::moveFile(std::string oldFile, std::string newFile) {
 return true;
 #endif
 }
+void Platform::platformInit() {
+#ifdef WIN32
+	SetProcessDPIAware();
+#endif
+}
 
 bool Platform::deleteFileIfExists(string file) {
 	std::ifstream iFile(file.c_str());
