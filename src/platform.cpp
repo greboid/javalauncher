@@ -224,10 +224,42 @@ std::string Platform::getJavaDLLFromRegistry() {
 	BOOST_LOG_TRIVIAL(debug) << "Linux doesn't have a registry");
 	return "";
 #elif WIN32
-	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+  std::string currentVersion;
+  try {
+    currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+  }
+  catch (JVMLauncherException& ex) {
+    try {
+      BOOST_LOG_TRIVIAL(debug) << "Registry: CurrentVersion: Java Runtime Environment key not found, trying JRE.";
+      currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\JRE", "CurrentVersion");
+    }
+    catch (JVMLauncherException& ex1) {
+      BOOST_LOG_TRIVIAL(debug) << "Registry: CurrentVersion: JRE key not found.  No JRE found.";
+      currentVersion = "";
+    }
+  }
 	BOOST_LOG_TRIVIAL(debug) << "Registry: java current version: " << currentVersion;
-	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "RuntimeLib");
-	BOOST_LOG_TRIVIAL(debug) << "Registry: runtime lib: " << result;
+  std::string result;
+  if (currentVersion != "") {
+    try {
+      BOOST_LOG_TRIVIAL(debug) << "Registry: RuntimeLib: First Try";
+      result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\"+currentVersion, "RuntimeLib");
+    }
+    catch (JVMLauncherException& ex) {
+      BOOST_LOG_TRIVIAL(debug) << "Registry: RuntimeLib: Java Runtime Environment key not found, trying JRE.";
+      try {
+        result = getRegistryValue("SOFTWARE\\JavaSoft\\JRE\\"+currentVersion, "RuntimeLib");
+      }
+      catch (JVMLauncherException& ex1) {
+        BOOST_LOG_TRIVIAL(debug) << "Registry: RuntimeLib: JRE key not found.  No JRE found.";
+        result = "";
+      }
+    }
+    BOOST_LOG_TRIVIAL(debug) << "Registry: runtime lib: " << result;
+  }
+  else {
+    result = "";
+  }
 	return result;
 #else
 	BOOST_LOG_TRIVIAL(debug) << "No code for this OS";
@@ -240,14 +272,45 @@ std::string Platform::getJavaHomeFromRegistry() {
 	BOOST_LOG_TRIVIAL(debug) << "Linux doesn't have a registry");
 	return "";
 #elif WIN32
-	std::string currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+  std::string currentVersion;
+  try {
+    currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment", "CurrentVersion");
+  }
+  catch (JVMLauncherException& ex) {
+    BOOST_LOG_TRIVIAL(debug) << "Registry: CurrentVersion: Java Runtime Environment key not found, trying JRE.";
+    try {
+      currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\JRE", "CurrentVersion");
+    }
+    catch (JVMLauncherException& ex1) {
+      BOOST_LOG_TRIVIAL(debug) << "Registry: CurrentVersion: JRE key not found.  No JRE found.";
+      currentVersion = "";
+    }
+  }
 	BOOST_LOG_TRIVIAL(debug) << "Registry: java current version: " << currentVersion;
-	std::string result = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
-	BOOST_LOG_TRIVIAL(debug) << "Registry: java home: " << result;
+  std::string result;
+  if (currentVersion != "") {
+    try {
+      currentVersion = getRegistryValue("SOFTWARE\\JavaSoft\\Java Runtime Environment\\" + currentVersion, "JavaHome");
+    }
+    catch (JVMLauncherException& ex) {
+      BOOST_LOG_TRIVIAL(debug) << "Registry: JavaHome: Java Runtime Environment key not found, trying JRE.";
+      try {
+        result = getRegistryValue("SOFTWARE\\JavaSoft\\JRE\\"+currentVersion, "JavaHome");
+      }
+      catch (JVMLauncherException& ex1) {
+        BOOST_LOG_TRIVIAL(debug) << "Registry: JavaHome: JRE key not found.  No JRE found.";
+        result = "";
+      }
+    }
+    BOOST_LOG_TRIVIAL(debug) << "Registry: java home: " << result;
+  }
+  else {
+    result = "";
+  }
 	return result;
 #else
 	BOOST_LOG_TRIVIAL(debug) << "No code for this OS";
-	return "";
+	return "";ege
 #endif
 }
 
@@ -257,10 +320,13 @@ std::string Platform::getRegistryValue(std::string key, std::string subkey) {
 	return "";
 #elif WIN32
 	BOOST_LOG_TRIVIAL(debug) << "WIN32";
-	HKEY regKey;
 #if _WIN64
+  BOOST_LOG_TRIVIAL(debug) << "WIN64";
+  HKEY regKey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, (char*)key.c_str(), 0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &regKey) != ERROR_SUCCESS) {
 #elif _WIN32
+  BOOST_LOG_TRIVIAL(debug) << "_WIN32";
+  HKEY regKey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, (char*)key.c_str(), 0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &regKey) != ERROR_SUCCESS)  {
 #endif
 		throw JVMLauncherException("Cannot find registry key: " + key);
@@ -269,7 +335,7 @@ std::string Platform::getRegistryValue(std::string key, std::string subkey) {
 	char value[1024];
 	DWORD value_length = 1024;
 	if (RegQueryValueEx(regKey, (char*)subkey.c_str(), NULL, &dwType, (LPBYTE)&value, &value_length) != ERROR_SUCCESS) {
-		throw new JVMLauncherException("Cannot find key value: " + key + " = " + value);
+		throw JVMLauncherException("Cannot find key "+ key + " subkey: " + subkey);
 	}
 	RegCloseKey(regKey);
 	return value;

@@ -62,8 +62,8 @@ std::string Utils::vectorToString(std::vector<std::string> strings) {
 }
 
 std::vector<std::string> Utils::splitString(std::string input, std::string delimiter) {
-	unsigned start = 0;
-	unsigned end;
+	size_t start = 0;
+  size_t end;
 	std::vector<std::string> result;
 
 	while ((end = input.find(delimiter, start)) != std::string::npos)
